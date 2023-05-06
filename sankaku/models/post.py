@@ -51,7 +51,7 @@ class Post(BaseModel):
     has_children: bool
     has_comments: bool
     has_notes: bool
-    is_favourite: bool = Field(alias="is_favorited")
+    is_favorite: bool = Field(alias="is_favorited")
     user_vote: Optional[int]
     md5: str
     parent_id: Optional[int]
