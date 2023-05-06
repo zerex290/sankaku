@@ -6,3 +6,6 @@ virtualenv/
 **.idea/
 **__pycache__/
 *.sh
+
+# py file for testing
+test.py
