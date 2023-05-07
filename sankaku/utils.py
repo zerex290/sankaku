@@ -1,20 +1,20 @@
 import asyncio
 from functools import wraps
 from typing import TypeVar, ParamSpec, Optional
-from collections.abc import Callable, Awaitable, AsyncIterator
+from collections.abc import Callable, Awaitable
 
 
 from sankaku.errors import RateLimitError
 
 
-__all__ = ["rate_limit"]
+__all__ = ["ratelimit"]
 
 
 _T = TypeVar("_T")
 _P = ParamSpec("_P")
 
 
-def rate_limit(
+def ratelimit(
     *,
     rps: Optional[int] = None,
     rpm: Optional[int] = None
@@ -30,7 +30,7 @@ def rate_limit(
     elif not any(locals().values()):
         raise TypeError("At least argument must be specified.")
 
-    sleep_time: float = (1 / rps) if rps else (60 / rpm)
+    sleep_time: float = (1 / rps) if rps else (60 / rpm)  # type: ignore[operator]
 
     def wrapper(func: Callable[_P, Awaitable[_T]]) -> Callable[_P, Awaitable[_T]]:
         @wraps(func)

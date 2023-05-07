@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 from sankaku import types
 
@@ -52,6 +52,10 @@ class ExtendedProfile(Profile):
     is_verified: bool
     verifications_count: int
     blacklist_is_hidden: bool
-    blacklisted_tags: list[list[str]]
+    blacklisted_tags: list[list[str] | str]
     blacklisted: list[str]
     mfa_method: int
+
+    @validator("blacklisted_tags", pre=True)
+    def flatten_blacklisted_tags(cls, v) -> list[str]:  # noqa
+        return [tag[0] for tag in v]

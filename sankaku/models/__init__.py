@@ -1,4 +1,4 @@
-from . import post, user
+from . import posts, users
 
 
-__all__ = ["post", "user"]
+__all__ = ["posts", "users"]
