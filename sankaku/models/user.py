@@ -7,6 +7,7 @@ from sankaku import types
 
 class Profile(BaseModel):
     """User profile model for any user that has an account on website."""
+
     last_logged_in_at: datetime
     favorite_count: int
     post_favorite_count: int
@@ -41,6 +42,7 @@ class Profile(BaseModel):
 
 class ExtendedProfile(Profile):
     """Profile of the currently logged-in user."""
+
     email: str
     hide_ads: bool
     subscription_level: int

@@ -1,5 +1,5 @@
 import json
-from typing import Optional, Literal, Annotated, Self
+from typing import Optional, Literal, Annotated
 from collections.abc import AsyncIterator
 from datetime import datetime
 
@@ -145,7 +145,7 @@ class BaseClient:
         self._token_type: str = ""
 
     @utils.rate_limit(rps=constants.BASE_RPS)
-    async def login(self, login: str, password: str) -> Self:
+    async def login(self, login: str, password: str) -> "BaseClient":
         """
         Login into sankakucomplex.com via login and password.
 
@@ -265,13 +265,54 @@ class PostClient(BaseClient):
         async for post in self.browse_posts(auth=True, recommended_for=self.profile.name):
             yield post
 
-    async def get_post(self, post_id: int, auth: bool = False) -> mdl.post.Post:
+    async def get_similar_posts(
+            self,
+            post_id: int,
+            *,
+            auth: bool = False
+    ) -> list[mdl.post.Post]:
+        """
+        Get posts similar (recommended) for specific post.
+
+        :param post_id: ID of specific post
+        :param auth: Whether to make request on behalf of currently logged-in user
+        :return: List of founded similar posts;
+        empty list if nothing have been found
+        """
         posts: list[mdl.post.Post] = []
-        async for post in self.browse_posts(auth=auth, tags=[f"id_range:{post_id}"]):
+        tag = f"recommended_for_post:{post_id}"
+        async for post in self.browse_posts(auth=auth, tags=[tag]):
+            posts.append(post)
+        return posts
+
+    async def get_post(
+            self,
+            post_id: int,
+            with_similar_posts: bool = False,
+            *,
+            auth: bool = False
+    ) -> mdl.post.Post:
+        """
+        Get specific post by its ID.
+
+        :param post_id: ID of specific post
+        :param with_similar_posts:  Whether to search similar posts;
+        note that it greatly reduces performance
+        :param auth: auth: Whether to make request on behalf of
+        currently logged-in user
+        """
+        posts: list[mdl.post.Post] = []
+        tag = f"id_range:{post_id}"
+
+        async for post in self.browse_posts(auth=auth, tags=[tag]):
             posts.append(post)
         if not posts:
             raise errors.PostNotFoundError(post_id)
-        return posts[0]
+
+        post = posts[0]
+        if with_similar_posts:
+            post.similar_posts.extend(await self.get_similar_posts(post_id))
+        return post
 
 
 class BookClient(BaseClient):

@@ -74,6 +74,8 @@ class Post(BaseModel):
     tags: list[Tag]
     video_duration: Optional[float]
 
+    similar_posts: list["Post"] = []
+
     @validator("created_at", pre=True)
     def convert_ts_to_datetime(cls, v) -> datetime:  # noqa
         return datetime.utcfromtimestamp(v["s"]).astimezone()
