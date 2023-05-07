@@ -8,6 +8,7 @@ import aiohttp
 import sankaku.models as mdl
 from . import ValueRange
 from sankaku import constants, types, utils
+from sankaku.errors import LoginRequirementError
 
 
 class PostsPaginator:
@@ -169,7 +170,9 @@ class BaseClient:
 
     def get_headers(self, *, auth: bool = False) -> dict[str, str]:
         headers = self._HEADERS.copy()
-        if auth:
+        if auth and not all(self.__dict__.values()):
+            raise LoginRequirementError
+        elif auth:
             headers["authorization"] = f"{self._token_type} {self.access_token}"
         return headers
 
@@ -177,6 +180,7 @@ class BaseClient:
 class PostClient(BaseClient):
     async def browse_posts(
         self,
+        auth: bool = False,
         page_number: int = 1,
         limit: Annotated[int, ValueRange(1, 100)] = 40,
         hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
@@ -196,6 +200,7 @@ class PostClient(BaseClient):
         """
         Iterate through the post browser.
 
+        :param auth: Whether to make request on behalf of currently logged-in user
         :param page_number: Current page number
         :param limit: Maximum amount of posts per page
         :param hide_posts_in_books: Whether show post from books or not
@@ -215,8 +220,9 @@ class PostClient(BaseClient):
         """
         kwargs = locals().copy()
         del kwargs["self"]
+        del kwargs["auth"]
         async for page in PostsPaginator(
-            aiohttp.ClientSession(headers=self.get_headers(auth=True)),
+            aiohttp.ClientSession(headers=self.get_headers(auth=auth)),
             **kwargs
         ):
             for post in page.posts:
@@ -224,26 +230,41 @@ class PostClient(BaseClient):
 
     async def get_favorited_posts(self) -> AsyncIterator[mdl.post.Post]:
         """Shorthand way to get favorite posts of currently logged-in user."""
-        async for post in self.browse_posts(favorite_by=self.profile.name):
+
+        if self.profile is None:
+            raise LoginRequirementError
+        async for post in self.browse_posts(auth=True, favorite_by=self.profile.name):
             yield post
 
-    async def get_top_posts(self) -> AsyncIterator[mdl.post.Post]:
-        """Shorthand way to get top posts."""
-        async for post in self.browse_posts(order_by=types.Order.QUALITY):
+    async def get_top_posts(self, auth: bool = False) -> AsyncIterator[mdl.post.Post]:
+        """
+        Shorthand way to get top posts.
+
+        :param auth: Whether to make request on behalf of currently logged-in user
+        """
+        async for post in self.browse_posts(auth=auth, order_by=types.Order.QUALITY):
             yield post
 
-    async def get_popular_posts(self) -> AsyncIterator[mdl.post.Post]:
-        """Shorthand way to get popular posts."""
-        async for post in self.browse_posts(order_by=types.Order.POPULARITY):
+    async def get_popular_posts(self, auth: bool = False) -> AsyncIterator[mdl.post.Post]:
+        """
+        Shorthand way to get popular posts.
+
+        :param auth: Whether to make request on behalf of currently logged-in user
+        """
+        async for post in self.browse_posts(auth=auth, order_by=types.Order.POPULARITY):
             yield post
 
     async def get_recommended_posts(self) -> AsyncIterator[mdl.post.Post]:
         """Shorthand way to get recommended posts for the currently logged-in user."""
-        async for post in self.browse_posts(recommended_for=self.profile.name):
+
+        if self.profile is None:
+            raise LoginRequirementError
+        async for post in self.browse_posts(auth=True, recommended_for=self.profile.name):
             yield post
 
     async def get_recommended_books(self):  # TODO: TBA
         """Shorthand way to get recommended books for the currently logged-in user."""
+
         raise NotImplementedError
 
 

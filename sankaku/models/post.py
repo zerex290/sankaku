@@ -36,13 +36,13 @@ class Post(BaseModel):
     rating: types.Rating
     status: str
     author: Author
-    sample_url: str
+    sample_url: Optional[str]
     sample_width: int
     sample_height: int
-    preview_url: str
-    preview_width: int
-    preview_height: int
-    file_url: str
+    preview_url: Optional[str]
+    preview_width: Optional[int]
+    preview_height: Optional[int]
+    file_url: Optional[str]
     width: int
     height: int
     file_size: int
