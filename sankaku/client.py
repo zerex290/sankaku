@@ -8,7 +8,7 @@ import aiohttp
 import sankaku.models as mdl
 from . import ValueRange
 from sankaku import constants, types, utils
-from sankaku.errors import LoginRequirementError
+from sankaku.errors import LoginRequirementError, VideoDurationError
 
 
 class PostsPaginator:
@@ -67,15 +67,19 @@ class PostsPaginator:
                         "date:"
                         + "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in v)
                     )
-                case "rating":  # TODO: protect from undefined rating
+                case "rating":
                     self.tags.append(f"rating:{self.rating.value}")
                 case "threshold":
                     self.tags.append(f"threshold:{self.threshold}")
                 case "file_size":
                     self.tags.append(self.file_size.value)
-                case "file_type":  # TODO: make image enum unavailable
+                case "file_type":
+                    if self.file_type == types.File.IMAGE:
+                        continue
                     self.tags.append(f"file_type:{self.file_type.value}")
-                case "video_duration":  # TODO: make availability only with videos
+                case "video_duration":
+                    if self.file_type != types.File.VIDEO:
+                        raise VideoDurationError
                     self.tags.append(
                         "duration:"
                         + "..".join(str(s) for s in self.video_duration)

@@ -2,7 +2,6 @@ from enum import Enum
 
 
 class Rating(str, Enum):
-    UNDEFINED = ""
     SAFE = "s"
     QUESTIONABLE = "q"
     EXPLICIT = "e"

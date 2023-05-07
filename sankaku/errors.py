@@ -16,3 +16,7 @@ class RateLimitError(SankakuError):
 
 class LoginRequirementError(SankakuError):
     msg = "You must be logged-in."
+
+
+class VideoDurationError(SankakuError):
+    msg = "Argument is available only with video files."
