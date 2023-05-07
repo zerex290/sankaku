@@ -7,14 +7,16 @@ import aiohttp
 
 import sankaku.models as mdl
 from . import ValueRange
-from sankaku import constants, types
+from sankaku import constants, types, utils
 
 
 class PostsPaginator:
     def __init__(
-        self, session: aiohttp.ClientSession,
+        self,
+        session: aiohttp.ClientSession,
+        page_number: int,
         limit: Annotated[int, ValueRange(1, 100)],
-        hide_posts_in_books: Literal["in-larger-tags", "always"],
+        hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]],
         order_by: Optional[types.Order],
         date: Optional[list[datetime]],
         rating: Optional[types.Rating],
@@ -29,8 +31,8 @@ class PostsPaginator:
         voted: Optional[str]
     ) -> None:
         self.session = session
-        self.next: Optional[str] = ""
-        self.params: dict[str, Optional[str]] = {"next": self.next, "lang": "en"}
+        self.page_number = page_number
+        self.params: dict[str, Optional[str]] = {}
 
         self.limit = limit
         self.hide_posts_in_books = hide_posts_in_books
@@ -89,32 +91,38 @@ class PostsPaginator:
                 case _:
                     continue
 
+        if self.hide_posts_in_books is not None:
+            self.params.update(hide_posts_in_books=self.hide_posts_in_books)
+        if self.tags:
+            self.params.update(tags=" ".join(self.tags))
         self.params.update(
+            lang="en",
+            page=str(self.page_number),
             limit=str(self.limit),
-            hide_posts_in_books=self.hide_posts_in_books,
-            tags=" ".join(self.tags)
         )
 
     def __aiter__(self) -> AsyncIterator[mdl.post.Page]:
         return self
 
+    @utils.rate_limit(rps=constants.BASE_RPS)
     async def __anext__(self) -> mdl.post.Page:
-        if self.next is None:
-            await self.session.close()
-            raise StopAsyncIteration
-
         async with self.session.get(
             constants.POST_BROWSE_URL,
             params=self.params,
         ) as response:
-            page = mdl.post.Page(**(await response.json()))
-            self.params.update(next=page.meta.next)
-            self.next = page.meta.next
+            data = await response.json()
+            if not isinstance(data, list) or not data:
+                # Different data means end of search
+                await self.session.close()
+                raise StopAsyncIteration
+            page = mdl.post.Page(number=self.page_number, posts=data)
+            self.page_number += 1
+            self.params.update(page=str(self.page_number))
             return page
 
 
 class BaseClient:
-    _HEADERS: dict[str] = {
+    _HEADERS: dict[str, str] = {
         "user-agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
             "(KHTML, like Gecko) Chrome/94.0.4606.85 YaBrowser/21.11.0.1996 "
@@ -127,18 +135,18 @@ class BaseClient:
     }
 
     def __init__(self) -> None:
-        self.profile: Optional[mdl.user.Profile] = None
+        self.profile: Optional[mdl.user.ExtendedProfile] = None
         self.access_token: str = ""
         self.refresh_token: str = ""
         self._token_type: str = ""
 
+    @utils.rate_limit(rps=constants.BASE_RPS)
     async def login(self, login: str, password: str) -> "BaseClient":
         """
         Login into sankakucomplex.com via login and password.
 
         :param login: User email or username
         :param password: User password
-        :return:
         """
         async with aiohttp.ClientSession() as session:
             async with session.post(
@@ -156,21 +164,22 @@ class BaseClient:
                 self.access_token = data["access_token"]
                 self.refresh_token = data["refresh_token"]
 
-                self.profile = mdl.user.Profile(**data["current_user"])
+                self.profile = mdl.user.ExtendedProfile(**data["current_user"])
         return self
 
-    def get_headers(self, *, auth: bool = False) -> dict[str]:
+    def get_headers(self, *, auth: bool = False) -> dict[str, str]:
         headers = self._HEADERS.copy()
         if auth:
             headers["authorization"] = f"{self._token_type} {self.access_token}"
         return headers
 
 
-class PostBrowseClient(BaseClient):
+class PostClient(BaseClient):
     async def browse_posts(
         self,
+        page_number: int = 1,
         limit: Annotated[int, ValueRange(1, 100)] = 40,
-        hide_posts_in_books: Literal["in-larger-tags", "always"] = "in-larger-tags",
+        hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
         order_by: Optional[types.Order] = None,
         date: Optional[list[datetime]] = None,
         rating: Optional[types.Rating] = None,
@@ -187,6 +196,7 @@ class PostBrowseClient(BaseClient):
         """
         Iterate through the post browser.
 
+        :param page_number: Current page number
         :param limit: Maximum amount of posts per page
         :param hide_posts_in_books: Whether show post from books or not
         :param order_by: Posts order rule
@@ -209,23 +219,37 @@ class PostBrowseClient(BaseClient):
             aiohttp.ClientSession(headers=self.get_headers(auth=True)),
             **kwargs
         ):
-            for post in page.data:
+            for post in page.posts:
                 yield post
 
     async def get_favorited_posts(self) -> AsyncIterator[mdl.post.Post]:
+        """Shorthand way to get favorite posts of currently logged-in user."""
         async for post in self.browse_posts(favorite_by=self.profile.name):
             yield post
 
     async def get_top_posts(self) -> AsyncIterator[mdl.post.Post]:
+        """Shorthand way to get top posts."""
         async for post in self.browse_posts(order_by=types.Order.QUALITY):
             yield post
 
     async def get_popular_posts(self) -> AsyncIterator[mdl.post.Post]:
+        """Shorthand way to get popular posts."""
         async for post in self.browse_posts(order_by=types.Order.POPULARITY):
             yield post
 
+    async def get_recommended_posts(self) -> AsyncIterator[mdl.post.Post]:
+        """Shorthand way to get recommended posts for the currently logged-in user."""
+        async for post in self.browse_posts(recommended_for=self.profile.name):
+            yield post
 
-class SankakuClient(PostBrowseClient):
-    """
-    Simple client for Sankaku API
-    """
+    async def get_recommended_books(self):  # TODO: TBA
+        """Shorthand way to get recommended books for the currently logged-in user."""
+        raise NotImplementedError
+
+
+class UserClient(BaseClient):
+    pass
+
+
+class SankakuClient(PostClient):  # noqa
+    """Simple client for Sankaku API."""

@@ -69,15 +69,14 @@ class Post(BaseModel):
     is_note_locked: bool
     is_status_locked: bool
     redirect_to_signup: bool
-    sequence: Any
+    sequence: Optional[int]
     generation_directives: Any
     tags: list[Tag]
-    video_duration: Any
+    video_duration: Optional[float]
 
     @validator("created_at", pre=True)
     def convert_ts_to_datetime(cls, v) -> datetime:  # noqa
-        if isinstance(v, dict):
-            return datetime.utcfromtimestamp(v["s"]).astimezone()
+        return datetime.utcfromtimestamp(v["s"]).astimezone()
 
     @validator("extension", pre=True)
     def get_extension(cls, v) -> str:  # noqa
@@ -96,11 +95,6 @@ class Post(BaseModel):
                 raise ValueError(f"Undefined file extension [{self.extension}]")
 
 
-class Meta(BaseModel):
-    next: Optional[str]
-    prev: Optional[str]
-
-
 class Page(BaseModel):
-    meta: Meta
-    data: list[Post]
+    number: int
+    posts: list[Post]
