@@ -1,5 +1,5 @@
 import json
-from typing import Optional, Literal, Annotated
+from typing import Optional, Literal, Annotated, Self
 from collections.abc import AsyncIterator
 from datetime import datetime
 
@@ -7,8 +7,7 @@ import aiohttp
 
 import sankaku.models as mdl
 from . import ValueRange
-from sankaku import constants, types, utils
-from sankaku.errors import LoginRequirementError, VideoDurationError
+from sankaku import constants, types, utils, errors
 
 
 class PostsPaginator:
@@ -79,7 +78,7 @@ class PostsPaginator:
                     self.tags.append(f"file_type:{self.file_type.value}")
                 case "video_duration":
                     if self.file_type != types.File.VIDEO:
-                        raise VideoDurationError
+                        raise errors.VideoDurationError
                     self.tags.append(
                         "duration:"
                         + "..".join(str(s) for s in self.video_duration)
@@ -146,7 +145,7 @@ class BaseClient:
         self._token_type: str = ""
 
     @utils.rate_limit(rps=constants.BASE_RPS)
-    async def login(self, login: str, password: str) -> "BaseClient":
+    async def login(self, login: str, password: str) -> Self:
         """
         Login into sankakucomplex.com via login and password.
 
@@ -175,7 +174,7 @@ class BaseClient:
     def get_headers(self, *, auth: bool = False) -> dict[str, str]:
         headers = self._HEADERS.copy()
         if auth and not all(self.__dict__.values()):
-            raise LoginRequirementError
+            raise errors.LoginRequirementError
         elif auth:
             headers["authorization"] = f"{self._token_type} {self.access_token}"
         return headers
@@ -217,7 +216,7 @@ class PostClient(BaseClient):
         :param video_duration: Video duration in seconds or in range of seconds
         :param recommended_for: Display posts recommended for specified user
         :param favorite_by: Users added post to their favourites
-        :param tags: Tags, available for search (max 4 for logged-in users)
+        :param tags: Tags available for search
         :param added_by: Posts uploaded by specified user
         :param voted: Posts voted by specified user
         :return: Asynchronous generator which yields posts
@@ -236,7 +235,7 @@ class PostClient(BaseClient):
         """Shorthand way to get favorite posts of currently logged-in user."""
 
         if self.profile is None:
-            raise LoginRequirementError
+            raise errors.LoginRequirementError
         async for post in self.browse_posts(auth=True, favorite_by=self.profile.name):
             yield post
 
@@ -262,10 +261,20 @@ class PostClient(BaseClient):
         """Shorthand way to get recommended posts for the currently logged-in user."""
 
         if self.profile is None:
-            raise LoginRequirementError
+            raise errors.LoginRequirementError
         async for post in self.browse_posts(auth=True, recommended_for=self.profile.name):
             yield post
 
+    async def get_post(self, post_id: int, auth: bool = False) -> mdl.post.Post:
+        posts: list[mdl.post.Post] = []
+        async for post in self.browse_posts(auth=auth, tags=[f"id_range:{post_id}"]):
+            posts.append(post)
+        if not posts:
+            raise errors.PostNotFoundError(post_id)
+        return posts[0]
+
+
+class BookClient(BaseClient):
     async def get_recommended_books(self):  # TODO: TBA
         """Shorthand way to get recommended books for the currently logged-in user."""
 
@@ -273,7 +282,8 @@ class PostClient(BaseClient):
 
 
 class UserClient(BaseClient):
-    pass
+    async def get_user(self, username: str):
+        raise NotImplementedError
 
 
 class SankakuClient(PostClient):  # noqa

@@ -20,3 +20,8 @@ class LoginRequirementError(SankakuError):
 
 class VideoDurationError(SankakuError):
     msg = "Argument is available only with video files."
+
+
+class PostNotFoundError(SankakuError):
+    def __init__(self, post_id: int) -> None:
+        self.msg = f"Failed to find post with id {post_id}."
