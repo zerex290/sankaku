@@ -65,7 +65,7 @@ class PostPaginator(BasePaginator):
         page_number: int,
         limit: Annotated[int, ValueRange(1, 100)],
         hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]],
-        order_by: Optional[types.Order],
+        order: Optional[types.Order],
         date: Optional[list[datetime]],
         rating: Optional[types.Rating],
         threshold: Optional[Annotated[int, ValueRange(1, 100)]],
@@ -73,14 +73,14 @@ class PostPaginator(BasePaginator):
         file_type: Optional[types.File],
         video_duration: Optional[list[int]],
         recommended_for: Optional[str],
-        favorite_by: Optional[str],
+        favorited_by: Optional[str],
         tags: Optional[list[str]],
         added_by: Optional[list[str]],
         voted: Optional[str]
     ) -> None:
         super().__init__(session, url, page_number, limit)
         self.hide_posts_in_books = hide_posts_in_books
-        self.order_by = order_by
+        self.order = order
         self.date = date
         self.rating = rating
         self.threshold = threshold
@@ -88,7 +88,7 @@ class PostPaginator(BasePaginator):
         self.file_type = file_type
         self.video_duration = video_duration
         self.recommended_for = recommended_for
-        self.favorite_by = favorite_by
+        self.favorited_by = favorited_by
         self.tags = tags
         self.added_by = added_by
         self.voted = voted
@@ -97,45 +97,29 @@ class PostPaginator(BasePaginator):
         if self.tags is None:
             self.tags = []
 
-        for k, v in self.__dict__.items():
-            if v is None:
-                continue
-            match k:
-                case "order_by":
-                    self.tags.append(f"order:{self.order_by.value}")  # type: ignore[union-attr]
-                case "date":
-                    self.tags.append(
-                        "date:"
-                        + "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in v)
-                    )
-                case "rating":
-                    self.tags.append(f"rating:{self.rating.value}")  # type: ignore[union-attr]
-                case "threshold":
-                    self.tags.append(f"threshold:{self.threshold}")
-                case "file_size":
+        for items in self.__dict__.items():
+            match items:
+                case [_, None]:
+                    continue
+                case ["rating" | "order" | "file_type" as k, v] if v != types.File.IMAGE:
+                    self.tags.append(f"{k}:{v.value}")
+                case ["threshold" | "recommended_for" | "voted" as k, v]:
+                    self.tags.append(f"{k}:{v}")
+                case ["file_size", _]:
                     self.tags.append(self.file_size.value)  # type: ignore[union-attr]
-                case "file_type":
-                    if self.file_type == types.File.IMAGE:
-                        continue
-                    self.tags.append(f"file_type:{self.file_type.value}")  # type: ignore[union-attr]
-                case "video_duration":
-                    if self.file_type != types.File.VIDEO:
-                        raise errors.VideoDurationError
-                    self.tags.append(
-                        "duration:"
-                        + "..".join(str(s) for s in self.video_duration)  # type: ignore[union-attr]
-                    )
-                case "recommended_for":
-                    self.tags.append(f"recommended_for:{self.recommended_for}")
-                case "favorite_by":
-                    self.tags.append(f"fav:{self.favorite_by}")
-                case "added_by":
+                case ["date", _]:
+                    date = "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in self.date)  # type: ignore[union-attr]
+                    self.tags.append(f"date:{date}")
+                case ["video_duration", _] if self.file_type != types.File.VIDEO:
+                    raise errors.VideoDurationError
+                case ["video_duration", _]:
+                    duration = "..".join(str(sec) for sec in self.video_duration)  # type: ignore[union-attr]
+                    self.tags.append(f"duration:{duration}")
+                case ["favorited_by", _]:
+                    self.tags.append(f"fav:{self.favorited_by}")
+                case ["added_by", _]:
                     for user in self.added_by:  # type: ignore[union-attr]
                         self.tags.append(f"user:{user}")
-                case "voted":
-                    self.tags.append(f"voted:{self.voted}")
-                case _:
-                    continue
 
         if self.hide_posts_in_books is not None:
             self.params.update(hide_posts_in_books=self.hide_posts_in_books)

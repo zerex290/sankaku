@@ -89,7 +89,7 @@ class PostClient(BaseClient):
         page_number: int = 1,
         limit: Annotated[int, ValueRange(1, 100)] = 40,
         hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
-        order_by: Optional[types.Order] = None,
+        order: Optional[types.Order] = None,
         date: Optional[list[datetime]] = None,
         rating: Optional[types.Rating] = None,
         threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
@@ -97,7 +97,7 @@ class PostClient(BaseClient):
         file_type: Optional[types.File] = None,
         video_duration: Optional[list[int]] = None,
         recommended_for: Optional[str] = None,
-        favorite_by: Optional[str] = None,
+        favorited_by: Optional[str] = None,
         tags: Optional[list[str]] = None,
         added_by: Optional[list[str]] = None,
         voted: Optional[str] = None
@@ -109,7 +109,7 @@ class PostClient(BaseClient):
         :param page_number: Current page number
         :param limit: Maximum amount of posts per page
         :param hide_posts_in_books: Whether show post from books or not
-        :param order_by: Posts order rule
+        :param order: Posts order rule
         :param date: Date or range of dates
         :param rating: Post rating
         :param threshold: Vote (quality) filter of posts
@@ -117,7 +117,7 @@ class PostClient(BaseClient):
         :param file_type: Type of mediafile in post
         :param video_duration: Video duration in seconds or in range of seconds
         :param recommended_for: Display posts recommended for specified user
-        :param favorite_by: Users added post to their favourites
+        :param favorited_by: Users added post to their favourites
         :param tags: Tags available for search
         :param added_by: Posts uploaded by specified user
         :param voted: Posts voted by specified user
@@ -136,7 +136,7 @@ class PostClient(BaseClient):
 
         if self.profile is None:
             raise errors.LoginRequirementError
-        async for post in self.browse_posts(auth=True, favorite_by=self.profile.name):
+        async for post in self.browse_posts(auth=True, favorited_by=self.profile.name):
             yield post
 
     async def get_top_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.posts.Post]:
@@ -145,7 +145,7 @@ class PostClient(BaseClient):
 
         :param auth: Whether to make request on behalf of currently logged-in user
         """
-        async for post in self.browse_posts(auth=auth, order_by=types.Order.QUALITY):
+        async for post in self.browse_posts(auth=auth, order=types.Order.QUALITY):
             yield post
 
     async def get_popular_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.posts.Post]:
@@ -154,7 +154,7 @@ class PostClient(BaseClient):
 
         :param auth: Whether to make request on behalf of currently logged-in user
         """
-        async for post in self.browse_posts(auth=auth, order_by=types.Order.POPULARITY):
+        async for post in self.browse_posts(auth=auth, order=types.Order.POPULARITY):
             yield post
 
     async def get_recommended_posts(self) -> AsyncIterator[mdl.posts.Post]:
