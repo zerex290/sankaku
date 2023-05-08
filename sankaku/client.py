@@ -89,7 +89,7 @@ class PostClient(BaseClient):
         page_number: int = 1,
         limit: Annotated[int, ValueRange(1, 100)] = 40,
         hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
-        order: Optional[types.Order] = None,
+        order: Optional[types.PostOrder] = None,
         date: Optional[list[datetime]] = None,
         rating: Optional[types.Rating] = None,
         threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
@@ -109,7 +109,7 @@ class PostClient(BaseClient):
         :param page_number: Current page number
         :param limit: Maximum amount of posts per page
         :param hide_posts_in_books: Whether show post from books or not
-        :param order: Posts order rule
+        :param order: Post order rule
         :param date: Date or range of dates
         :param rating: Post rating
         :param threshold: Vote (quality) filter of posts
@@ -145,7 +145,7 @@ class PostClient(BaseClient):
 
         :param auth: Whether to make request on behalf of currently logged-in user
         """
-        async for post in self.browse_posts(auth=auth, order=types.Order.QUALITY):
+        async for post in self.browse_posts(auth=auth, order=types.PostOrder.QUALITY):
             yield post
 
     async def get_popular_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.posts.Post]:
@@ -154,7 +154,7 @@ class PostClient(BaseClient):
 
         :param auth: Whether to make request on behalf of currently logged-in user
         """
-        async for post in self.browse_posts(auth=auth, order=types.Order.POPULARITY):
+        async for post in self.browse_posts(auth=auth, order=types.PostOrder.POPULARITY):
             yield post
 
     async def get_recommended_posts(self) -> AsyncIterator[mdl.posts.Post]:
@@ -256,7 +256,13 @@ class TagClient(BaseClient):
         *,
         auth: bool = False,
         page_number: int = 1,
-        limit: Annotated[int, ValueRange(1, 100)] = 50
+        limit: Annotated[int, ValueRange(1, 100)] = 50,
+        tag_type: Optional[types.Tag] = None,  # TODO: ability to specify multiple tags
+        order: Optional[types.TagOrder] = None,
+        rating: Optional[types.Rating] = None,
+        max_post_count: Optional[int] = None,
+        sort_parameter: Optional[types.SortParameter] = None,
+        sort_direction: types.SortDirection = types.SortDirection.DESC
     ) -> AsyncIterator[mdl.tags.Tag]:
         """
         Iterate through the tag pages.
@@ -264,6 +270,12 @@ class TagClient(BaseClient):
         :param auth: Whether to make request on behalf of currently logged-in user
         :param page_number: Current page number
         :param limit: Maximum amount of posts per page
+        :param tag_type: Tag type filter
+        :param order: Tag order rule
+        :param rating: Tag rating
+        :param max_post_count: Upper threshold for number of posts with tags found
+        :param sort_parameter: Tag sorting parameter
+        :param sort_direction: Tag sorting direction
         :return: Asynchronous generator which yields tags
         """
         async for page in TagPaginator(

@@ -4,10 +4,10 @@ class SankakuError(Exception):
     msg: str = ""
 
     def __repr__(self) -> str:
-        return self.msg
+        return repr(self.msg)
 
     def __str__(self) -> str:
-        return self.__repr__()
+        return self.msg
 
 
 class RateLimitError(SankakuError):

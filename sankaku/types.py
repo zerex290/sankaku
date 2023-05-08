@@ -7,13 +7,32 @@ class Rating(str, Enum):
     EXPLICIT = "e"
 
 
-class Order(Enum):
+class PostOrder(Enum):
     POPULARITY = "popularity"
     DATE = "date"
     QUALITY = "quality"
     RANDOM = "random"
     RECENTLY_FAVORITED = "recently_favorited"
     RECENTLY_VOTED = "recently_voted"
+
+
+class SortParameter(Enum):
+    NAME = "name"
+    TRANSLATIONS = "name_ja"  # IDK why api uses 'ja'
+    TYPE = "type"
+    RATING = "rating"
+    BOOK_COUNT = "pool_count"
+    POST_COUNT = "count"
+
+
+class SortDirection(Enum):
+    ASC = "asc"
+    DESC = "desc"
+
+
+class TagOrder(Enum):
+    POPULARITY = "popularity"
+    QUALITY = "quality"
 
 
 class Tag(Enum):

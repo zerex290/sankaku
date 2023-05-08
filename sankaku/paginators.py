@@ -25,10 +25,10 @@ class BasePaginator(ABC):
         self.url = url
         self.page_number = page_number
         self.limit = limit
-        self.params: dict[str, Optional[str]] = {}
+        self.params: dict[str, str] = {}
 
     def __aiter__(self) -> AsyncIterator[Any]:
-        self._complete_params()
+        self.complete_params()
         return self
 
     @utils.ratelimit(rps=constants.BASE_RPS)
@@ -45,7 +45,7 @@ class BasePaginator(ABC):
             self.params.update(page=str(self.page_number))
             return self.construct_page(data)
 
-    def _complete_params(self) -> None:
+    def complete_params(self) -> None:
         self.params.update(
             lang="en",
             page=str(self.page_number),
@@ -65,7 +65,7 @@ class PostPaginator(BasePaginator):
         page_number: int,
         limit: Annotated[int, ValueRange(1, 100)],
         hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]],
-        order: Optional[types.Order],
+        order: Optional[types.PostOrder],
         date: Optional[list[datetime]],
         rating: Optional[types.Rating],
         threshold: Optional[Annotated[int, ValueRange(1, 100)]],
@@ -93,7 +93,8 @@ class PostPaginator(BasePaginator):
         self.added_by = added_by
         self.voted = voted
 
-    def _complete_params(self) -> None:
+    def complete_params(self) -> None:
+        super().complete_params()
         if self.tags is None:
             self.tags = []
 
@@ -122,10 +123,9 @@ class PostPaginator(BasePaginator):
                         self.tags.append(f"user:{user}")
 
         if self.hide_posts_in_books is not None:
-            self.params.update(hide_posts_in_books=self.hide_posts_in_books)
+            self.params["hide_posts_in_books"] = self.hide_posts_in_books
         if self.tags:
-            self.params.update(tags=" ".join(self.tags))
-        super()._complete_params()
+            self.params["tags"] = " ".join(self.tags)
 
     def construct_page(self, data: Sequence[Mapping]) -> mdl.Page:
         return mdl.Page(number=self.page_number, data=data)  # type: ignore[arg-type]
@@ -137,5 +137,42 @@ class AIPostPaginator(BasePaginator):
 
 
 class TagPaginator(BasePaginator):
+    def __init__(
+        self,
+        session: aiohttp.ClientSession,
+        url: str,
+        page_number: int,
+        limit: Annotated[int, ValueRange(1, 100)],
+        tag_type: Optional[types.Tag],
+        order: Optional[types.PostOrder],
+        rating: Optional[types.Rating],
+        max_post_count: Optional[int],
+        sort_parameter: Optional[types.SortParameter],
+        sort_direction: types.SortDirection
+    ) -> None:
+        super().__init__(session, url, page_number, limit)
+        self.tag_type = tag_type
+        self.order = order
+        self.rating = rating
+        self.max_post_count = max_post_count
+        self.sort_parameter = sort_parameter
+        self.sort_direction = sort_direction
+
+    def complete_params(self) -> None:
+        super().complete_params()
+        if self.tag_type is not None:
+            self.params["types[]"] = str(self.tag_type.value)
+        if self.order is not None:
+            self.params["order"] = self.order.value
+        if self.rating is not None:
+            self.params["rating"] = self.rating.value
+        if self.max_post_count is not None:
+            self.params["amount"] = str(self.max_post_count)
+        if self.sort_parameter is not None:
+            self.params.update(
+                sortBy=self.sort_parameter.value,
+                sortDirection=self.sort_direction.value
+            )
+
     def construct_page(self, data: Sequence[Mapping]) -> mdl.TagPage:
         return mdl.TagPage(number=self.page_number, data=data)  # type: ignore[arg-type]
