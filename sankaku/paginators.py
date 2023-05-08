@@ -1,4 +1,5 @@
-from typing import Optional, Literal, Annotated
+from abc import ABC, abstractmethod
+from typing import Optional, Literal, Annotated, Any
 from collections.abc import AsyncIterator, Sequence, Mapping
 from datetime import datetime
 
@@ -9,7 +10,10 @@ from . import ValueRange
 from sankaku import constants, types, utils, errors
 
 
-class BasePaginator:
+__all__ = ["PostPaginator", "AIPostPaginator", "TagPaginator"]
+
+
+class BasePaginator(ABC):
     def __init__(
         self,
         session: aiohttp.ClientSession,
@@ -20,26 +24,26 @@ class BasePaginator:
         self.session = session
         self.url = url
         self.page_number = page_number
-        self.params: dict[str, Optional[str]] = {}
         self.limit = limit
+        self.params: dict[str, Optional[str]] = {}
 
-    def __aiter__(self) -> AsyncIterator[mdl.posts.BasePage]:
+    def __aiter__(self) -> AsyncIterator[Any]:
         self._complete_params()
         return self
 
     @utils.ratelimit(rps=constants.BASE_RPS)
-    async def __anext__(self) -> mdl.posts.BasePage:
+    async def __anext__(self) -> Any:
         async with self.session.get(self.url, params=self.params) as response:
             data = await response.json()
             if not isinstance(data, list):
                 data = data.get("data")
-            elif not data:
+            if not data:
                 # Different data means end of search
                 await self.session.close()
                 raise StopAsyncIteration
             self.page_number += 1
             self.params.update(page=str(self.page_number))
-            return self._construct_page(data)
+            return self.construct_page(data)
 
     def _complete_params(self) -> None:
         self.params.update(
@@ -48,8 +52,9 @@ class BasePaginator:
             limit=str(self.limit),
         )
 
-    def _construct_page(self, data: Sequence[Mapping]) -> mdl.posts.BasePage:
-        return mdl.posts.BasePage(number=self.page_number, posts=data)  # type: ignore[arg-type]
+    @abstractmethod
+    def construct_page(self, data: Sequence[Mapping]) -> Any:
+        pass
 
 
 class PostPaginator(BasePaginator):
@@ -138,13 +143,15 @@ class PostPaginator(BasePaginator):
             self.params.update(tags=" ".join(self.tags))
         super()._complete_params()
 
-    def _construct_page(self, data: Sequence[Mapping]) -> mdl.posts.Page:
-        return mdl.posts.Page(number=self.page_number, posts=data)  # type: ignore[arg-type]
+    def construct_page(self, data: Sequence[Mapping]) -> mdl.Page:
+        return mdl.Page(number=self.page_number, data=data)  # type: ignore[arg-type]
 
 
 class AIPostPaginator(BasePaginator):
-    def _complete_params(self) -> None:
-        super()._complete_params()
+    def construct_page(self, data: Sequence[Mapping]) -> mdl.AIPage:
+        return mdl.AIPage(number=self.page_number, data=data)  # type: ignore[arg-type]
 
-    def _construct_page(self, data: Sequence[Mapping]) -> mdl.posts.AIPage:
-        return mdl.posts.AIPage(number=self.page_number, posts=data)  # type: ignore[arg-type]
+
+class TagPaginator(BasePaginator):
+    def construct_page(self, data: Sequence[Mapping]) -> mdl.TagPage:
+        return mdl.TagPage(number=self.page_number, data=data)  # type: ignore[arg-type]

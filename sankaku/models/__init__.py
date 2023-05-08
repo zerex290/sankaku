@@ -1,4 +1,4 @@
-from . import posts, users
-
-
-__all__ = ["posts", "users"]
+from .pages import *
+from .posts import *
+from .tags import *
+from .users import *

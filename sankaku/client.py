@@ -1,5 +1,5 @@
 import json
-from typing import Optional, Literal, Annotated
+from typing import Optional, Literal, Annotated, Any
 from collections.abc import AsyncIterator
 from datetime import datetime
 
@@ -8,7 +8,7 @@ import aiohttp
 import sankaku.models as mdl
 from . import ValueRange
 from sankaku import constants, types, utils, errors
-from sankaku.paginators import PostPaginator, AIPostPaginator
+from sankaku.paginators import PostPaginator, AIPostPaginator, TagPaginator
 
 
 class BaseClient:
@@ -49,8 +49,7 @@ class BaseClient:
                 data = await response.json()
 
                 if not response.ok:
-                    msg = f"Authorization failed [{response.status}]: {data}"
-                    raise ValueError(msg)
+                    raise errors.AuthorizationError(response.status, data.get("error"))
 
                 self._token_type = data["token_type"]
                 self.access_token = data["access_token"]
@@ -66,12 +65,26 @@ class BaseClient:
             headers["authorization"] = f"{self._token_type} {self.access_token}"
         return headers
 
+    @staticmethod
+    def _get_paginator_kwargs(
+        loc: dict[str, Any],
+        rm_list: tuple[str, ...] = ("self", "auth")
+    ) -> dict[str, Any]:
+        """
+        Get kwargs for paginator from locals of calling function.
+
+        :param loc: locals of outer function
+        :param rm_list: positions from calling function to be removed
+        """
+        return {k: v for k, v in loc.copy().items() if k not in rm_list}
+
 
 class PostClient(BaseClient):
     """Client for post browsing."""
 
     async def browse_posts(
         self,
+        *,
         auth: bool = False,
         page_number: int = 1,
         limit: Annotated[int, ValueRange(1, 100)] = 40,
@@ -110,16 +123,13 @@ class PostClient(BaseClient):
         :param voted: Posts voted by specified user
         :return: Asynchronous generator which yields posts
         """
-        kwargs = locals().copy()
-        del kwargs["self"]
-        del kwargs["auth"]
         async for page in PostPaginator(
             aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
             url=constants.POST_BROWSE_URL,
-            **kwargs
+            **self._get_paginator_kwargs(locals())
         ):
-            for post in page.posts:
-                yield post  # type: ignore[misc]
+            for post in page.data:
+                yield post
 
     async def get_favorited_posts(self) -> AsyncIterator[mdl.posts.Post]:
         """Shorthand way to get favorite posts of currently logged-in user."""
@@ -129,7 +139,7 @@ class PostClient(BaseClient):
         async for post in self.browse_posts(auth=True, favorite_by=self.profile.name):
             yield post
 
-    async def get_top_posts(self, auth: bool = False) -> AsyncIterator[mdl.posts.Post]:
+    async def get_top_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.posts.Post]:
         """
         Shorthand way to get top posts.
 
@@ -138,7 +148,7 @@ class PostClient(BaseClient):
         async for post in self.browse_posts(auth=auth, order_by=types.Order.QUALITY):
             yield post
 
-    async def get_popular_posts(self, auth: bool = False) -> AsyncIterator[mdl.posts.Post]:
+    async def get_popular_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.posts.Post]:
         """
         Shorthand way to get popular posts.
 
@@ -156,10 +166,10 @@ class PostClient(BaseClient):
             yield post
 
     async def get_similar_posts(
-            self,
-            post_id: int,
-            *,
-            auth: bool = False
+        self,
+        post_id: int,
+        *,
+        auth: bool = False
     ) -> list[mdl.posts.Post]:
         """
         Get posts similar (recommended) for specific post.
@@ -176,20 +186,20 @@ class PostClient(BaseClient):
         return posts
 
     async def get_post(
-            self,
-            post_id: int,
-            with_similar_posts: bool = False,
-            *,
-            auth: bool = False
+        self,
+        post_id: int,
+        *,
+        auth: bool = False,
+        with_similar_posts: bool = False
     ) -> mdl.posts.Post:
         """
         Get specific post by its ID.
 
         :param post_id: ID of specific post
-        :param with_similar_posts:  Whether to search similar posts;
-        note that it greatly reduces performance
         :param auth: auth: Whether to make request on behalf of
         currently logged-in user
+        :param with_similar_posts:  Whether to search similar posts;
+        note that it greatly reduces performance
         """
         posts: list[mdl.posts.Post] = []
         tag = f"id_range:{post_id}"
@@ -204,12 +214,16 @@ class PostClient(BaseClient):
             post.similar_posts.extend(await self.get_similar_posts(post_id))
         return post
 
+    async def create_post(self):  # TODO: TBA
+        raise NotImplementedError
 
-class AIPostClient(BaseClient):
-    """Client for browsing post that have been created by an AI."""
+
+class AIClient(BaseClient):
+    """Client for working with Sankaku built-in AI."""
 
     async def browse_ai_posts(
         self,
+        *,
         auth: bool = False,
         page_number: int = 1,
         limit: Annotated[int, ValueRange(1, 100)] = 40
@@ -222,20 +236,50 @@ class AIPostClient(BaseClient):
         :param limit: Maximum amount of posts per page
         :return: Asynchronous generator which yields AI posts
         """
-        kwargs = locals().copy()
-        del kwargs["self"]
-        del kwargs["auth"]
         async for page in AIPostPaginator(
             aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
             url=constants.AI_POST_BROWSE_URL,
-            **kwargs
+            **self._get_paginator_kwargs(locals())
         ):
-            for post in page.posts:
-                yield post  # type: ignore[misc]
+            for post in page.data:
+                yield post
+
+    async def create_ai_post(self):  # TODO: TBA
+        raise NotImplementedError
+
+
+class TagClient(BaseClient):
+    """Client for tag browsing."""
+
+    async def browse_tags(
+        self,
+        *,
+        auth: bool = False,
+        page_number: int = 1,
+        limit: Annotated[int, ValueRange(1, 100)] = 50
+    ) -> AsyncIterator[mdl.tags.Tag]:
+        """
+        Iterate through the tag pages.
+
+        :param auth: Whether to make request on behalf of currently logged-in user
+        :param page_number: Current page number
+        :param limit: Maximum amount of posts per page
+        :return: Asynchronous generator which yields tags
+        """
+        async for page in TagPaginator(
+            aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
+            url=constants.TAG_BROWSE_URL,
+            **self._get_paginator_kwargs(locals())
+        ):
+            for tag in page.data:
+                yield tag
 
 
 class BookClient(BaseClient):
     """Client for book (pool) browsing."""
+
+    async def browse_books(self):  # TODO: TBA
+        raise NotImplementedError
 
     async def get_recommended_books(self):  # TODO: TBA
         """Shorthand way to get recommended books for the currently logged-in user."""
@@ -252,7 +296,8 @@ class UserClient(BaseClient):
 
 class SankakuClient(  # noqa
     PostClient,
-    AIPostClient,
+    AIClient,
+    TagClient,
     BookClient,
     UserClient
 ):

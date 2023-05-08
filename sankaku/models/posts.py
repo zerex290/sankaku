@@ -1,10 +1,13 @@
 from typing import Optional
 from datetime import datetime
-from collections.abc import Sequence
 
 from pydantic import BaseModel, Field, validator
 
 from sankaku import types
+from .tags import PostTag
+
+
+__all__ = ["Post", "AIPost"]
 
 
 class Author(BaseModel):
@@ -12,24 +15,6 @@ class Author(BaseModel):
     name: str
     avatar: str
     avatar_rating: types.Rating
-
-
-class Tag(BaseModel):
-    id: int
-    name_en: str
-    name_ja: Optional[str]
-    type: types.Tag
-    count: int
-    post_count: int
-    pool_count: int
-    series_count: int
-    locale: str
-    rating: Optional[types.Rating]
-    version: Optional[int]
-    tag_name: str = Field(alias="tagName")
-    total_post_count: int
-    total_pool_count: int
-    name: str
 
 
 class GenerationDirectives(BaseModel):
@@ -56,7 +41,7 @@ class BasePost(BaseModel):
     extension: str = Field(alias="file_type")
     generation_directives: Optional[GenerationDirectives]
     md5: str
-    tags: list[Tag]
+    tags: list[PostTag]
 
     @validator("created_at", pre=True)
     def convert_ts_to_datetime(cls, v) -> Optional[datetime]:  # noqa
@@ -127,16 +112,3 @@ class AIPost(BasePost):
         if isinstance(v, dict) and v.get("s"):
             return datetime.utcfromtimestamp(v["s"]).astimezone()
         return None
-
-
-class BasePage(BaseModel):
-    number: int
-    posts: Sequence[BasePost]
-
-
-class Page(BasePage):
-    posts: Sequence[Post]
-
-
-class AIPage(BasePage):
-    posts: Sequence[AIPost]

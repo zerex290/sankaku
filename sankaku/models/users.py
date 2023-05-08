@@ -5,6 +5,9 @@ from pydantic import BaseModel, validator
 from sankaku import types
 
 
+__all__ = ["Profile", "ExtendedProfile"]
+
+
 class Profile(BaseModel):
     """User profile model for any user that has an account on website."""
 
