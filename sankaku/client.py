@@ -7,7 +7,7 @@ import aiohttp
 
 import sankaku.models as mdl
 from . import ValueRange
-from sankaku import constants, types, utils, errors
+from sankaku import constants, types, errors
 from sankaku.paginators import PostPaginator, AIPostPaginator, TagPaginator
 
 
@@ -32,7 +32,6 @@ class BaseClient:
         self.refresh_token: str = ""
         self._token_type: str = ""
 
-    @utils.ratelimit(rps=constants.BASE_RPS)
     async def login(self, login: str, password: str) -> None:
         """
         Login into sankakucomplex.com via login and password.
@@ -285,6 +284,29 @@ class TagClient(BaseClient):
         ):
             for tag in page.data:
                 yield tag
+
+    async def get_tag(self, name_or_id: str | int, *, auth: bool = False) -> mdl.WikiTag:
+        """
+        Get specific tag by its name or ID.
+
+        :param name_or_id: tag name or ID
+        :param auth: Whether to make request on behalf of currently logged-in user
+        :return:
+        """
+        if isinstance(name_or_id, str):
+            url = f"{constants.TAG_WIKI_BROWSE_URL}/name/{name_or_id}"
+        else:
+            url = f"{constants.TAG_WIKI_BROWSE_URL}/id/{name_or_id}"
+
+        async with aiohttp.ClientSession(
+                headers=self._get_headers(auth=auth)
+        ) as session:
+            async with session.get(url) as response:
+                if not response.ok:
+                    raise errors.TagNotFoundError(name_or_id)
+                data = await response.json()
+                tag = mdl.WikiTag(wiki=data["wiki"], **data["tag"])
+                return tag
 
 
 class BookClient(BaseClient):

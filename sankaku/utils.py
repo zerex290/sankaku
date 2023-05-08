@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 from functools import wraps
 from typing import TypeVar, ParamSpec, Optional
 from collections.abc import Callable, Awaitable
@@ -7,7 +8,7 @@ from collections.abc import Callable, Awaitable
 from sankaku.errors import RateLimitError
 
 
-__all__ = ["ratelimit"]
+__all__ = ["ratelimit", "convert_ts_to_datetime"]
 
 
 _T = TypeVar("_T")
@@ -40,3 +41,11 @@ def ratelimit(
         return inner
 
     return wrapper
+
+
+def convert_ts_to_datetime(
+        ts: dict[str, str | Optional[int]]  # TODO: use TypedDict
+) -> Optional[datetime]:
+    if isinstance(ts, dict) and ts.get("s"):
+        return datetime.utcfromtimestamp(ts["s"]).astimezone()  # type: ignore[arg-type]
+    return None

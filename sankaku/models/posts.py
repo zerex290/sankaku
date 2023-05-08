@@ -4,17 +4,12 @@ from datetime import datetime
 from pydantic import BaseModel, Field, validator
 
 from sankaku import types
+from sankaku.utils import convert_ts_to_datetime
 from .tags import PostTag
+from .users import Author
 
 
 __all__ = ["Post", "AIPost"]
-
-
-class Author(BaseModel):
-    id: int
-    name: str
-    avatar: str
-    avatar_rating: types.Rating
 
 
 class GenerationDirectives(BaseModel):
@@ -29,7 +24,7 @@ class GenerationDirectives(BaseModel):
 
 class BasePost(BaseModel):
     id: int
-    created_at: dict[str, str | int] | datetime
+    created_at: dict[str, str | int] | datetime  # TODO: use TypeAlias
     rating: types.Rating
     status: str
     author: Author
@@ -43,11 +38,11 @@ class BasePost(BaseModel):
     md5: str
     tags: list[PostTag]
 
-    @validator("created_at", pre=True)
-    def convert_ts_to_datetime(cls, v) -> Optional[datetime]:  # noqa
-        if isinstance(v, dict) and v.get("s"):
-            return datetime.utcfromtimestamp(v["s"]).astimezone()
-        return None
+    # Validators
+    _normalize_datetime = (
+        validator("created_at", pre=True, allow_reuse=True)
+        (convert_ts_to_datetime)
+    )
 
     @validator("extension", pre=True)
     def get_extension(cls, v) -> str:  # noqa
@@ -104,11 +99,11 @@ class AIPost(BasePost):
     but I don't have premium account to check it properly.
     This model is actual for non-premium accounts.
     """
-    updated_at: Optional[dict[str, str | Optional[int]] | datetime]
+    updated_at: Optional[dict[str, str | Optional[int]] | datetime]  # TODO: use TypeAlias
     post_associated_id: Optional[int]
 
-    @validator("created_at", "updated_at", pre=True)
-    def convert_ts_to_datetime(cls, v) -> Optional[datetime]:  # noqa
-        if isinstance(v, dict) and v.get("s"):
-            return datetime.utcfromtimestamp(v["s"]).astimezone()
-        return None
+    # Validators
+    _normalize_datetime = (
+        validator("created_at", "updated_at", pre=True, allow_reuse=True)
+        (convert_ts_to_datetime)
+    )

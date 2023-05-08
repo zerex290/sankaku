@@ -1,14 +1,27 @@
 from datetime import datetime
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Field, validator
 
 from sankaku import types
 
 
-__all__ = ["Profile", "ExtendedProfile"]
+__all__ = ["Author", "Profile", "ExtendedProfile"]
 
 
-class Profile(BaseModel):
+class BaseProfile(BaseModel):
+    """User profile with a minimum amount of information."""
+
+    id: int
+    name: str
+    avatar: str
+    avatar_rating: types.Rating
+
+
+class Author(BaseProfile):
+    """Model used to describe users who are the authors of posts or wiki pages."""
+
+
+class Profile(BaseProfile):
     """User profile model for any user that has an account on website."""
 
     last_logged_in_at: datetime
@@ -19,14 +32,11 @@ class Profile(BaseModel):
     pool_vote_count: int
     recommended_posts_for_user: int
     subscriptions: list[str]
-    id: int
-    name: str
     level: int
     upload_limit: int
     created_at: datetime
     favs_are_private: bool
-    avatar_url: str
-    avatar_rating: types.Rating
+    avatar: str = Field(alias="avatar_url")
     post_upload_count: int
     pool_upload_count: int
     comment_count: int

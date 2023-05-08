@@ -4,12 +4,16 @@ from datetime import datetime
 from pydantic import BaseModel, Field, validator
 
 from sankaku import types
+from sankaku.utils import convert_ts_to_datetime
+from .users import Author
 
 
-__all__ = ["PostTag", "Tag"]
+__all__ = ["PostTag", "Tag", "Wiki", "WikiTag"]
 
 
 class BaseTag(BaseModel):
+    """Model with a minimum amount of information that all tags have."""
+
     id: int
     name: str
     name_en: str
@@ -19,18 +23,27 @@ class BaseTag(BaseModel):
     pool_count: int
     series_count: int
     rating: Optional[types.Rating]
-    version: Optional[int]
 
 
-class PostTag(BaseTag):
+class TagMixin(BaseModel):
+    """Additional data that certain tags have."""
+
     count: int
-    locale: str
     tag_name: str = Field(alias="tagName")
     total_post_count: int
     total_pool_count: int
 
 
+class PostTag(BaseTag, TagMixin):
+    """Model that describes tags related to posts."""
+
+    locale: str
+    version: Optional[int]
+
+
 class NestedTag(BaseTag):
+    """Model that describes tags with specific relation to certain tag on tag page."""
+
     post_count: int = Field(alias="postCount")
     cached_related: Optional[str | list[int]] = Field(alias="cachedRelated")
     cached_related_expires_on: datetime = Field(alias="cachedRelatedExpiresOn")
@@ -56,6 +69,7 @@ class NestedTag(BaseTag):
     is_trained: bool = Field(alias="isTrained")
     child: int
     parent: int
+    version: Optional[int]
 
     @validator("cached_related", "parent_tags", "child_tags", pre=True)
     def flatten(cls, v) -> Optional[list[int]]:  # noqa
@@ -72,13 +86,46 @@ class NestedTag(BaseTag):
 
 
 class Translations(BaseModel):
+    """Model that describes tag translations if they are present."""
+
     root_id: int = Field(alias="rootId")
     lang: str
     translation: str
 
 
 class Tag(PostTag):
+    """Model that describes tags in tag page."""
+
     translations: list[Translations]
     related_tags: list[NestedTag]
     child_tags: list[NestedTag]
     parent_tags: list[NestedTag]
+
+
+class Wiki(BaseModel):
+    id: int
+    title: str
+    body: str
+    created_at: dict[str, str | int] | datetime  # TODO: use TypeAlias
+    updated_at: Optional[dict[str, str | Optional[int]] | datetime]  # TODO: use TypeAlias
+    author: Author = Field(alias="user")
+    is_locked: bool
+    version: int
+
+    # Validators
+    _normalize_datetime = (
+        validator("created_at", "updated_at", pre=True, allow_reuse=True)
+        (convert_ts_to_datetime)
+    )
+
+
+class WikiTag(BaseTag, TagMixin):
+    """Model that describes tag on wiki page."""
+
+    related_tags: list[PostTag]
+    child_tags: list[PostTag]
+    parent_tags: list[PostTag]
+    alias_tags: list[PostTag]
+    implied_tags: list[PostTag]
+    translations: list[Translations]
+    wiki: Wiki
