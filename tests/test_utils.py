@@ -46,14 +46,6 @@ async def test_ratelimit(rps, rpm):
             },
             None
         ),
-        (
-            {
-                "json_class": "Time",
-                "n": 0
-            },
-            None
-        ),
-        ("2020-03-04 12:52", None)
     ]
 )
 def test_convert_ts_to_datetime(ts, expected):

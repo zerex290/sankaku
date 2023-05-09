@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Optional
 from datetime import datetime
 
 from pydantic import BaseModel, Field, validator
@@ -9,7 +9,7 @@ from .tags import PostTag
 from .users import Author
 
 
-__all__ = ["Comment", "Post", "AIPost"]
+__all__ = ["Comment", "Post", "ExtendedPost", "AIPost"]
 
 
 class GenerationDirectives(BaseModel):
@@ -24,7 +24,7 @@ class GenerationDirectives(BaseModel):
 
 class BasePost(BaseModel):
     id: int
-    created_at: dict[str, str | int] | datetime  # TODO: use TypeAlias
+    created_at: datetime
     rating: types.Rating
     status: str
     author: Author
@@ -33,7 +33,7 @@ class BasePost(BaseModel):
     width: int
     height: int
     file_size: int
-    extension: str = Field(alias="file_type")
+    extension: Optional[str] = Field(alias="file_type")
     generation_directives: Optional[GenerationDirectives]
     md5: str
     tags: list[PostTag]
@@ -45,11 +45,11 @@ class BasePost(BaseModel):
     )
 
     @validator("extension", pre=True)
-    def get_extension(cls, v) -> str:  # noqa
-        return v.split("/")[1]
+    def get_extension(cls, v) -> Optional[str]:  # noqa
+        return v.split("/")[-1] if v else None
 
     @property
-    def file_type(self) -> types.File:
+    def file_type(self) -> Optional[types.File]:
         match self.extension:
             case "png" | "jpeg" | "webp":
                 return types.File.IMAGE
@@ -58,12 +58,12 @@ class BasePost(BaseModel):
             case "gif":
                 return types.File.GIF
             case _:
-                raise ValueError(f"Undefined file extension [{self.extension}]")
+                return None
 
 
 class Comment(BaseModel):
     id: int
-    created_at: Optional[dict[str, str | Optional[int]] | datetime]  # TODO: use TypeAlias
+    created_at: datetime
     post_id: int
     author: Author
     body: str
@@ -71,16 +71,10 @@ class Comment(BaseModel):
     parent_id: Optional[int]
     children: list["Comment"]
     deleted: bool
-    deleted_by: dict  # TODO: reveal object
-    updated_at: Optional[dict[str, str | Optional[int]] | datetime]  # TODO: use TypeAlias
+    deleted_by: dict  # Seen only empty dictionaries so IDK real type
+    updated_at: Optional[datetime]
     can_reply: bool
-    reason: Any  # TODO: reveal object
-
-    # Validators
-    _normalize_datetime = (
-        validator("created_at", "updated_at", pre=True, allow_reuse=True)
-        (convert_ts_to_datetime)
-    )
+    reason: None  # Seen only None values so IDK real type
 
 
 class Post(BasePost):
@@ -111,7 +105,10 @@ class Post(BasePost):
     redirect_to_signup: bool
     sequence: Optional[int]
     video_duration: Optional[float]
-    similar_posts: list["Post"] = []
+
+
+class ExtendedPost(Post):
+    similar_posts: list[Post] = []
     comments: list[Comment] = []
 
 
@@ -121,7 +118,7 @@ class AIPost(BasePost):
     but I don't have premium account to check it properly.
     This model is actual for non-premium accounts.
     """
-    updated_at: Optional[dict[str, str | Optional[int]] | datetime]  # TODO: use TypeAlias
+    updated_at: Optional[datetime]
     post_associated_id: Optional[int]
 
     # Validators

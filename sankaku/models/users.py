@@ -65,7 +65,7 @@ class ExtendedProfile(Profile):
     is_verified: bool
     verifications_count: int
     blacklist_is_hidden: bool
-    blacklisted_tags: list[list[str] | str]
+    blacklisted_tags: list[str]
     blacklisted: list[str]
     mfa_method: int
 

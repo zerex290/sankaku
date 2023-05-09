@@ -45,7 +45,7 @@ class NestedTag(BaseTag):
     """Model that describes tags with specific relation to certain tag on tag page."""
 
     post_count: int = Field(alias="postCount")
-    cached_related: Optional[str | list[int]] = Field(alias="cachedRelated")
+    cached_related: Optional[list[int]] = Field(alias="cachedRelated")
     cached_related_expires_on: datetime = Field(alias="cachedRelatedExpiresOn")
     type: types.Tag = Field(alias="tagType")
     name_en: str = Field(alias="nameEn")
@@ -56,8 +56,8 @@ class NestedTag(BaseTag):
     popularity_safe: Optional[float] = Field(alias="scTagPopularitySafe")
     quality_ero: Optional[float] = Field(alias="scTagQualityEro")
     quality_safe: Optional[float] = Field(alias="scTagQualitySafe")
-    parent_tags: Optional[str | list[int]] = Field(alias="parentTags")
-    child_tags: Optional[str | list[int]] = Field(alias="childTags")
+    parent_tags: Optional[list[int]] = Field(alias="parentTags")
+    child_tags: Optional[list[int]] = Field(alias="childTags")
     pool_count: int = Field(alias="poolCount")
     premium_post_count: int = Field(alias="premPostCount")
     non_premium_post_count: int = Field(alias="nonPremPostCount")
@@ -75,12 +75,9 @@ class NestedTag(BaseTag):
     def flatten(cls, v) -> Optional[list[int]]:  # noqa
         if v is None:
             return None
-        elif "," in v:
-            t_ids = v.split(",")
-        else:
-            t_ids = v.split()
+        tag_ids = v.split(",") if "," in v else v.split()
         try:
-            return [int(t_id) for t_id in t_ids]
+            return [int(tag_id) for tag_id in tag_ids]
         except ValueError:
             return None
 
@@ -106,8 +103,8 @@ class Wiki(BaseModel):
     id: int
     title: str
     body: str
-    created_at: dict[str, str | int] | datetime  # TODO: use TypeAlias
-    updated_at: Optional[dict[str, str | Optional[int]] | datetime]  # TODO: use TypeAlias
+    created_at: datetime
+    updated_at: Optional[datetime]
     author: Author = Field(alias="user")
     is_locked: bool
     version: int

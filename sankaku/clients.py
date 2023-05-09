@@ -202,7 +202,7 @@ class PostClient(BaseClient):
         auth: bool = False,
         with_similar_posts: bool = False,
         with_comments: bool = False
-    ) -> mdl.Post:
+    ) -> mdl.ExtendedPost:
         """
         Get specific post by its ID.
 
@@ -223,7 +223,7 @@ class PostClient(BaseClient):
                 if not response.ok:
                     raise errors.PostNotFoundError(post_id)
                 data = await response.json()
-                post = mdl.Post(**data[0])
+                post = mdl.ExtendedPost(**data[0])
 
         if with_similar_posts:
             post.similar_posts = [

@@ -6,6 +6,7 @@ from collections.abc import Callable, Awaitable
 
 
 from sankaku.errors import RateLimitError
+from sankaku.typedefs import Timestamp
 
 
 __all__ = ["ratelimit", "convert_ts_to_datetime"]
@@ -43,9 +44,7 @@ def ratelimit(
     return wrapper
 
 
-def convert_ts_to_datetime(
-        ts: dict[str, str | Optional[int]]  # TODO: use TypedDict
-) -> Optional[datetime]:
-    if isinstance(ts, dict) and ts.get("s"):
-        return datetime.utcfromtimestamp(ts["s"]).astimezone()  # type: ignore[arg-type]
-    return None
+def convert_ts_to_datetime(ts: Timestamp) -> Optional[datetime]:
+    if ts.get("s") is None:
+        return None
+    return datetime.utcfromtimestamp(ts["s"]).astimezone()  # type: ignore[arg-type]
