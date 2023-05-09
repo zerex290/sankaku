@@ -7,6 +7,8 @@ virtualenv/
 **__pycache__/
 *.sh
 **/.mypy_cache/
+**/.pytest_cache/
 
-# py file for testing
+# tests
 test.py
+/pytest.ini

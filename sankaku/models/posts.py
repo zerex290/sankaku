@@ -89,7 +89,6 @@ class Post(BasePost):
     redirect_to_signup: bool
     sequence: Optional[int]
     video_duration: Optional[float]
-
     similar_posts: list["Post"] = []
 
 

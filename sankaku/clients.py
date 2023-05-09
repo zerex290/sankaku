@@ -27,7 +27,7 @@ class BaseClient:
     }
 
     def __init__(self) -> None:
-        self.profile: Optional[mdl.users.ExtendedProfile] = None
+        self.profile: Optional[mdl.ExtendedProfile] = None
         self.access_token: str = ""
         self.refresh_token: str = ""
         self._token_type: str = ""
@@ -54,7 +54,7 @@ class BaseClient:
                 self.access_token = data["access_token"]
                 self.refresh_token = data["refresh_token"]
 
-                self.profile = mdl.users.ExtendedProfile(**data["current_user"])
+                self.profile = mdl.ExtendedProfile(**data["current_user"])
 
     def _get_headers(self, *, auth: bool = False) -> dict[str, str]:
         headers = self._HEADERS.copy()
@@ -100,7 +100,7 @@ class PostClient(BaseClient):
         tags: Optional[list[str]] = None,
         added_by: Optional[list[str]] = None,
         voted: Optional[str] = None
-    ) -> AsyncIterator[mdl.posts.Post]:
+    ) -> AsyncIterator[mdl.Post]:
         """
         Iterate through the post browser.
 
@@ -130,7 +130,7 @@ class PostClient(BaseClient):
             for post in page.data:
                 yield post
 
-    async def get_favorited_posts(self) -> AsyncIterator[mdl.posts.Post]:
+    async def get_favorited_posts(self) -> AsyncIterator[mdl.Post]:
         """Shorthand way to get favorite posts of currently logged-in user."""
 
         if self.profile is None:
@@ -138,7 +138,7 @@ class PostClient(BaseClient):
         async for post in self.browse_posts(auth=True, favorited_by=self.profile.name):
             yield post
 
-    async def get_top_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.posts.Post]:
+    async def get_top_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.Post]:
         """
         Shorthand way to get top posts.
 
@@ -147,7 +147,7 @@ class PostClient(BaseClient):
         async for post in self.browse_posts(auth=auth, order=types.PostOrder.QUALITY):
             yield post
 
-    async def get_popular_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.posts.Post]:
+    async def get_popular_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.Post]:
         """
         Shorthand way to get popular posts.
 
@@ -156,7 +156,7 @@ class PostClient(BaseClient):
         async for post in self.browse_posts(auth=auth, order=types.PostOrder.POPULARITY):
             yield post
 
-    async def get_recommended_posts(self) -> AsyncIterator[mdl.posts.Post]:
+    async def get_recommended_posts(self) -> AsyncIterator[mdl.Post]:
         """Shorthand way to get recommended posts for the currently logged-in user."""
 
         if self.profile is None:
@@ -169,7 +169,7 @@ class PostClient(BaseClient):
         post_id: int,
         *,
         auth: bool = False
-    ) -> list[mdl.posts.Post]:
+    ) -> list[mdl.Post]:
         """
         Get posts similar (recommended) for specific post.
 
@@ -178,7 +178,7 @@ class PostClient(BaseClient):
         :return: List of founded similar posts;
         empty list if nothing have been found
         """
-        posts: list[mdl.posts.Post] = []
+        posts: list[mdl.Post] = []
         tag = f"recommended_for_post:{post_id}"
         async for post in self.browse_posts(auth=auth, tags=[tag]):
             posts.append(post)
@@ -190,7 +190,7 @@ class PostClient(BaseClient):
         *,
         auth: bool = False,
         with_similar_posts: bool = False
-    ) -> mdl.posts.Post:
+    ) -> mdl.Post:
         """
         Get specific post by its ID.
 
@@ -200,7 +200,7 @@ class PostClient(BaseClient):
         :param with_similar_posts:  Whether to search similar posts;
         note that it greatly reduces performance
         """
-        posts: list[mdl.posts.Post] = []
+        posts: list[mdl.Post] = []
         tag = f"id_range:{post_id}"
 
         async for post in self.browse_posts(auth=auth, tags=[tag]):
@@ -226,7 +226,7 @@ class AIClient(BaseClient):
         auth: bool = False,
         page_number: int = 1,
         limit: Annotated[int, ValueRange(1, 100)] = 40
-    ) -> AsyncIterator[mdl.posts.AIPost]:
+    ) -> AsyncIterator[mdl.AIPost]:
         """
         Iterate through the AI post browser.
 
@@ -262,7 +262,7 @@ class TagClient(BaseClient):
         max_post_count: Optional[int] = None,
         sort_parameter: Optional[types.SortParameter] = None,
         sort_direction: types.SortDirection = types.SortDirection.DESC
-    ) -> AsyncIterator[mdl.tags.Tag]:
+    ) -> AsyncIterator[mdl.Tag]:
         """
         Iterate through the tag pages.
 
