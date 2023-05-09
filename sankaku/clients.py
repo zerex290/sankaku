@@ -6,9 +6,9 @@ from datetime import datetime
 import aiohttp
 
 import sankaku.models as mdl
-from . import ValueRange
+from sankaku.typedefs import ValueRange
 from sankaku import constants, types, errors
-from sankaku.paginators import PostPaginator, AIPostPaginator, TagPaginator
+from sankaku.paginators import *
 
 
 class BaseClient:
@@ -165,31 +165,43 @@ class PostClient(BaseClient):
             yield post
 
     async def get_similar_posts(
-        self,
-        post_id: int,
-        *,
-        auth: bool = False
-    ) -> list[mdl.Post]:
+        self, post_id: int, *, auth: bool = False
+    ) -> AsyncIterator[mdl.Post]:
         """
         Get posts similar (recommended) for specific post.
 
         :param post_id: ID of specific post
         :param auth: Whether to make request on behalf of currently logged-in user
-        :return: List of founded similar posts;
-        empty list if nothing have been found
+        :return: Asynchronous generator which yields similar posts
         """
-        posts: list[mdl.Post] = []
         tag = f"recommended_for_post:{post_id}"
         async for post in self.browse_posts(auth=auth, tags=[tag]):
-            posts.append(post)
-        return posts
+            yield post
+
+    async def get_post_comments(
+        self, post_id: int, *, auth: bool = False,
+    ) -> AsyncIterator[mdl.Comment]:
+        """
+        Get comments on the post.
+
+        :param post_id: ID of specific post
+        :param auth: Whether to make request on behalf of currently logged-in user
+        """
+        async for page in CommentPaginator(
+            aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
+            f"{constants.POST_BROWSE_URL}/{post_id}/comments",  # TODO: move endpoint somewhere
+            page_number=1, limit=40
+        ):
+            for comment in page.data:
+                yield comment
 
     async def get_post(
         self,
         post_id: int,
         *,
         auth: bool = False,
-        with_similar_posts: bool = False
+        with_similar_posts: bool = False,
+        with_comments: bool = False
     ) -> mdl.Post:
         """
         Get specific post by its ID.
@@ -199,18 +211,28 @@ class PostClient(BaseClient):
         currently logged-in user
         :param with_similar_posts:  Whether to search similar posts;
         note that it greatly reduces performance
+        :param with_comments: Whether to attach post comments
         """
-        posts: list[mdl.Post] = []
-        tag = f"id_range:{post_id}"
+        async with aiohttp.ClientSession(
+            headers=self._get_headers(auth=auth)
+        ) as session:
+            async with session.get(
+                constants.POST_BROWSE_URL,
+                params={"tags": f"id_range:{post_id}"}
+            ) as response:
+                if not response.ok:
+                    raise errors.PostNotFoundError(post_id)
+                data = await response.json()
+                post = mdl.Post(**data[0])
 
-        async for post in self.browse_posts(auth=auth, tags=[tag]):
-            posts.append(post)
-        if not posts:
-            raise errors.PostNotFoundError(post_id)
-
-        post = posts[0]
         if with_similar_posts:
-            post.similar_posts.extend(await self.get_similar_posts(post_id))
+            post.similar_posts = [
+                sim async for sim in self.get_similar_posts(post_id, auth=auth)
+            ]
+        if with_comments:
+            post.comments = [
+                com async for com in self.get_post_comments(post_id, auth=auth)
+            ]
         return post
 
     async def create_post(self):  # TODO: TBA
@@ -299,7 +321,7 @@ class TagClient(BaseClient):
             url = f"{constants.TAG_WIKI_BROWSE_URL}/id/{name_or_id}"
 
         async with aiohttp.ClientSession(
-                headers=self._get_headers(auth=auth)
+            headers=self._get_headers(auth=auth)
         ) as session:
             async with session.get(url) as response:
                 if not response.ok:

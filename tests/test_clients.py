@@ -134,14 +134,27 @@ class TestPostClient:
     # For method get_post()
     # For method get_similar_posts()
     @pytest.mark.parametrize(
-        ["post_id", "with_similar_posts"],
-        [(32948875, False), (32948875, True)]
+        ["post_id", "with_similar_posts", "with_comments"],
+        [
+            (32948875, False, False),
+            (32948875, True, False),
+            (33108291, False, True)
+        ]
     )
-    async def test_get_post(self, nlclient: SankakuClient, post_id, with_similar_posts):
-        post = await nlclient.get_post(post_id, with_similar_posts=with_similar_posts)
+    async def test_get_post(
+        self, nlclient: SankakuClient,
+        post_id, with_similar_posts, with_comments
+    ):
+        post = await nlclient.get_post(
+            post_id,
+            with_similar_posts=with_similar_posts,
+            with_comments=with_comments
+        )
         assert isinstance(post, mdl.Post)
         if with_similar_posts:
             assert post.similar_posts
+        if with_comments:
+            assert post.comments
 
     # For method get_post()
     async def test_get_non_existent_post(self, lclient: SankakuClient):

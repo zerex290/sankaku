@@ -3,11 +3,11 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from .posts import Post, AIPost
+from .posts import Comment, Post, AIPost
 from .tags import Tag
 
 
-__all__ = ["Page", "AIPage", "TagPage"]
+__all__ = ["CommentPage", "PostPage", "AIPage", "TagPage"]
 
 
 class BasePage(BaseModel):
@@ -15,7 +15,11 @@ class BasePage(BaseModel):
     data: Sequence[Any]
 
 
-class Page(BasePage):
+class CommentPage(BasePage):
+    data: Sequence[Comment]
+
+
+class PostPage(BasePage):
     data: Sequence[Post]
 
 

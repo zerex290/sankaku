@@ -6,11 +6,16 @@ from datetime import datetime
 import aiohttp
 
 import sankaku.models as mdl
-from . import ValueRange
+from sankaku.typedefs import ValueRange
 from sankaku import constants, types, utils, errors
 
 
-__all__ = ["PostPaginator", "AIPostPaginator", "TagPaginator"]
+__all__ = [
+    "CommentPaginator",
+    "PostPaginator",
+    "AIPostPaginator",
+    "TagPaginator"
+]
 
 
 class BasePaginator(ABC):
@@ -55,6 +60,11 @@ class BasePaginator(ABC):
     @abstractmethod
     def construct_page(self, data: Sequence[Mapping]) -> Any:
         pass
+
+
+class CommentPaginator(BasePaginator):
+    def construct_page(self, data: Sequence[Mapping]) -> mdl.CommentPage:
+        return mdl.CommentPage(number=self.page_number, data=data)  # type: ignore[arg-type]
 
 
 class PostPaginator(BasePaginator):
@@ -127,8 +137,8 @@ class PostPaginator(BasePaginator):
         if self.tags:
             self.params["tags"] = " ".join(self.tags)
 
-    def construct_page(self, data: Sequence[Mapping]) -> mdl.Page:
-        return mdl.Page(number=self.page_number, data=data)  # type: ignore[arg-type]
+    def construct_page(self, data: Sequence[Mapping]) -> mdl.PostPage:
+        return mdl.PostPage(number=self.page_number, data=data)  # type: ignore[arg-type]
 
 
 class AIPostPaginator(BasePaginator):

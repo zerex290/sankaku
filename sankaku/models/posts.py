@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 from datetime import datetime
 
 from pydantic import BaseModel, Field, validator
@@ -9,7 +9,7 @@ from .tags import PostTag
 from .users import Author
 
 
-__all__ = ["Post", "AIPost"]
+__all__ = ["Comment", "Post", "AIPost"]
 
 
 class GenerationDirectives(BaseModel):
@@ -61,6 +61,28 @@ class BasePost(BaseModel):
                 raise ValueError(f"Undefined file extension [{self.extension}]")
 
 
+class Comment(BaseModel):
+    id: int
+    created_at: Optional[dict[str, str | Optional[int]] | datetime]  # TODO: use TypeAlias
+    post_id: int
+    author: Author
+    body: str
+    score: int
+    parent_id: Optional[int]
+    children: list["Comment"]
+    deleted: bool
+    deleted_by: dict  # TODO: reveal object
+    updated_at: Optional[dict[str, str | Optional[int]] | datetime]  # TODO: use TypeAlias
+    can_reply: bool
+    reason: Any  # TODO: reveal object
+
+    # Validators
+    _normalize_datetime = (
+        validator("created_at", "updated_at", pre=True, allow_reuse=True)
+        (convert_ts_to_datetime)
+    )
+
+
 class Post(BasePost):
     sample_url: Optional[str]
     sample_width: int
@@ -90,6 +112,7 @@ class Post(BasePost):
     sequence: Optional[int]
     video_duration: Optional[float]
     similar_posts: list["Post"] = []
+    comments: list[Comment] = []
 
 
 class AIPost(BasePost):
