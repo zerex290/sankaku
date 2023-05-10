@@ -1,13 +1,14 @@
 # virtual environment files
 virtualenv/
 
-# cached files of IDE
+# cached files
 *.pyc
 **.idea/
 **__pycache__/
 *.sh
 **/.mypy_cache/
 **/.pytest_cache/
+*.log
 
 # tests
 test.py

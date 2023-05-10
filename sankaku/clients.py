@@ -8,7 +8,7 @@ from loguru import logger
 
 import sankaku.models as mdl
 from sankaku.typedefs import ValueRange
-from sankaku import constants, types, errors
+from sankaku import constants as const, types, errors
 from sankaku.paginators import *
 
 
@@ -42,10 +42,11 @@ class BaseClient:
         """
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                constants.LOGIN_URL,
+                const.LOGIN_URL,
                 headers=self._get_headers(),
                 data=json.dumps({"login": login, "password": password})
             ) as response:
+                logger.debug(f"Sent POST request [{response.status}]: {response.url}")
                 data = await response.json()
 
                 if not response.ok:
@@ -56,6 +57,7 @@ class BaseClient:
                 self.refresh_token = data["refresh_token"]
 
                 self.profile = mdl.ExtendedProfile(**data["current_user"])
+                logger.info(f"Successfully logged in as {self.profile.name}.")
 
     def _get_headers(self, *, auth: bool = False) -> dict[str, str]:
         headers = self._HEADERS.copy()
@@ -125,7 +127,7 @@ class PostClient(BaseClient):
         """
         async for page in PostPaginator(
             aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
-            url=constants.POST_BROWSE_URL,
+            url=const.POST_URL,
             **self._get_paginator_kwargs(locals())
         ):
             for post in page.data:
@@ -190,7 +192,7 @@ class PostClient(BaseClient):
         """
         async for page in CommentPaginator(
             aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
-            f"{constants.POST_BROWSE_URL}/{post_id}/comments",  # TODO: move endpoint somewhere
+            const.COMMENT_URL.format(post_id=post_id),
             page_number=1, limit=40
         ):
             for comment in page.data:
@@ -218,12 +220,14 @@ class PostClient(BaseClient):
             headers=self._get_headers(auth=auth)
         ) as session:
             async with session.get(
-                constants.POST_BROWSE_URL,
+                const.POST_URL,
                 params={"tags": f"id_range:{post_id}"}
             ) as response:
+                logger.debug(f"Sent POST request [{response.status}]: {response.url}")
                 if not response.ok:
                     raise errors.PostNotFoundError(post_id)
                 data = await response.json()
+                logger.debug(f"Response JSON: {data}")
                 post = mdl.ExtendedPost(**data[0])
 
         if with_similar_posts:
@@ -260,11 +264,14 @@ class AIClient(BaseClient):
         """
         async for page in AIPostPaginator(
             aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
-            url=constants.AI_POST_BROWSE_URL,
+            url=const.AI_POST_URL,
             **self._get_paginator_kwargs(locals())
         ):
             for post in page.data:
                 yield post
+
+    async def get_ai_post(self):  # TODO: TBA
+        raise NotImplementedError
 
     async def create_ai_post(self):  # TODO: TBA
         raise NotImplementedError
@@ -302,7 +309,7 @@ class TagClient(BaseClient):
         """
         async for page in TagPaginator(
             aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
-            url=constants.TAG_BROWSE_URL,
+            url=const.TAG_URL,
             **self._get_paginator_kwargs(locals())
         ):
             for tag in page.data:
@@ -316,18 +323,17 @@ class TagClient(BaseClient):
         :param auth: Whether to make request on behalf of currently logged-in user
         :return:
         """
-        if isinstance(name_or_id, str):
-            url = f"{constants.TAG_WIKI_BROWSE_URL}/name/{name_or_id}"
-        else:
-            url = f"{constants.TAG_WIKI_BROWSE_URL}/id/{name_or_id}"
-
+        ref = "name" if isinstance(name_or_id, str) else "id"
+        url = const.TAG_WIKI_URL.format(ref=ref, name_or_id=name_or_id)
         async with aiohttp.ClientSession(
             headers=self._get_headers(auth=auth)
         ) as session:
             async with session.get(url) as response:
+                logger.debug(f"Sent POST request [{response.status}]: {response.url}")
                 if not response.ok:
                     raise errors.TagNotFoundError(name_or_id)
                 data = await response.json()
+                logger.debug(f"Response JSON: {data}")
                 tag = mdl.WikiTag(wiki=data["wiki"], **data["tag"])
                 return tag
 

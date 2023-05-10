@@ -4,10 +4,11 @@ from collections.abc import AsyncIterator, Sequence, Mapping
 from datetime import datetime
 
 import aiohttp
+from loguru import logger
 
 import sankaku.models as mdl
 from sankaku.typedefs import ValueRange
-from sankaku import constants, types, utils, errors
+from sankaku import constants as const, types, utils, errors
 
 
 __all__ = [
@@ -36,10 +37,12 @@ class BasePaginator(ABC):
         self.complete_params()
         return self
 
-    @utils.ratelimit(rps=constants.BASE_RPS)
+    @utils.ratelimit(rps=const.BASE_RPS)
     async def __anext__(self) -> Any:
         async with self.session.get(self.url, params=self.params) as response:
+            logger.debug(f"Sent GET request [{response.status}]: {response.url}")
             data = await response.json()
+            logger.debug(f"Response JSON: {data}")
             if not isinstance(data, list):
                 data = data.get("data")
             if not data:
