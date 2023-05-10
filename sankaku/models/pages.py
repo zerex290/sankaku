@@ -4,7 +4,7 @@ from typing import Any
 from pydantic import BaseModel
 
 from .posts import Comment, Post, AIPost
-from .tags import Tag
+from .tags import PageTag
 
 
 __all__ = ["CommentPage", "PostPage", "AIPage", "TagPage"]
@@ -28,4 +28,4 @@ class AIPage(BasePage):
 
 
 class TagPage(BasePage):
-    data: Sequence[Tag]
+    data: Sequence[PageTag]

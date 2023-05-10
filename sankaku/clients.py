@@ -4,6 +4,7 @@ from collections.abc import AsyncIterator
 from datetime import datetime
 
 import aiohttp
+from loguru import logger
 
 import sankaku.models as mdl
 from sankaku.typedefs import ValueRange
@@ -284,7 +285,7 @@ class TagClient(BaseClient):
         max_post_count: Optional[int] = None,
         sort_parameter: Optional[types.SortParameter] = None,
         sort_direction: types.SortDirection = types.SortDirection.DESC
-    ) -> AsyncIterator[mdl.Tag]:
+    ) -> AsyncIterator[mdl.PageTag]:
         """
         Iterate through the tag pages.
 

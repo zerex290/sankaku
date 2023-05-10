@@ -196,14 +196,14 @@ class TestTagClient:
     # For method browse_tags()
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
-        assert isinstance(await anext(nlclient.browse_tags()), mdl.Tag)
+        assert isinstance(await anext(nlclient.browse_tags()), mdl.PageTag)
 
     @pytest.mark.parametrize(["page_number", "limit"], [(-1, 22), (1, -86)])
     async def test_browse_with_incorrect_page_number_or_limit(
         self, nlclient: SankakuClient,
         page_number, limit
     ):
-        tags: list[mdl.Tag] = []
+        tags: list[mdl.PageTag] = []
         async for tag in nlclient.browse_tags(page_number=page_number, limit=limit):
             tags.append(tag)
         assert not tags
@@ -241,7 +241,7 @@ class TestTagClient:
         kwargs = locals().copy()
         del kwargs["self"], kwargs["lclient"]
         tag = await anext(lclient.browse_tags(**kwargs))
-        assert isinstance(tag, mdl.Tag)
+        assert isinstance(tag, mdl.PageTag)
 
     # For method get_tag()
     @pytest.mark.parametrize(

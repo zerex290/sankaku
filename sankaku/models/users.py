@@ -27,6 +27,7 @@ class Profile(BaseProfile):
     last_logged_in_at: datetime
     favorite_count: int
     post_favorite_count: int
+    pool_favorite_count: int
     vote_count: int
     post_vote_count: int
     pool_vote_count: int
@@ -50,6 +51,7 @@ class Profile(BaseProfile):
     artist_update_count: int
     show_popup_version: int
     credits: int
+    credits_subs: int
     is_ai_beta: bool
 
 

@@ -8,7 +8,7 @@ from sankaku.utils import convert_ts_to_datetime
 from .users import Author
 
 
-__all__ = ["PostTag", "Tag", "Wiki", "WikiTag"]
+__all__ = ["PostTag", "PageTag", "Wiki", "WikiTag"]
 
 
 class BaseTag(BaseModel):
@@ -73,7 +73,7 @@ class NestedTag(BaseTag):
 
     @validator("cached_related", "parent_tags", "child_tags", pre=True)
     def flatten(cls, v) -> Optional[list[int]]:  # noqa
-        if v is None:
+        if not v:
             return None
         tag_ids = v.split(",") if "," in v else v.split()
         try:
@@ -90,8 +90,8 @@ class Translations(BaseModel):
     translation: str
 
 
-class Tag(PostTag):
-    """Model that describes tags in tag page."""
+class PageTag(PostTag):
+    """Model that describes tags on tag page."""
 
     translations: list[Translations]
     related_tags: list[NestedTag]
