@@ -186,6 +186,15 @@ class TestAIClient:
             posts.append(post)
         assert not posts
 
+    @pytest.mark.parametrize(["post_id"], [(123,), (1721,)])
+    async def test_get_ai_post(self, nlclient: SankakuClient, post_id):
+        post = await nlclient.get_ai_post(post_id,)
+        assert isinstance(post, mdl.AIPost)
+
+    async def test_get_non_existent_ai_post(self, lclient: SankakuClient):
+        with pytest.raises(errors.PostNotFoundError):
+            await lclient.get_ai_post(-10_000)
+
     # For method create_ai_post()
     async def test_create_ai_post(self, lclient: SankakuClient):
         with pytest.raises(NotImplementedError):

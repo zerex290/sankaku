@@ -270,8 +270,29 @@ class AIClient(BaseClient):
             for post in page.data:
                 yield post
 
-    async def get_ai_post(self):  # TODO: TBA
-        raise NotImplementedError
+    async def get_ai_post(
+            self,
+            post_id: int,
+            *,
+            auth: bool = False,
+    ) -> mdl.AIPost:
+        """
+        Get specific AI post by its ID.
+
+        :param post_id: ID of specific post
+        :param auth: auth: Whether to make request on behalf of
+        currently logged-in user
+        """
+        async with aiohttp.ClientSession(
+                headers=self._get_headers(auth=auth)
+        ) as session:
+            async with session.get(f"{const.AI_POST_URL}/{post_id}",) as response:
+                logger.debug(f"Sent POST request [{response.status}]: {response.url}")
+                if not response.ok:
+                    raise errors.PostNotFoundError(post_id)
+                data = await response.json()
+                logger.debug(f"Response JSON: {data}")
+                return mdl.AIPost(**data)
 
     async def create_ai_post(self):  # TODO: TBA
         raise NotImplementedError
@@ -334,8 +355,7 @@ class TagClient(BaseClient):
                     raise errors.TagNotFoundError(name_or_id)
                 data = await response.json()
                 logger.debug(f"Response JSON: {data}")
-                tag = mdl.WikiTag(wiki=data["wiki"], **data["tag"])
-                return tag
+                return mdl.WikiTag(wiki=data["wiki"], **data["tag"])
 
 
 class BookClient(BaseClient):
