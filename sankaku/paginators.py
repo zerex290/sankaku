@@ -78,11 +78,11 @@ class PostPaginator(BasePaginator):
         url: str,
         page_number: int,
         limit: Annotated[int, ValueRange(1, 100)],
-        hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]],
         order: Optional[types.PostOrder],
         date: Optional[list[datetime]],
         rating: Optional[types.Rating],
         threshold: Optional[Annotated[int, ValueRange(1, 100)]],
+        hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]],
         file_size: Optional[types.FileSize],
         file_type: Optional[types.FileType],
         video_duration: Optional[list[int]],
@@ -93,11 +93,11 @@ class PostPaginator(BasePaginator):
         voted: Optional[str]
     ) -> None:
         super().__init__(session, url, page_number, limit)
-        self.hide_posts_in_books = hide_posts_in_books
         self.order = order
         self.date = date
         self.rating = rating
         self.threshold = threshold
+        self.hide_posts_in_books = hide_posts_in_books
         self.file_size = file_size
         self.file_type = file_type
         self.video_duration = video_duration

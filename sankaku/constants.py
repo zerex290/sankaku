@@ -13,3 +13,5 @@ COMMENT_URL = f"{API_URL}/posts/{{post_id}}/comments"
 
 BASE_RPS = 3
 BASE_RPM = 180
+BASE_PAGE_NUMBER = 1
+BASE_PAGE_LIMIT = 40
