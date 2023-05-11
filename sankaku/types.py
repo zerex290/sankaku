@@ -18,7 +18,7 @@ class PostOrder(Enum):
 
 class SortParameter(Enum):
     NAME = "name"
-    TRANSLATIONS = "name_ja"  # IDK why api uses 'ja'
+    TRANSLATIONS = "name_ja"
     TYPE = "type"
     RATING = "rating"
     BOOK_COUNT = "pool_count"
@@ -35,7 +35,7 @@ class TagOrder(Enum):
     QUALITY = "quality"
 
 
-class Tag(Enum):
+class TagType(Enum):
     ARTIST = 1
     COPYRIGHT = 3
     CHARACTER = 4
@@ -47,7 +47,7 @@ class Tag(Enum):
     STUDIO = 2
 
 
-class File(Enum):
+class FileType(Enum):
     IMAGE = "image"  # jpeg, png, webp formats
     GIF = "animated_gif"  # gif format
     VIDEO = "video"  # mp4, webm formats
@@ -62,3 +62,24 @@ class FileSize(Enum):
     A_RATIO_4_3 = "4:3_aspect_ratio"
     A_RATIO_3_2 = "3:2_aspect_ratio"
     A_RATIO_1_1 = "1:1_aspect_ratio"
+
+
+class UserOrder(Enum):
+    POSTS = "post_upload_count"
+    FAVORITES = "favorite_count"
+    NAME = "name"
+    NEWEST = "newest"
+    OLDEST = "oldest"
+    LAST_SEEN = "active"
+
+
+class UserLevel(Enum):
+    ADMIN = 50
+    SYSTEM_USER = 45
+    MODERATOR = 40
+    JANITOR = 35
+    CONTRIBUTOR = 33
+    PRIVILEGED = 30
+    MEMBER = 20
+    BLOCKED = 10
+    UNACTIVATED = 0

@@ -5,10 +5,10 @@ from pydantic import BaseModel, Field, validator
 from sankaku import types
 
 
-__all__ = ["Author", "Profile", "ExtendedProfile"]
+__all__ = ["Author", "ShortenedUser", "User", "ExtendedUser"]
 
 
-class BaseProfile(BaseModel):
+class BaseUser(BaseModel):
     """User profile with a minimum amount of information."""
 
     id: int
@@ -17,22 +17,14 @@ class BaseProfile(BaseModel):
     avatar_rating: types.Rating
 
 
-class Author(BaseProfile):
+class Author(BaseUser):
     """Model used to describe users who are the authors of posts or wiki pages."""
 
 
-class Profile(BaseProfile):
-    """User profile model for any user that has an account on website."""
-
-    last_logged_in_at: datetime
-    favorite_count: int
-    post_favorite_count: int
-    pool_favorite_count: int
-    vote_count: int
-    post_vote_count: int
-    pool_vote_count: int
-    recommended_posts_for_user: int
-    subscriptions: list[str]
+class ShortenedUser(BaseUser):
+    """
+    Model used to describe user profiles with fewer number of fields.
+    """
     level: int
     upload_limit: int
     created_at: datetime
@@ -55,7 +47,21 @@ class Profile(BaseProfile):
     is_ai_beta: bool
 
 
-class ExtendedProfile(Profile):
+class User(ShortenedUser):
+    """User profile model for any user that has an account on website."""
+
+    last_logged_in_at: datetime
+    favorite_count: int
+    post_favorite_count: int
+    pool_favorite_count: int
+    vote_count: int
+    post_vote_count: int
+    pool_vote_count: int
+    recommended_posts_for_user: int
+    subscriptions: list[str]
+
+
+class ExtendedUser(User):
     """Profile of the currently logged-in user."""
 
     email: str

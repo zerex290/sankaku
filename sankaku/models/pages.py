@@ -5,9 +5,10 @@ from pydantic import BaseModel
 
 from .posts import Comment, Post, AIPost
 from .tags import PageTag
+from .users import User, ShortenedUser
 
 
-__all__ = ["CommentPage", "PostPage", "AIPage", "TagPage"]
+__all__ = ["CommentPage", "PostPage", "AIPage", "TagPage", "UserPage"]
 
 
 class BasePage(BaseModel):
@@ -29,3 +30,7 @@ class AIPage(BasePage):
 
 class TagPage(BasePage):
     data: Sequence[PageTag]
+
+
+class UserPage(BasePage):
+    data: Sequence[User | ShortenedUser]

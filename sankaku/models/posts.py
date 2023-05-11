@@ -49,14 +49,14 @@ class BasePost(BaseModel):
         return v.split("/")[-1] if v else None
 
     @property
-    def file_type(self) -> Optional[types.File]:
+    def file_type(self) -> Optional[types.FileType]:
         match self.extension:
             case "png" | "jpeg" | "webp":
-                return types.File.IMAGE
+                return types.FileType.IMAGE
             case "webm" | "mp4":
-                return types.File.VIDEO
+                return types.FileType.VIDEO
             case "gif":
-                return types.File.GIF
+                return types.FileType.GIF
             case _:
                 return None
 

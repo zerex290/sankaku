@@ -28,7 +28,7 @@ class BaseClient:
     }
 
     def __init__(self) -> None:
-        self.profile: Optional[mdl.ExtendedProfile] = None
+        self.profile: Optional[mdl.ExtendedUser] = None
         self.access_token: str = ""
         self.refresh_token: str = ""
         self._token_type: str = ""
@@ -56,7 +56,7 @@ class BaseClient:
                 self.access_token = data["access_token"]
                 self.refresh_token = data["refresh_token"]
 
-                self.profile = mdl.ExtendedProfile(**data["current_user"])
+                self.profile = mdl.ExtendedUser(**data["current_user"])
                 logger.info(f"Successfully logged in as {self.profile.name}.")
 
     def _get_headers(self, *, auth: bool = False) -> dict[str, str]:
@@ -86,17 +86,17 @@ class PostClient(BaseClient):
 
     async def browse_posts(
         self,
-        *,
+        *,  # TODO: Keep auth, page number and limit params as keyword args, make possibility for other args to be written as positional
         auth: bool = False,
-        page_number: int = 1,
-        limit: Annotated[int, ValueRange(1, 100)] = 40,
+        page_number: int = 1,  # TODO: Make constants
+        limit: Annotated[int, ValueRange(1, 100)] = 40,  # TODO: Make constants
         hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
         order: Optional[types.PostOrder] = None,
         date: Optional[list[datetime]] = None,
         rating: Optional[types.Rating] = None,
         threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
         file_size: Optional[types.FileSize] = None,
-        file_type: Optional[types.File] = None,
+        file_type: Optional[types.FileType] = None,
         video_duration: Optional[list[int]] = None,
         recommended_for: Optional[str] = None,
         favorited_by: Optional[str] = None,
@@ -193,7 +193,7 @@ class PostClient(BaseClient):
         async for page in CommentPaginator(
             aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
             const.COMMENT_URL.format(post_id=post_id),
-            page_number=1, limit=40
+            page_number=1, limit=40  # TODO: Make constants
         ):
             for comment in page.data:
                 yield comment
@@ -251,8 +251,8 @@ class AIClient(BaseClient):
         self,
         *,
         auth: bool = False,
-        page_number: int = 1,
-        limit: Annotated[int, ValueRange(1, 100)] = 40
+        page_number: int = 1,  # TODO: Make constants
+        limit: Annotated[int, ValueRange(1, 100)] = 40  # TODO: Make constants
     ) -> AsyncIterator[mdl.AIPost]:
         """
         Iterate through the AI post browser.
@@ -303,11 +303,11 @@ class TagClient(BaseClient):
 
     async def browse_tags(
         self,
-        *,
+        *,  # TODO: Keep auth, page number and limit params as keyword args, make possibility for other args to be written as positional
         auth: bool = False,
-        page_number: int = 1,
-        limit: Annotated[int, ValueRange(1, 100)] = 50,
-        tag_type: Optional[types.Tag] = None,  # TODO: ability to specify multiple tags
+        page_number: int = 1,  # TODO: Make constants
+        limit: Annotated[int, ValueRange(1, 100)] = 40,  # TODO: Make constants
+        tag_type: Optional[types.TagType] = None,  # TODO: ability to specify multiple tags
         order: Optional[types.TagOrder] = None,
         rating: Optional[types.Rating] = None,
         max_post_count: Optional[int] = None,
@@ -319,7 +319,7 @@ class TagClient(BaseClient):
 
         :param auth: Whether to make request on behalf of currently logged-in user
         :param page_number: Current page number
-        :param limit: Maximum amount of posts per page
+        :param limit: Maximum amount of tags per page
         :param tag_type: Tag type filter
         :param order: Tag order rule
         :param rating: Tag rating
@@ -372,6 +372,33 @@ class BookClient(BaseClient):
 
 class UserClient(BaseClient):
     """Client for browsing users."""
+
+    async def browse_users(
+        self,
+        order: Optional[types.UserOrder] = None,
+        level: Optional[types.UserLevel] = None,
+        *,
+        auth: bool = False,
+        page_number: int = 1,  # TODO: Make constants
+        limit: Annotated[int, ValueRange(1, 100)] = 40,  # TODO: Make constants
+    ) -> AsyncIterator[mdl.User | mdl.ShortenedUser]:
+        """  # TODO: Docstring;  add sort parameters; add tests
+
+        :param order: User order rule
+        :param level: User level type
+        :param auth: Whether to make request on behalf of currently logged-in user
+        :param page_number: Current page number
+        :param limit: Maximum amount of users per page
+        :return: Asynchronous generator which yields users
+        """
+        logger.warning(f"Chance to get ShortenedUser model with fewer attributes.")
+        async for page in UserPaginator(
+            aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
+            const.USER_URL,
+            **self._get_paginator_kwargs(locals())
+        ):
+            for user in page.data:
+                yield user
 
     async def get_user(self, username: str):  # TODO: TBA
         raise NotImplementedError

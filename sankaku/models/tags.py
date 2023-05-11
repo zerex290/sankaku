@@ -18,7 +18,7 @@ class BaseTag(BaseModel):
     name: str
     name_en: str
     name_ja: Optional[str]
-    type: types.Tag
+    type: types.TagType
     post_count: int
     pool_count: int
     series_count: int
@@ -47,7 +47,7 @@ class NestedTag(BaseTag):
     post_count: int = Field(alias="postCount")
     cached_related: Optional[list[int]] = Field(alias="cachedRelated")
     cached_related_expires_on: datetime = Field(alias="cachedRelatedExpiresOn")
-    type: types.Tag = Field(alias="tagType")
+    type: types.TagType = Field(alias="tagType")
     name_en: str = Field(alias="nameEn")
     name_ja: Optional[str] = Field(alias="nameJa")
     popularity_all: Optional[float] = Field(alias="scTagPopularityAll")

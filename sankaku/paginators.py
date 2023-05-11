@@ -15,7 +15,8 @@ __all__ = [
     "CommentPaginator",
     "PostPaginator",
     "AIPostPaginator",
-    "TagPaginator"
+    "TagPaginator",
+    "UserPaginator"
 ]
 
 
@@ -83,7 +84,7 @@ class PostPaginator(BasePaginator):
         rating: Optional[types.Rating],
         threshold: Optional[Annotated[int, ValueRange(1, 100)]],
         file_size: Optional[types.FileSize],
-        file_type: Optional[types.File],
+        file_type: Optional[types.FileType],
         video_duration: Optional[list[int]],
         recommended_for: Optional[str],
         favorited_by: Optional[str],
@@ -115,7 +116,7 @@ class PostPaginator(BasePaginator):
             match items:
                 case [_, None]:
                     continue
-                case ["rating" | "order" | "file_type" as k, v] if v != types.File.IMAGE:
+                case ["rating" | "order" | "file_type" as k, v] if v != types.FileType.IMAGE:
                     self.tags.append(f"{k}:{v.value}")
                 case ["threshold" | "recommended_for" | "voted" as k, v]:
                     self.tags.append(f"{k}:{v}")
@@ -124,7 +125,7 @@ class PostPaginator(BasePaginator):
                 case ["date", _]:
                     date = "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in self.date)  # type: ignore[union-attr]
                     self.tags.append(f"date:{date}")
-                case ["video_duration", _] if self.file_type != types.File.VIDEO:
+                case ["video_duration", _] if self.file_type != types.FileType.VIDEO:
                     raise errors.VideoDurationError
                 case ["video_duration", _]:
                     duration = "..".join(str(sec) for sec in self.video_duration)  # type: ignore[union-attr]
@@ -156,7 +157,7 @@ class TagPaginator(BasePaginator):
         url: str,
         page_number: int,
         limit: Annotated[int, ValueRange(1, 100)],
-        tag_type: Optional[types.Tag],
+        tag_type: Optional[types.TagType],
         order: Optional[types.PostOrder],
         rating: Optional[types.Rating],
         max_post_count: Optional[int],
@@ -189,3 +190,28 @@ class TagPaginator(BasePaginator):
 
     def construct_page(self, data: Sequence[Mapping]) -> mdl.TagPage:
         return mdl.TagPage(number=self.page_number, data=data)  # type: ignore[arg-type]
+
+
+class UserPaginator(BasePaginator):
+    def __init__(
+        self,
+        session: aiohttp.ClientSession,
+        url: str,
+        page_number: int,
+        limit: Annotated[int, ValueRange(1, 100)],
+        order: Optional[types.UserOrder],
+        level: Optional[types.UserLevel]
+    ) -> None:
+        super().__init__(session, url, page_number, limit)
+        self.order = order
+        self.level = level
+
+    def complete_params(self) -> None:
+        super().complete_params()
+        if self.order is not None:
+            self.params["order"] = self.order.value
+        if self.level is not None:
+            self.params["level"] = str(self.level.value)
+
+    def construct_page(self, data: Sequence[Mapping]) -> mdl.UserPage:
+        return mdl.UserPage(number=self.page_number, data=data)  # type: ignore[arg-type]

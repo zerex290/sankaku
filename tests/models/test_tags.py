@@ -31,7 +31,7 @@ from sankaku import types
                 id=1129497,
                 name_en="hololive",
                 name_ja="ホロライブ",
-                type=types.Tag(3),
+                type=types.TagType(3),
                 count=182184,
                 post_count=182184,
                 pool_count=549,
@@ -67,7 +67,7 @@ from sankaku import types
                 id=1497,
                 name_en="qwerty",
                 name_ja=None,
-                type=types.Tag.GENRE,
+                type=types.TagType.GENRE,
                 count=182184,
                 post_count=182184,
                 pool_count=549,
@@ -188,7 +188,7 @@ def test_post_tag_model(data, expected):
                 id=34240,
                 name_en="female",
                 name_ja="女性",
-                type=types.Tag.GENERAL,
+                type=types.TagType.GENERAL,
                 count=10821550,
                 post_count=10821550,
                 pool_count=97939,
@@ -216,7 +216,7 @@ def test_post_tag_model(data, expected):
                         cached_related_expires_on=datetime(
                             2023, 7, 6, 12, 36, 1, 109000, tzinfo=timezone.utc
                         ),
-                        type=types.Tag(5),
+                        type=types.TagType(5),
                         name_en="yuri",
                         name_ja="百合",
                         popularity_all=0.00072376704,
@@ -251,7 +251,7 @@ def test_post_tag_model(data, expected):
                         cached_related_expires_on=datetime(
                             2023, 7, 6, 17, 6, 17, 902000, tzinfo=timezone.utc
                         ),
-                        type=types.Tag(5),
+                        type=types.TagType(5),
                         name_en="femdom",
                         name_ja=None,
                         popularity_all=None,
@@ -342,7 +342,7 @@ def test_page_tag_model(data, expected):
                 name_en="randosel",
                 name_ja="ランドセル",
                 tag_name="randosel",
-                type=types.Tag.GENERAL,
+                type=types.TagType.GENERAL,
                 count=24071,
                 post_count=24071,
                 pool_count=925,

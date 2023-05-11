@@ -110,8 +110,8 @@ def test_author_model(data, expected):
         )
     ]
 )
-def test_profile_model(data, expected):
-    assert Profile(**data) == expected
+def test_user_model(data, expected):  # Suits for anonymous user as well
+    assert User(**data) == expected
     # Pydantic converts Model to dict before comparing,
     # So there is no need in calling model '.dict()' method.
 
@@ -226,7 +226,7 @@ def test_profile_model(data, expected):
         )
     ]
 )
-def test_extended_profile_model(data, expected):
-    assert ExtendedProfile(**data).dict() == expected
+def test_extended_user_model(data, expected):
+    assert ExtendedUser(**data).dict() == expected
     # Pydantic converts Model to dict before comparing,
     # So there is no need in calling model '.dict()' method.
