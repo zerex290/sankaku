@@ -38,16 +38,6 @@ class BasePost(BaseModel):
     md5: str
     tags: list[PostTag]
 
-    # Validators
-    _normalize_datetime = (
-        validator("created_at", pre=True, allow_reuse=True)
-        (convert_ts_to_datetime)
-    )
-
-    @validator("extension", pre=True)
-    def get_extension(cls, v) -> Optional[str]:  # noqa
-        return v.split("/")[-1] if v else None
-
     @property
     def file_type(self) -> Optional[types.FileType]:
         match self.extension:
@@ -59,6 +49,16 @@ class BasePost(BaseModel):
                 return types.FileType.GIF
             case _:
                 return None
+
+    # Validators
+    _normalize_datetime = (
+        validator("created_at", pre=True, allow_reuse=True)
+        (convert_ts_to_datetime)
+    )
+
+    @validator("extension", pre=True)
+    def get_extension(cls, v) -> Optional[str]:  # noqa
+        return v.split("/")[-1] if v else None
 
 
 class Comment(BaseModel):

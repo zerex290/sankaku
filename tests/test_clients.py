@@ -21,22 +21,18 @@ class TestPostClient:
         assert isinstance(await anext(nlclient.browse_posts()), mdl.Post)
 
     @pytest.mark.parametrize(
-        ["auth", "file_type", "video_duration", "expected"],
-        [
-            (True, None, None, errors.LoginRequirementError),
-            (False, types.FileType.IMAGE, [1, 60], errors.VideoDurationError)
-        ]
+        ["file_type", "video_duration", "expected"],
+        [(types.FileType.IMAGE, [1, 60], errors.VideoDurationError)]
     )
     async def test_browse_with_incompatible_args(
         self, nlclient: SankakuClient,
-        auth, file_type, video_duration, expected
+        file_type, video_duration, expected
     ):
         """Case when arguments are incompatible."""
         with pytest.raises(expected):
             await anext(
                 nlclient.browse_posts(
-                    auth=auth, file_type=file_type,
-                    video_duration=video_duration
+                    file_type=file_type, video_duration=video_duration
                 )
             )
 
@@ -54,7 +50,7 @@ class TestPostClient:
 
     @pytest.mark.parametrize(
         [
-            "auth", "page_number", "limit", "hide_posts_in_books", "order",
+            "page_number", "limit", "hide_posts_in_books", "order",
             "date", "rating", "threshold", "file_size", "file_type",
             "video_duration", "recommended_for", "favorited_by", "tags",
             "added_by", "voted"
@@ -62,25 +58,25 @@ class TestPostClient:
         ],
         [
             (
-                False, 1, 50, "always", types.PostOrder.POPULARITY,
+                1, 50, "always", types.PostOrder.POPULARITY,
                 None, None, None, None, None,
                 None, None, None, None,
                 None, None
             ),
             (
-                True, 1, 40, "in-larger-tags", types.PostOrder.QUALITY,
+                1, 40, "in-larger-tags", types.PostOrder.QUALITY,
                 None, types.Rating.EXPLICIT, None, None, types.FileType.IMAGE,
                 None, "Moldus", None, None,
                 None, None
             ),
             (
-                True, 1, 10, None, types.PostOrder.DATE,
+                1, 10, None, types.PostOrder.DATE,
                 [datetime(2018, 6, 16)], None, 4, None, types.FileType.VIDEO,
                 [1, 900], None, None, ["animated"],
                 ["anonymous"], "Nigredo"
             ),
             (
-                True, 1, 10, None, types.PostOrder.DATE,
+                1, 10, None, types.PostOrder.DATE,
                 None, None, 4, types.FileSize.LARGE, None,
                 None, None, "Moldus", ["female", "solo"],
                 None, None
@@ -89,7 +85,7 @@ class TestPostClient:
     )
     async def test_browse_with_random_args(
         self, lclient: SankakuClient,
-        auth, page_number, limit, hide_posts_in_books, order,
+        page_number, limit, hide_posts_in_books, order,
         date, rating, threshold, file_size, file_type,
         video_duration, recommended_for, favorited_by, tags,
         added_by, voted
@@ -199,23 +195,23 @@ class TestTagClient:
 
     @pytest.mark.parametrize(
         [
-            "auth", "page_number", "limit", "tag_type",
+            "page_number", "limit", "tag_type",
             "order", "rating", "max_post_count",
             "sort_parameter", "sort_direction"
         ],
         [
             (
-                False, 7, 20, types.TagType.CHARACTER,
+                7, 20, types.TagType.CHARACTER,
                 None, types.Rating.SAFE, None,
                 None, types.SortDirection.DESC
             ),
             (
-                True, 8, 60, types.TagType.COPYRIGHT,
+                8, 60, types.TagType.COPYRIGHT,
                 types.TagOrder.POPULARITY, types.Rating.QUESTIONABLE, None,
                 None, types.SortDirection.ASC
             ),
             (
-                True, 18, 10, None,
+                18, 10, None,
                 None, types.Rating.QUESTIONABLE, 2_537_220,
                 types.SortParameter.NAME, types.SortDirection.ASC
             )
@@ -223,7 +219,7 @@ class TestTagClient:
     )
     async def test_browse_with_random_args(
         self, lclient: SankakuClient,
-        auth, page_number, limit, tag_type,
+        page_number, limit, tag_type,
         order, rating, max_post_count,
         sort_parameter, sort_direction
     ):
@@ -233,10 +229,10 @@ class TestTagClient:
         assert isinstance(tag, mdl.PageTag)
 
     @pytest.mark.parametrize(
-        ["name_or_id", "auth"], [("animated", False), (100, True)]
+        ["name_or_id"], [("animated",), (100,)]
     )
-    async def test_get_tag(self, lclient: SankakuClient, name_or_id, auth):
-        wiki_tag = await lclient.get_tag(name_or_id, auth=auth)
+    async def test_get_tag(self, lclient: SankakuClient, name_or_id):
+        wiki_tag = await lclient.get_tag(name_or_id)
         assert isinstance(wiki_tag, mdl.WikiTag)
 
 

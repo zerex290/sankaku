@@ -15,23 +15,12 @@ from sankaku.paginators import *
 class BaseClient:
     """Base client for login."""
 
-    _HEADERS: dict[str, str] = {
-        "user-agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/94.0.4606.85 YaBrowser/21.11.0.1996 "
-            "Yowser/2.5 Safari/537.36"
-        ),
-        "content-type": "application/json; charset=utf-8",
-        "x-requested-with": "com.android.browser",
-        "accept-encoding": "gzip, deflate, br",
-        "host": "capi-v2.sankakucomplex.com"
-    }
-
     def __init__(self) -> None:
         self.profile: Optional[mdl.ExtendedUser] = None
-        self.access_token: str = ""
-        self.refresh_token: str = ""
+        self._access_token: str = ""
+        self._refresh_token: str = ""
         self._token_type: str = ""
+        self._auth: bool = False  # Flag that specifies API requests type
 
     async def login(self, login: str, password: str) -> None:
         """
@@ -43,7 +32,7 @@ class BaseClient:
         async with aiohttp.ClientSession() as session:
             async with session.post(
                 const.LOGIN_URL,
-                headers=self._get_headers(),
+                headers=self._headers,
                 data=json.dumps({"login": login, "password": password})
             ) as response:
                 logger.debug(f"Sent POST request [{response.status}]: {response.url}")
@@ -53,24 +42,27 @@ class BaseClient:
                     raise errors.AuthorizationError(response.status, data.get("error"))
 
                 self._token_type = data["token_type"]
-                self.access_token = data["access_token"]
-                self.refresh_token = data["refresh_token"]
-
+                self._access_token = data["access_token"]
+                self._refresh_token = data["refresh_token"]
                 self.profile = mdl.ExtendedUser(**data["current_user"])
+                self._auth = True
                 logger.info(f"Successfully logged in as {self.profile.name}.")
 
-    def _get_headers(self, *, auth: bool = False) -> dict[str, str]:
-        headers = self._HEADERS.copy()
-        if auth and not all(self.__dict__.values()):
-            raise errors.LoginRequirementError
-        elif auth:
-            headers["authorization"] = f"{self._token_type} {self.access_token}"
+    @property
+    def _headers(self) -> dict[str, str]:
+        headers = const.HEADERS.copy()
+        if self._auth:
+            headers["authorization"] = f"{self._token_type} {self._access_token}"
         return headers
+
+    @property
+    def _session(self) -> aiohttp.ClientSession:
+        return aiohttp.ClientSession(headers=self._headers)
 
     @staticmethod
     def _get_paginator_kwargs(
         loc: dict[str, Any],
-        rm_list: tuple[str, ...] = ("self", "auth")
+        rm_list: tuple[str, ...] = ("self", "session")
     ) -> dict[str, Any]:
         """
         Get kwargs for paginator from locals of calling function.
@@ -100,9 +92,8 @@ class PostClient(BaseClient):
         added_by: Optional[list[str]] = None,
         voted: Optional[str] = None,
         *,
-        auth: bool = False,
-        page_number: int = const.BASE_PAGE_NUMBER,
-        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT
+        page_number: Optional[int] = None,
+        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
 
     ) -> AsyncIterator[mdl.Post]:
         """
@@ -121,43 +112,37 @@ class PostClient(BaseClient):
         :param tags: Tags available for search
         :param added_by: Posts uploaded by specified user
         :param voted: Posts voted by specified user
-        :param auth: Whether to make request on behalf of currently logged-in user
-        :param page_number: Current page number
+        :param page_number: Initial page number
         :param limit: Maximum amount of posts per page
         :return: Asynchronous generator which yields posts
         """
-        async for page in PostPaginator(
-            aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
-            url=const.POST_URL,
-            **self._get_paginator_kwargs(locals())
-        ):
-            for post in page.data:
-                yield post
+        async with self._session as session:
+            async for page in PostPaginator(
+                session, const.POST_URL,
+                **self._get_paginator_kwargs(locals())
+            ):
+                for post in page.data:
+                    yield post
 
     async def get_favorited_posts(self) -> AsyncIterator[mdl.Post]:
         """Shorthand way to get favorite posts of currently logged-in user."""
 
         if self.profile is None:
             raise errors.LoginRequirementError
-        async for post in self.browse_posts(auth=True, favorited_by=self.profile.name):
+
+        async for post in self.browse_posts(favorited_by=self.profile.name):
             yield post
 
-    async def get_top_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.Post]:
-        """
-        Shorthand way to get top posts.
+    async def get_top_posts(self) -> AsyncIterator[mdl.Post]:
+        """Shorthand way to get top posts."""
 
-        :param auth: Whether to make request on behalf of currently logged-in user
-        """
-        async for post in self.browse_posts(auth=auth, order=types.PostOrder.QUALITY):
+        async for post in self.browse_posts(order=types.PostOrder.QUALITY):
             yield post
 
-    async def get_popular_posts(self, *, auth: bool = False) -> AsyncIterator[mdl.Post]:
-        """
-        Shorthand way to get popular posts.
+    async def get_popular_posts(self) -> AsyncIterator[mdl.Post]:
+        """Shorthand way to get popular posts."""
 
-        :param auth: Whether to make request on behalf of currently logged-in user
-        """
-        async for post in self.browse_posts(auth=auth, order=types.PostOrder.POPULARITY):
+        async for post in self.browse_posts(order=types.PostOrder.POPULARITY):
             yield post
 
     async def get_recommended_posts(self) -> AsyncIterator[mdl.Post]:
@@ -165,45 +150,38 @@ class PostClient(BaseClient):
 
         if self.profile is None:
             raise errors.LoginRequirementError
-        async for post in self.browse_posts(auth=True, recommended_for=self.profile.name):
+
+        async for post in self.browse_posts(recommended_for=self.profile.name):
             yield post
 
-    async def get_similar_posts(
-        self, post_id: int, *, auth: bool = False
-    ) -> AsyncIterator[mdl.Post]:
+    async def get_similar_posts(self, post_id: int) -> AsyncIterator[mdl.Post]:
         """
         Get posts similar (recommended) for specific post.
 
         :param post_id: ID of specific post
-        :param auth: Whether to make request on behalf of currently logged-in user
         :return: Asynchronous generator which yields similar posts
         """
         tag = f"recommended_for_post:{post_id}"
-        async for post in self.browse_posts(auth=auth, tags=[tag]):
+        async for post in self.browse_posts(tags=[tag]):
             yield post
 
-    async def get_post_comments(
-        self, post_id: int, *, auth: bool = False,
-    ) -> AsyncIterator[mdl.Comment]:
+    async def get_post_comments(self, post_id: int) -> AsyncIterator[mdl.Comment]:
         """
         Get comments on the post.
 
         :param post_id: ID of specific post
-        :param auth: Whether to make request on behalf of currently logged-in user
         """
-        async for page in CommentPaginator(
-            aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
-            const.COMMENT_URL.format(post_id=post_id),
-            page_number=const.BASE_PAGE_NUMBER, limit=const.BASE_PAGE_LIMIT
-        ):
-            for comment in page.data:
-                yield comment
+        async with self._session as session:
+            async for page in CommentPaginator(
+                session, const.COMMENT_URL.format(post_id=post_id)
+            ):
+                for comment in page.data:
+                    yield comment
 
     async def get_post(
         self,
         post_id: int,
         *,
-        auth: bool = False,
         with_similar_posts: bool = False,
         with_comments: bool = False
     ) -> mdl.ExtendedPost:
@@ -211,33 +189,28 @@ class PostClient(BaseClient):
         Get specific post by its ID.
 
         :param post_id: ID of specific post
-        :param auth: auth: Whether to make request on behalf of
-        currently logged-in user
         :param with_similar_posts:  Whether to search similar posts;
         note that it greatly reduces performance
         :param with_comments: Whether to attach post comments
         """
-        async with aiohttp.ClientSession(
-            headers=self._get_headers(auth=auth)
-        ) as session:
+        async with self._session as session:
             async with session.get(
-                const.POST_URL,
-                params={"tags": f"id_range:{post_id}"}
+                f"{const.POST_URL}/{post_id}",
             ) as response:
                 logger.debug(f"Sent POST request [{response.status}]: {response.url}")
                 if not response.ok:
                     raise errors.PostNotFoundError(post_id)
                 data = await response.json()
                 logger.debug(f"Response JSON: {data}")
-                post = mdl.ExtendedPost(**data[0])
+                post = mdl.ExtendedPost(**data)
 
         if with_similar_posts:
             post.similar_posts = [
-                sim async for sim in self.get_similar_posts(post_id, auth=auth)
+                sim async for sim in self.get_similar_posts(post_id)
             ]
         if with_comments:
             post.comments = [
-                com async for com in self.get_post_comments(post_id, auth=auth)
+                com async for com in self.get_post_comments(post_id)
             ]
         return post
 
@@ -251,43 +224,32 @@ class AIClient(BaseClient):
     async def browse_ai_posts(
         self,
         *,
-        auth: bool = False,
-        page_number: int = const.BASE_PAGE_NUMBER,
-        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT
+        page_number: Optional[int] = None,
+        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
     ) -> AsyncIterator[mdl.AIPost]:
         """
         Iterate through the AI post browser.
 
-        :param auth: Whether to make request on behalf of currently logged-in user
-        :param page_number: Current page number
+        :param page_number: Initial page number
         :param limit: Maximum amount of posts per page
         :return: Asynchronous generator which yields AI posts
         """
-        async for page in AIPostPaginator(
-            aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
-            url=const.AI_POST_URL,
-            **self._get_paginator_kwargs(locals())
-        ):
-            for post in page.data:
-                yield post
+        async with self._session as session:
+            async for page in AIPostPaginator(
+                session, const.AI_POST_URL,
+                **self._get_paginator_kwargs(locals())
+            ):
+                for post in page.data:
+                    yield post
 
-    async def get_ai_post(
-            self,
-            post_id: int,
-            *,
-            auth: bool = False,
-    ) -> mdl.AIPost:
+    async def get_ai_post(self, post_id: int) -> mdl.AIPost:
         """
         Get specific AI post by its ID.
 
         :param post_id: ID of specific post
-        :param auth: auth: Whether to make request on behalf of
-        currently logged-in user
         """
-        async with aiohttp.ClientSession(
-                headers=self._get_headers(auth=auth)
-        ) as session:
-            async with session.get(f"{const.AI_POST_URL}/{post_id}",) as response:
+        async with self._session as session:
+            async with session.get(f"{const.AI_POST_URL}/{post_id}") as response:
                 logger.debug(f"Sent POST request [{response.status}]: {response.url}")
                 if not response.ok:
                     raise errors.PostNotFoundError(post_id)
@@ -309,11 +271,10 @@ class TagClient(BaseClient):
         rating: Optional[types.Rating] = None,
         max_post_count: Optional[int] = None,
         sort_parameter: Optional[types.SortParameter] = None,
-        sort_direction: types.SortDirection = types.SortDirection.DESC,
+        sort_direction: Optional[types.SortDirection] = None,
         *,
-        auth: bool = False,
-        page_number: int = const.BASE_PAGE_NUMBER,
-        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT
+        page_number: Optional[int] = None,
+        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
 
     ) -> AsyncIterator[mdl.PageTag]:
         """
@@ -325,32 +286,28 @@ class TagClient(BaseClient):
         :param max_post_count: Upper threshold for number of posts with tags found
         :param sort_parameter: Tag sorting parameter
         :param sort_direction: Tag sorting direction
-        :param auth: Whether to make request on behalf of currently logged-in user
-        :param page_number: Current page number
+        :param page_number: Initial page number
         :param limit: Maximum amount of tags per page
         :return: Asynchronous generator which yields tags
         """
-        async for page in TagPaginator(
-            aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
-            url=const.TAG_URL,
-            **self._get_paginator_kwargs(locals())
-        ):
-            for tag in page.data:
-                yield tag
+        async with self._session as session:
+            async for page in TagPaginator(
+                session, const.TAG_URL,
+                **self._get_paginator_kwargs(locals())
+            ):
+                for tag in page.data:
+                    yield tag
 
-    async def get_tag(self, name_or_id: str | int, *, auth: bool = False) -> mdl.WikiTag:
+    async def get_tag(self, name_or_id: str | int) -> mdl.WikiTag:
         """
         Get specific tag by its name or ID.
 
         :param name_or_id: tag name or ID
-        :param auth: Whether to make request on behalf of currently logged-in user
         :return:
         """
         ref = "name" if isinstance(name_or_id, str) else "id"
         url = const.TAG_WIKI_URL.format(ref=ref, name_or_id=name_or_id)
-        async with aiohttp.ClientSession(
-            headers=self._get_headers(auth=auth)
-        ) as session:
+        async with self._session as session:
             async with session.get(url) as response:
                 logger.debug(f"Sent POST request [{response.status}]: {response.url}")
                 if not response.ok:
@@ -380,28 +337,26 @@ class UserClient(BaseClient):
         order: Optional[types.UserOrder] = None,
         level: Optional[types.UserLevel] = None,
         *,
-        auth: bool = False,
-        page_number: int = const.BASE_PAGE_NUMBER,
-        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT
+        page_number: Optional[int] = None,
+        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
     ) -> AsyncIterator[mdl.User | mdl.ShortenedUser]:
         """
         Iterate through user pages.
 
         :param order: User order rule
         :param level: User level type
-        :param auth: Whether to make request on behalf of currently logged-in user
-        :param page_number: Current page number
+        :param page_number: Initial page number
         :param limit: Maximum amount of users per page
         :return: Asynchronous generator which yields users
         """
         logger.warning(f"Chance to get ShortenedUser model with fewer attributes.")
-        async for page in UserPaginator(
-            aiohttp.ClientSession(headers=self._get_headers(auth=auth)),
-            const.USER_URL,
-            **self._get_paginator_kwargs(locals())
-        ):
-            for user in page.data:
-                yield user
+        async with self._session as session:
+            async for page in UserPaginator(
+                session, const.USER_URL,
+                **self._get_paginator_kwargs(locals())
+            ):
+                for user in page.data:
+                    yield user
 
     async def get_user(self, username: str):  # TODO: TBA
         raise NotImplementedError

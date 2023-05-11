@@ -25,41 +25,51 @@ class BasePaginator(ABC):
         self,
         session: aiohttp.ClientSession,
         url: str,
-        page_number: int,
-        limit: Annotated[int, ValueRange(1, 100)],
+        page_number: Optional[int] = None,
+        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+        params: Optional[dict[str, str]] = None
     ) -> None:
         self.session = session
         self.url = url
-        self.page_number = page_number
-        self.limit = limit
-        self.params: dict[str, str] = {}
+        self.page_number = page_number or const.BASE_PAGE_NUMBER
+        self.limit = limit or const.BASE_PAGE_LIMIT
+        self.params: dict[str, str] = params or {}
+
+        self.complete_params()
 
     def __aiter__(self) -> AsyncIterator[Any]:
-        self.complete_params()
         return self
 
-    @utils.ratelimit(rps=const.BASE_RPS)
     async def __anext__(self) -> Any:
+        try:
+            return await self.next_page()
+        except errors.PaginatorLastPage:
+            raise StopAsyncIteration
+
+    @utils.ratelimit(rps=const.BASE_RPS)
+    async def next_page(self) -> Any:
         async with self.session.get(self.url, params=self.params) as response:
             logger.debug(f"Sent GET request [{response.status}]: {response.url}")
+            if response.content_type != "application/json":
+                raise errors.ResponseContentTypeError(response.content_type)
+
             data = await response.json()
             logger.debug(f"Response JSON: {data}")
             if not isinstance(data, list):
-                data = data.get("data")
+                data = data.get("data")  # TODO: Add check for api responses (possible errors)
             if not data:
-                # Different data means end of search
-                await self.session.close()
-                raise StopAsyncIteration
+                raise errors.PaginatorLastPage(self.page_number)
+
             self.page_number += 1
-            self.params.update(page=str(self.page_number))
+            self.params["page"] = str(self.page_number)
             return self.construct_page(data)
 
     def complete_params(self) -> None:
-        self.params.update(
-            lang="en",
-            page=str(self.page_number),
-            limit=str(self.limit),
-        )
+        self.params["lang"] = "en"
+        if self.page_number is not None:
+            self.params["page"] = str(self.page_number)
+        if self.limit is not None:
+            self.params["limit"] = str(self.limit)
 
     @abstractmethod
     def construct_page(self, data: Sequence[Mapping]) -> Any:
@@ -76,23 +86,23 @@ class PostPaginator(BasePaginator):
         self,
         session: aiohttp.ClientSession,
         url: str,
-        page_number: int,
-        limit: Annotated[int, ValueRange(1, 100)],
-        order: Optional[types.PostOrder],
-        date: Optional[list[datetime]],
-        rating: Optional[types.Rating],
-        threshold: Optional[Annotated[int, ValueRange(1, 100)]],
-        hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]],
-        file_size: Optional[types.FileSize],
-        file_type: Optional[types.FileType],
-        video_duration: Optional[list[int]],
-        recommended_for: Optional[str],
-        favorited_by: Optional[str],
-        tags: Optional[list[str]],
-        added_by: Optional[list[str]],
-        voted: Optional[str]
+        page_number: Optional[int] = None,
+        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+        params: Optional[dict[str, str]] = None,
+        order: Optional[types.PostOrder] = None,
+        date: Optional[list[datetime]] = None,
+        rating: Optional[types.Rating] = None,
+        threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+        hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
+        file_size: Optional[types.FileSize] = None,
+        file_type: Optional[types.FileType] = None,
+        video_duration: Optional[list[int]] = None,
+        recommended_for: Optional[str] = None,
+        favorited_by: Optional[str] = None,
+        tags: Optional[list[str]] = None,
+        added_by: Optional[list[str]] = None,
+        voted: Optional[str] = None
     ) -> None:
-        super().__init__(session, url, page_number, limit)
         self.order = order
         self.date = date
         self.rating = rating
@@ -106,6 +116,7 @@ class PostPaginator(BasePaginator):
         self.tags = tags
         self.added_by = added_by
         self.voted = voted
+        super().__init__(session, url, page_number, limit, params)
 
     def complete_params(self) -> None:
         super().complete_params()
@@ -116,7 +127,7 @@ class PostPaginator(BasePaginator):
             match items:
                 case [_, None]:
                     continue
-                case ["rating" | "order" | "file_type" as k, v] if v != types.FileType.IMAGE:
+                case ["rating" | "order" | "file_type" as k, v] if v != types.FileType.IMAGE:  # noqa
                     self.tags.append(f"{k}:{v.value}")
                 case ["threshold" | "recommended_for" | "voted" as k, v]:
                     self.tags.append(f"{k}:{v}")
@@ -125,7 +136,7 @@ class PostPaginator(BasePaginator):
                 case ["date", _]:
                     date = "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in self.date)  # type: ignore[union-attr]
                     self.tags.append(f"date:{date}")
-                case ["video_duration", _] if self.file_type != types.FileType.VIDEO:
+                case ["video_duration", _] if self.file_type != types.FileType.VIDEO:  # noqa
                     raise errors.VideoDurationError
                 case ["video_duration", _]:
                     duration = "..".join(str(sec) for sec in self.video_duration)  # type: ignore[union-attr]
@@ -155,22 +166,23 @@ class TagPaginator(BasePaginator):
         self,
         session: aiohttp.ClientSession,
         url: str,
-        page_number: int,
-        limit: Annotated[int, ValueRange(1, 100)],
-        tag_type: Optional[types.TagType],
-        order: Optional[types.PostOrder],
-        rating: Optional[types.Rating],
-        max_post_count: Optional[int],
-        sort_parameter: Optional[types.SortParameter],
-        sort_direction: types.SortDirection
+        page_number: Optional[int] = None,
+        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+        params: Optional[dict[str, str]] = None,
+        tag_type: Optional[types.TagType] = None,
+        order: Optional[types.TagOrder] = None,
+        rating: Optional[types.Rating] = None,
+        max_post_count: Optional[int] = None,
+        sort_parameter: Optional[types.SortParameter] = None,
+        sort_direction: Optional[types.SortDirection] = None
     ) -> None:
-        super().__init__(session, url, page_number, limit)
         self.tag_type = tag_type
         self.order = order
         self.rating = rating
         self.max_post_count = max_post_count
         self.sort_parameter = sort_parameter
-        self.sort_direction = sort_direction
+        self.sort_direction = sort_direction or types.SortDirection.DESC
+        super().__init__(session, url, page_number, limit, params)
 
     def complete_params(self) -> None:
         super().complete_params()
@@ -197,14 +209,15 @@ class UserPaginator(BasePaginator):
         self,
         session: aiohttp.ClientSession,
         url: str,
-        page_number: int,
-        limit: Annotated[int, ValueRange(1, 100)],
-        order: Optional[types.UserOrder],
-        level: Optional[types.UserLevel]
+        page_number: Optional[int] = None,
+        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+        params: Optional[dict[str, str]] = None,
+        order: Optional[types.UserOrder] = None,
+        level: Optional[types.UserLevel] = None
     ) -> None:
-        super().__init__(session, url, page_number, limit)
         self.order = order
         self.level = level
+        super().__init__(session, url, page_number, limit, params)
 
     def complete_params(self) -> None:
         super().complete_params()

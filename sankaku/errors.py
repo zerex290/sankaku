@@ -10,6 +10,16 @@ class SankakuError(Exception):
         return self.msg
 
 
+class ResponseContentTypeError(SankakuError):
+    def __init__(self, content_type: str):
+        self.msg = f"Response content type is invalid: {content_type}"
+
+
+class PaginatorLastPage(SankakuError):
+    def __init__(self, page_number: int):
+        self.msg = f"Reached last available page [{page_number}]."
+
+
 class RateLimitError(SankakuError):
     msg = "Can't set both rps and rpm at once."
 
