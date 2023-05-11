@@ -27,3 +27,8 @@ BASE_RPS = 3
 BASE_RPM = 180
 BASE_PAGE_NUMBER = 1
 BASE_PAGE_LIMIT = 40
+
+PAGE_ALLOWED_ERRORS = [
+    "snackbar__anonymous-recommendations-limit-reached",
+    "snackbar__account_offset-forbidden"
+]

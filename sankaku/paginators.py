@@ -51,14 +51,22 @@ class BasePaginator(ABC):
         async with self.session.get(self.url, params=self.params) as response:
             logger.debug(f"Sent GET request [{response.status}]: {response.url}")
             if response.content_type != "application/json":
-                raise errors.ResponseContentTypeError(response.content_type)
+                raise errors.SankakuError(
+                    f"Response content type is invalid: "
+                    f"{response.content_type}"
+                )
 
             data = await response.json()
             logger.debug(f"Response JSON: {data}")
-            if not isinstance(data, list):
-                data = data.get("data")  # TODO: Add check for api responses (possible errors)
-            if not data:
-                raise errors.PaginatorLastPage(self.page_number)
+            match data:
+                case [] | {"data": []}:
+                    raise errors.PaginatorLastPage(self.page_number)
+                case {"code": code} if code in const.PAGE_ALLOWED_ERRORS:
+                    raise errors.PaginatorLastPage(self.page_number)
+                case {"code": code, "errorId": error_id, **kwargs}:
+                    raise errors.SankakuError(None, error_id, code, kwargs)
+                case {"data": data} if data:
+                    data = data
 
             self.page_number += 1
             self.params["page"] = str(self.page_number)

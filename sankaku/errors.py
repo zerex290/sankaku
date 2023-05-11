@@ -1,18 +1,31 @@
+from typing import Optional
+
+
 class SankakuError(Exception):
     """Base Error class."""
 
     msg: str = ""
+
+    def __init__(
+        self,
+        msg: Optional[str] = None,
+        error_id: Optional[str] = None,
+        code: Optional[str] = None,
+        kwargs: Optional[dict] = None
+    ) -> None:
+        self.error_id = error_id
+        self.code = code
+        self.kwargs = kwargs or {}
+
+        str_kwargs = " | ".join(f"{k}={v}" for k, v in self.kwargs.items())
+        sep = ": " if self.kwargs else ""
+        self.msg = msg or f"[{self.error_id}] {self.code}{sep}{str_kwargs}."
 
     def __repr__(self) -> str:
         return repr(self.msg)
 
     def __str__(self) -> str:
         return self.msg
-
-
-class ResponseContentTypeError(SankakuError):
-    def __init__(self, content_type: str):
-        self.msg = f"Response content type is invalid: {content_type}"
 
 
 class PaginatorLastPage(SankakuError):

@@ -41,12 +41,13 @@ class TestPostClient:
         self, nlclient: SankakuClient,
         page_number, limit
     ):
-        posts: list[mdl.Post] = []
-        async for post in nlclient.browse_posts(
-            page_number=page_number, limit=limit
-        ):
-            posts.append(post)
-        assert not posts
+        try:
+            async for _ in nlclient.browse_posts(
+                page_number=page_number, limit=limit
+            ):
+                assert False
+        except errors.SankakuError as e:
+            assert e.code == "invalid-parameters"
 
     @pytest.mark.parametrize(
         [
@@ -157,12 +158,13 @@ class TestAIClient:
         self, nlclient: SankakuClient,
         page_number, limit
     ):
-        posts: list[mdl.AIPost] = []
-        async for post in nlclient.browse_ai_posts(
-            page_number=page_number, limit=limit
-        ):
-            posts.append(post)
-        assert not posts
+        try:
+            async for _ in nlclient.browse_ai_posts(
+                page_number=page_number, limit=limit
+            ):
+                assert False
+        except errors.SankakuError as e:
+            assert e.code == "error"
 
     @pytest.mark.parametrize(["post_id"], [(123,), (1721,)])
     async def test_get_ai_post(self, nlclient: SankakuClient, post_id):
@@ -188,10 +190,13 @@ class TestTagClient:
         self, nlclient: SankakuClient,
         page_number, limit
     ):
-        tags: list[mdl.PageTag] = []
-        async for tag in nlclient.browse_tags(page_number=page_number, limit=limit):
-            tags.append(tag)
-        assert not tags
+        try:
+            async for _ in nlclient.browse_tags(
+                page_number=page_number, limit=limit
+            ):
+                assert False
+        except errors.SankakuError as e:
+            assert e.code == "error"
 
     @pytest.mark.parametrize(
         [
@@ -257,6 +262,19 @@ class TestUserClient:
             await anext(nlclient.browse_users(types.UserOrder.POSTS)),
             mdl.ShortenedUser
         )
+
+    @pytest.mark.parametrize(["page_number", "limit"], [(-3, 22), (1, -69)])
+    async def test_browse_with_incorrect_page_number_or_limit(
+        self, nlclient: SankakuClient,
+        page_number, limit
+    ):
+        try:
+            async for _ in nlclient.browse_users(
+                    page_number=page_number, limit=limit
+            ):
+                assert False
+        except errors.SankakuError as e:
+            assert e.code == "error"
 
     async def test_get_user(self, nlclient: SankakuClient):
         with pytest.raises(NotImplementedError):
