@@ -184,7 +184,7 @@ class PostClient(BaseClient):
         *,
         with_similar_posts: bool = False,
         with_comments: bool = False
-    ) -> mdl.ExtendedPost:
+    ) -> mdl.Post:
         """
         Get specific post by its ID.
 
@@ -194,15 +194,13 @@ class PostClient(BaseClient):
         :param with_comments: Whether to attach post comments
         """
         async with self._session as session:
-            async with session.get(
-                f"{const.POST_URL}/{post_id}",
-            ) as response:
+            async with session.get(f"{const.POST_URL}/{post_id}") as response:
                 logger.debug(f"Sent POST request [{response.status}]: {response.url}")
                 if not response.ok:
                     raise errors.PostNotFoundError(post_id)
                 data = await response.json()
                 logger.debug(f"Response JSON: {data}")
-                post = mdl.ExtendedPost(**data)
+                post = mdl.Post(**data)
 
         if with_similar_posts:
             post.similar_posts = [

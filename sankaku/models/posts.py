@@ -9,7 +9,7 @@ from .tags import PostTag
 from .users import Author
 
 
-__all__ = ["Comment", "Post", "ExtendedPost", "AIPost"]
+__all__ = ["Comment", "Post", "AIPost"]
 
 
 class GenerationDirectives(BaseModel):
@@ -106,9 +106,8 @@ class Post(BasePost):
     sequence: Optional[int]
     video_duration: Optional[float]
 
-
-class ExtendedPost(Post):
-    similar_posts: list[Post] = []
+    # The following fields are missing in API response
+    similar_posts: list["Post"] = []
     comments: list[Comment] = []
 
 

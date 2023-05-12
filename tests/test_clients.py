@@ -133,7 +133,7 @@ class TestPostClient:
             with_similar_posts=with_similar_posts,
             with_comments=with_comments
         )
-        assert isinstance(post, mdl.ExtendedPost)
+        assert isinstance(post, mdl.Post)
         if with_similar_posts:
             assert post.similar_posts
         if with_comments:

@@ -107,6 +107,69 @@ def test_author_model(data, expected):
                 credits_subs=0,
                 is_ai_beta=False
             )
+        ),
+        (
+            {
+                "id": 49276,
+                "name": "reichan",
+                "level": 45,
+                "upload_limit": 1000,
+                "created_at": "2013-03-02T17:31:47.688Z",
+                "favs_are_private": False,
+                "avatar_url": "URL",
+                "avatar_rating": "s",
+                "post_upload_count": 2370825,
+                "pool_upload_count": 0,
+                "comment_count": 1,
+                "post_update_count": 3297994,
+                "note_update_count": 0,
+                "wiki_update_count": 0,
+                "forum_post_count": 0,
+                "pool_update_count": 0,
+                "series_update_count": 0,
+                "tag_update_count": 0,
+                "artist_update_count": 0,
+                "show_popup_version": 1,
+                "credits": 0,
+                "credits_subs": 0,
+                "is_ai_beta": False
+            },
+            dict(
+                last_logged_in_at=None,
+                favorite_count=None,
+                post_favorite_count=None,
+                pool_favorite_count=None,
+                vote_count=None,
+                post_vote_count=None,
+                pool_vote_count=None,
+                recommended_posts_for_user=None,
+                subscriptions=[],
+                id=49276,
+                name="reichan",
+                level=45,
+                upload_limit=1000,
+                created_at=datetime(
+                    2013, 3, 2, 17, 31, 47, 688000, tzinfo=timezone.utc
+                ),
+                favs_are_private=False,
+                avatar="URL",
+                avatar_rating=types.Rating.SAFE,
+                post_upload_count=2370825,
+                pool_upload_count=0,
+                comment_count=1,
+                post_update_count=3297994,
+                note_update_count=0,
+                wiki_update_count=0,
+                forum_post_count=0,
+                pool_update_count=0,
+                series_update_count=0,
+                tag_update_count=0,
+                artist_update_count=0,
+                show_popup_version=1,
+                credits=0,
+                credits_subs=0,
+                is_ai_beta=False
+            )
         )
     ]
 )

@@ -70,8 +70,8 @@ class Paginator(Generic[_T]):
                     raise errors.PaginatorLastPage(self.page_number)
                 case {"code": code, "errorId": error_id, **kwargs}:
                     raise errors.SankakuError(None, error_id, code, kwargs)
-                case {"data": data} if data:
-                    data = data
+                case {"data": list() as items} if items:
+                    data = items
 
             self.page_number += 1
             self.params["page"] = str(self.page_number)
@@ -85,8 +85,8 @@ class Paginator(Generic[_T]):
             self.params["limit"] = str(self.limit)
 
     def construct_page(self, data: list[dict]) -> mdl.Page[_T]:
-        items = [self.model(**d) for d in data]
-        return mdl.Page[_T](number=self.page_number, items=items)
+        items = [self.model(**item) for item in data]
+        return mdl.Page[_T](number=self.page_number - 1, items=items)
 
 
 class PostPaginator(Paginator[_T]):
