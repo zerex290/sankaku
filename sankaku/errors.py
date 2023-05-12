@@ -59,6 +59,15 @@ class TagNotFoundError(SankakuError):
         )
 
 
+class UserNotFoundError(SankakuError):
+    def __init__(self, name_or_id: str | int) -> None:
+        self.msg = (
+            f"Failed to find user with "
+            f"{'name' if isinstance(name_or_id, str) else 'id'} "
+            f"{name_or_id}."
+        )
+
+
 class AuthorizationError(SankakuError):
     def __init__(self, status: int, error: str) -> None:
         self.msg = f"Authorization failed with status code {status}: {error}."

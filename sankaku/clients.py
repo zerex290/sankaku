@@ -17,8 +17,8 @@ class BaseClient:
 
     def __init__(self) -> None:
         self.profile: Optional[mdl.ExtendedUser] = None
-        self._access_token: str = ""
-        self._refresh_token: str = ""
+        self._access_token: str = ""  # TODO: ability to login by access token
+        self._refresh_token: str = ""  # TODO: ability to update access token
         self._token_type: str = ""
         self._auth: bool = False  # Flag that specifies API requests type
 
@@ -60,7 +60,7 @@ class BaseClient:
         return aiohttp.ClientSession(headers=self._headers)
 
     @staticmethod
-    def _get_paginator_kwargs(
+    def _from_locals(
         loc: dict[str, Any],
         rm_list: tuple[str, ...] = ("self", "session")
     ) -> dict[str, Any]:
@@ -119,7 +119,7 @@ class PostClient(BaseClient):
         async with self._session as session:
             async for page in PostPaginator(
                 mdl.Post, session, const.POST_URL,
-                **self._get_paginator_kwargs(locals())
+                **self._from_locals(locals())
             ):
                 for post in page.items:
                     yield post
@@ -235,7 +235,7 @@ class AIClient(BaseClient):
         async with self._session as session:
             async for page in Paginator(
                 mdl.AIPost, session, const.AI_POST_URL,
-                **self._get_paginator_kwargs(locals())
+                **self._from_locals(locals())
             ):
                 for post in page.items:
                     yield post
@@ -291,7 +291,7 @@ class TagClient(BaseClient):
         async with self._session as session:
             async for page in TagPaginator(
                 mdl.PageTag, session, const.TAG_URL,
-                **self._get_paginator_kwargs(locals())
+                **self._from_locals(locals())
             ):
                 for tag in page.items:
                     yield tag
@@ -301,7 +301,6 @@ class TagClient(BaseClient):
         Get specific tag by its name or ID.
 
         :param name_or_id: tag name or ID
-        :return:
         """
         ref = "name" if isinstance(name_or_id, str) else "id"
         url = const.TAG_WIKI_URL.format(ref=ref, name_or_id=name_or_id)
@@ -350,13 +349,30 @@ class UserClient(BaseClient):
         async with self._session as session:
             async for page in UserPaginator(
                 mdl.User, session, const.USER_URL,
-                **self._get_paginator_kwargs(locals())
+                **self._from_locals(locals())
             ):
                 for user in page.items:
                     yield user
 
-    async def get_user(self, username: str):  # TODO: TBA
-        raise NotImplementedError
+    async def get_user(self, name_or_id: str | int) -> mdl.User:
+        """
+        Get specific user by its name or ID.
+
+        :param name_or_id: username or ID
+        """
+        url = (
+            f"{const.USER_URL}/"
+            f"{'name/' if isinstance(name_or_id, str) else ''}"
+            f"{name_or_id}"
+        )
+        async with self._session as session:
+            async with session.get(url) as response:
+                logger.debug(f"Sent POST request [{response.status}]: {response.url}")
+                if not response.ok:
+                    raise errors.UserNotFoundError(name_or_id)
+                data = await response.json()
+                logger.debug(f"Response JSON: {data}")
+                return mdl.User(**data)
 
 
 class SankakuClient(  # noqa

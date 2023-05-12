@@ -274,6 +274,13 @@ class TestUserClient:
         except errors.SankakuError as e:
             assert e.code == "error"
 
-    async def test_get_user(self, nlclient: SankakuClient):
-        with pytest.raises(NotImplementedError):
-            await nlclient.get_user("Nigredo")
+    @pytest.mark.parametrize(["name_or_id"], [("anonymous",), (1423490,)])
+    async def test_get_user(self, nlclient: SankakuClient, name_or_id):
+        assert isinstance(await nlclient.get_user(name_or_id), mdl.User)
+
+    @pytest.mark.parametrize(["name_or_id"], [("!@#sdcvjkj|",), (-1000,)])
+    async def test_get_user_with_wrong_name_or_id(
+            self, nlclient: SankakuClient, name_or_id
+    ):
+        with pytest.raises(errors.UserNotFoundError):
+            await nlclient.get_user(name_or_id)
