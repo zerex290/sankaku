@@ -254,13 +254,11 @@ class TestBookClient:
 class TestUserClient:
     async def test_browse_users(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
+
+        assert isinstance(await anext(nlclient.browse_users()), mdl.User)
         assert isinstance(
             await anext(nlclient.browse_users(level=types.UserLevel.MEMBER)),
             mdl.User
-        )
-        assert isinstance(
-            await anext(nlclient.browse_users(types.UserOrder.POSTS)),
-            mdl.ShortenedUser
         )
 
     @pytest.mark.parametrize(["page_number", "limit"], [(-3, 22), (1, -69)])

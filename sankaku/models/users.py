@@ -1,11 +1,12 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, Field, validator
 
 from sankaku import types
 
 
-__all__ = ["Author", "ShortenedUser", "User", "ExtendedUser"]
+__all__ = ["Author", "User", "ExtendedUser"]
 
 
 class BaseUser(BaseModel):
@@ -21,10 +22,10 @@ class Author(BaseUser):
     """Model used to describe users who are the authors of posts or wiki pages."""
 
 
-class ShortenedUser(BaseUser):
-    """
-    Model used to describe user profiles with fewer number of fields.
-    """
+class User(BaseUser):
+    """User profile model for any user that has an account on website."""
+
+    # The following fields are always present
     level: int
     upload_limit: int
     created_at: datetime
@@ -46,19 +47,16 @@ class ShortenedUser(BaseUser):
     credits_subs: int
     is_ai_beta: bool
 
-
-class User(ShortenedUser):
-    """User profile model for any user that has an account on website."""
-
-    last_logged_in_at: datetime
-    favorite_count: int
-    post_favorite_count: int
-    pool_favorite_count: int
-    vote_count: int
-    post_vote_count: int
-    pool_vote_count: int
-    recommended_posts_for_user: int
-    subscriptions: list[str]
+    # The following fields can be missing in API json response
+    last_logged_in_at: Optional[datetime] = None
+    favorite_count: Optional[int] = None
+    post_favorite_count: Optional[int]
+    pool_favorite_count: Optional[int]
+    vote_count: Optional[int] = None
+    post_vote_count: Optional[int] = None
+    pool_vote_count: Optional[int] = None
+    recommended_posts_for_user: Optional[int] = None
+    subscriptions: list[str] = []
 
 
 class ExtendedUser(User):

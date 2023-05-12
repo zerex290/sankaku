@@ -110,7 +110,7 @@ def test_author_model(data, expected):
         )
     ]
 )
-def test_user_model(data, expected):  # Suits for anonymous user as well
+def test_user_model(data, expected):
     assert User(**data) == expected
     # Pydantic converts Model to dict before comparing,
     # So there is no need in calling model '.dict()' method.

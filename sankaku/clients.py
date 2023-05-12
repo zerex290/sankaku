@@ -118,10 +118,10 @@ class PostClient(BaseClient):
         """
         async with self._session as session:
             async for page in PostPaginator(
-                session, const.POST_URL,
+                mdl.Post, session, const.POST_URL,
                 **self._get_paginator_kwargs(locals())
             ):
-                for post in page.data:
+                for post in page.items:
                     yield post
 
     async def get_favorited_posts(self) -> AsyncIterator[mdl.Post]:
@@ -172,10 +172,10 @@ class PostClient(BaseClient):
         :param post_id: ID of specific post
         """
         async with self._session as session:
-            async for page in CommentPaginator(
-                session, const.COMMENT_URL.format(post_id=post_id)
+            async for page in Paginator(
+                mdl.Comment, session, const.COMMENT_URL.format(post_id=post_id)
             ):
-                for comment in page.data:
+                for comment in page.items:
                     yield comment
 
     async def get_post(
@@ -235,11 +235,11 @@ class AIClient(BaseClient):
         :return: Asynchronous generator which yields AI posts
         """
         async with self._session as session:
-            async for page in AIPostPaginator(
-                session, const.AI_POST_URL,
+            async for page in Paginator(
+                mdl.AIPost, session, const.AI_POST_URL,
                 **self._get_paginator_kwargs(locals())
             ):
-                for post in page.data:
+                for post in page.items:
                     yield post
 
     async def get_ai_post(self, post_id: int) -> mdl.AIPost:
@@ -292,10 +292,10 @@ class TagClient(BaseClient):
         """
         async with self._session as session:
             async for page in TagPaginator(
-                session, const.TAG_URL,
+                mdl.PageTag, session, const.TAG_URL,
                 **self._get_paginator_kwargs(locals())
             ):
-                for tag in page.data:
+                for tag in page.items:
                     yield tag
 
     async def get_tag(self, name_or_id: str | int) -> mdl.WikiTag:
@@ -339,7 +339,7 @@ class UserClient(BaseClient):
         *,
         page_number: Optional[int] = None,
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
-    ) -> AsyncIterator[mdl.User | mdl.ShortenedUser]:
+    ) -> AsyncIterator[mdl.User]:
         """
         Iterate through user pages.
 
@@ -349,13 +349,12 @@ class UserClient(BaseClient):
         :param limit: Maximum amount of users per page
         :return: Asynchronous generator which yields users
         """
-        logger.warning(f"Chance to get ShortenedUser model with fewer attributes.")
         async with self._session as session:
             async for page in UserPaginator(
-                session, const.USER_URL,
+                mdl.User, session, const.USER_URL,
                 **self._get_paginator_kwargs(locals())
             ):
-                for user in page.data:
+                for user in page.items:
                     yield user
 
     async def get_user(self, username: str):  # TODO: TBA
