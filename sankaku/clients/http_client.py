@@ -1,5 +1,3 @@
-import warnings
-
 from aiohttp import ClientSession
 from loguru import logger
 
@@ -21,12 +19,6 @@ class HttpClient(ABCHttpClient):
         self.headers: dict[str, str] = const.HEADERS.copy()
         self.session: ClientSession = ClientSession()
 
-    async def __aenter__(self) -> "HttpClient":
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
-        await self.close()
-
     def __del__(self) -> None:
         if not self.session.closed and self.session.connector is not None:
             self.session.connector.close()
@@ -36,6 +28,7 @@ class HttpClient(ABCHttpClient):
 
     async def request(self, method: str, url: str, **kwargs) -> ClientResponse:
         """Make request to specified url."""
+
         response = await self.session.request(
             method, url, headers=self.headers, **kwargs
         )

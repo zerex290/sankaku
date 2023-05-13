@@ -10,13 +10,11 @@ class ABCHttpClient(ABC):
     def __init__(self, *args, **kwargs) -> None:
         pass
 
-    @abstractmethod
     async def __aenter__(self) -> "ABCHttpClient":
-        pass
+        return self
 
-    @abstractmethod
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
-        pass
+        await self.close()
 
     @abstractmethod
     def __del__(self) -> None:

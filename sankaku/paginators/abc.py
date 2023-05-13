@@ -27,12 +27,8 @@ class ABCPaginator(ABC, Generic[_T]):
 
     @abstractmethod
     async def next_page(self) -> Page[_T]:
-        pass
+        """Returns paginator next page."""
 
     @abstractmethod
     def complete_params(self) -> None:
         """Complete params passed to paginator for further use."""
-
-    @abstractmethod
-    def construct_page(self, data: list[dict]) -> Page[_T]:
-        """Construct and return page model."""

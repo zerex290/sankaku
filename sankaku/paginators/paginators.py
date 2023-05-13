@@ -42,6 +42,8 @@ class Paginator(ABCPaginator[_T]):
 
     @ratelimit(rps=const.BASE_RPS)
     async def next_page(self) -> mdl.Page[_T]:  # type: ignore[override]
+        """Returns paginator next page."""
+
         response = await self.http_client.get(self.url, params=self.params)
         match response.json:
             case [] | {"data": []}:
@@ -55,7 +57,7 @@ class Paginator(ABCPaginator[_T]):
 
         self.page_number += 1
         self.params["page"] = str(self.page_number)
-        return self.construct_page(response.json)
+        return self._construct_page(response.json)
 
     def complete_params(self) -> None:
         """Complete params passed to paginator for further use."""
@@ -66,7 +68,7 @@ class Paginator(ABCPaginator[_T]):
         if self.limit is not None:
             self.params["limit"] = str(self.limit)
 
-    def construct_page(self, data: list[dict]) -> mdl.Page[_T]:
+    def _construct_page(self, data: list[dict]) -> mdl.Page[_T]:
         """Construct and return page model."""
 
         items = [self.model(**d) for d in data]
