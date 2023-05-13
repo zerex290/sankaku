@@ -1,13 +1,11 @@
-from typing import Optional, Literal, Annotated, Generic, TypeVar
-from collections.abc import AsyncIterator
+from typing import Optional, Literal, Annotated, TypeVar
 from datetime import datetime
 
-import aiohttp
-from loguru import logger
-
-import sankaku.models as mdl
+from .abc import ABCPaginator
 from sankaku.typedefs import ValueRange
-from sankaku import constants as const, types, utils, errors
+from sankaku.utils import ratelimit
+from sankaku import models as mdl, constants as const, types, errors
+from sankaku.clients import HttpClient
 
 
 __all__ = [
@@ -21,63 +19,47 @@ __all__ = [
 _T = TypeVar("_T")
 
 
-class Paginator(Generic[_T]):
+class Paginator(ABCPaginator[_T]):
     """Basic paginator for iteration without any special parameters."""
 
     def __init__(
         self,
-        model: type[_T],
-        session: aiohttp.ClientSession,
+        http_client: HttpClient,
         url: str,
+        model: type[_T],
         page_number: Optional[int] = None,
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
         params: Optional[dict[str, str]] = None
     ) -> None:
-        self.model = model
-        self.session = session
+        self.http_client = http_client
         self.url = url
+        self.model = model
         self.page_number = page_number or const.BASE_PAGE_NUMBER
         self.limit = limit or const.BASE_PAGE_LIMIT
         self.params: dict[str, str] = params or {}
 
         self.complete_params()
 
-    def __aiter__(self) -> AsyncIterator[mdl.Page[_T]]:
-        return self
+    @ratelimit(rps=const.BASE_RPS)
+    async def next_page(self) -> mdl.Page[_T]:  # type: ignore[override]
+        response = await self.http_client.get(self.url, params=self.params)
+        match response.json:
+            case [] | {"data": []}:
+                raise errors.PaginatorLastPage(response.status, page=self.page_number)
+            case {"code": code} if code in const.PAGE_ALLOWED_ERRORS:
+                raise errors.PaginatorLastPage(response.status, page=self.page_number)
+            case {"code": _, "errorId": _}:
+                raise errors.SankakuServerError(response.status, **response.json)
+            case {"data": list() as data} if data:
+                response.json = data
 
-    async def __anext__(self) -> mdl.Page[_T]:
-        try:
-            return await self.next_page()
-        except errors.PaginatorLastPage:
-            raise StopAsyncIteration
-
-    @utils.ratelimit(rps=const.BASE_RPS)
-    async def next_page(self) -> mdl.Page[_T]:
-        async with self.session.get(self.url, params=self.params) as response:
-            logger.debug(f"Sent GET request [{response.status}]: {response.url}")
-            if response.content_type != "application/json":
-                raise errors.SankakuError(
-                    f"Response content type is invalid: "
-                    f"{response.content_type}"
-                )
-
-            data = await response.json()
-            logger.debug(f"Response JSON: {data}")
-            match data:
-                case [] | {"data": []}:
-                    raise errors.PaginatorLastPage(self.page_number)
-                case {"code": code} if code in const.PAGE_ALLOWED_ERRORS:
-                    raise errors.PaginatorLastPage(self.page_number)
-                case {"code": code, "errorId": error_id, **kwargs}:
-                    raise errors.SankakuError(None, error_id, code, kwargs)
-                case {"data": list() as items} if items:
-                    data = items
-
-            self.page_number += 1
-            self.params["page"] = str(self.page_number)
-            return self.construct_page(data)
+        self.page_number += 1
+        self.params["page"] = str(self.page_number)
+        return self.construct_page(response.json)
 
     def complete_params(self) -> None:
+        """Complete params passed to paginator for further use."""
+
         self.params["lang"] = "en"
         if self.page_number is not None:
             self.params["page"] = str(self.page_number)
@@ -85,16 +67,19 @@ class Paginator(Generic[_T]):
             self.params["limit"] = str(self.limit)
 
     def construct_page(self, data: list[dict]) -> mdl.Page[_T]:
-        items = [self.model(**item) for item in data]
+        """Construct and return page model."""
+
+        items = [self.model(**d) for d in data]
         return mdl.Page[_T](number=self.page_number - 1, items=items)
 
 
-class PostPaginator(Paginator[_T]):
+class PostPaginator(Paginator[mdl.Post]):
+
     def __init__(
         self,
-        model: type[_T],
-        session: aiohttp.ClientSession,
+        http_client: HttpClient,
         url: str,
+        model: type[mdl.Post] = mdl.Post,
         page_number: Optional[int] = None,
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
         params: Optional[dict[str, str]] = None,
@@ -125,7 +110,7 @@ class PostPaginator(Paginator[_T]):
         self.tags = tags
         self.added_by = added_by
         self.voted = voted
-        super().__init__(model, session, url, page_number, limit, params)
+        super().__init__(http_client, url, model, page_number, limit, params)
 
     def complete_params(self) -> None:
         super().complete_params()
@@ -162,12 +147,12 @@ class PostPaginator(Paginator[_T]):
             self.params["tags"] = " ".join(self.tags)
 
 
-class TagPaginator(Paginator[_T]):
+class TagPaginator(Paginator[mdl.PageTag]):
     def __init__(
         self,
-        model: type[_T],
-        session: aiohttp.ClientSession,
+        http_client: HttpClient,
         url: str,
+        model: type[mdl.PageTag] = mdl.PageTag,
         page_number: Optional[int] = None,
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
         params: Optional[dict[str, str]] = None,
@@ -184,7 +169,7 @@ class TagPaginator(Paginator[_T]):
         self.max_post_count = max_post_count
         self.sort_parameter = sort_parameter
         self.sort_direction = sort_direction or types.SortDirection.DESC
-        super().__init__(model, session, url, page_number, limit, params)
+        super().__init__(http_client, url, model, page_number, limit, params)
 
     def complete_params(self) -> None:
         super().complete_params()
@@ -203,12 +188,12 @@ class TagPaginator(Paginator[_T]):
             )
 
 
-class UserPaginator(Paginator[_T]):
+class UserPaginator(Paginator[mdl.User]):
     def __init__(
         self,
-        model: type[_T],
-        session: aiohttp.ClientSession,
+        http_client: HttpClient,
         url: str,
+        model: type[mdl.User] = mdl.User,
         page_number: Optional[int] = None,
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
         params: Optional[dict[str, str]] = None,
@@ -217,7 +202,7 @@ class UserPaginator(Paginator[_T]):
     ) -> None:
         self.order = order
         self.level = level
-        super().__init__(model, session, url, page_number, limit, params)
+        super().__init__(http_client, url, model, page_number, limit, params)
 
     def complete_params(self) -> None:
         super().complete_params()

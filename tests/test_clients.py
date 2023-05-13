@@ -41,13 +41,11 @@ class TestPostClient:
         self, nlclient: SankakuClient,
         page_number, limit
     ):
-        try:
+        with pytest.raises(errors.SankakuServerError):
             async for _ in nlclient.browse_posts(
                 page_number=page_number, limit=limit
             ):
-                assert False
-        except errors.SankakuError as e:
-            assert e.code == "invalid-parameters"
+                break
 
     @pytest.mark.parametrize(
         [
@@ -140,7 +138,7 @@ class TestPostClient:
             assert post.comments
 
     async def test_get_non_existent_post(self, lclient: SankakuClient):
-        with pytest.raises(errors.PostNotFoundError):
+        with pytest.raises(errors.PageNotFoundError):
             await lclient.get_post(-10_000)
 
     async def test_create_post(self, lclient: SankakuClient):
@@ -158,13 +156,11 @@ class TestAIClient:
         self, nlclient: SankakuClient,
         page_number, limit
     ):
-        try:
+        with pytest.raises(errors.SankakuServerError):
             async for _ in nlclient.browse_ai_posts(
                 page_number=page_number, limit=limit
             ):
-                assert False
-        except errors.SankakuError as e:
-            assert e.code == "error"
+                break
 
     @pytest.mark.parametrize(["post_id"], [(123,), (1721,)])
     async def test_get_ai_post(self, nlclient: SankakuClient, post_id):
@@ -172,7 +168,7 @@ class TestAIClient:
         assert isinstance(post, mdl.AIPost)
 
     async def test_get_non_existent_ai_post(self, lclient: SankakuClient):
-        with pytest.raises(errors.PostNotFoundError):
+        with pytest.raises(errors.PageNotFoundError):
             await lclient.get_ai_post(-10_000)
 
     async def test_create_ai_post(self, lclient: SankakuClient):
@@ -190,13 +186,11 @@ class TestTagClient:
         self, nlclient: SankakuClient,
         page_number, limit
     ):
-        try:
+        with pytest.raises(errors.SankakuServerError):
             async for _ in nlclient.browse_tags(
                 page_number=page_number, limit=limit
             ):
-                assert False
-        except errors.SankakuError as e:
-            assert e.code == "error"
+                break
 
     @pytest.mark.parametrize(
         [
@@ -266,13 +260,11 @@ class TestUserClient:
         self, nlclient: SankakuClient,
         page_number, limit
     ):
-        try:
+        with pytest.raises(errors.SankakuServerError):
             async for _ in nlclient.browse_users(
-                    page_number=page_number, limit=limit
+                page_number=page_number, limit=limit
             ):
-                assert False
-        except errors.SankakuError as e:
-            assert e.code == "error"
+                break
 
     @pytest.mark.parametrize(["name_or_id"], [("anonymous",), (1423490,)])
     async def test_get_user(self, nlclient: SankakuClient, name_or_id):
@@ -282,5 +274,5 @@ class TestUserClient:
     async def test_get_user_with_wrong_name_or_id(
             self, nlclient: SankakuClient, name_or_id
     ):
-        with pytest.raises(errors.UserNotFoundError):
+        with pytest.raises(errors.PageNotFoundError):
             await nlclient.get_user(name_or_id)

@@ -1,26 +1,36 @@
 import json
-from typing import Optional, Literal, Annotated, Any
+from typing import Optional, Literal, Annotated
 from collections.abc import AsyncIterator
 from datetime import datetime
 
-import aiohttp
 from loguru import logger
 
-import sankaku.models as mdl
+from .abc import ABCClient
+from .http_client import HttpClient
 from sankaku.typedefs import ValueRange
-from sankaku import constants as const, types, errors
+from sankaku.utils import from_locals
+from sankaku import models as mdl, constants as const, types, errors
 from sankaku.paginators import *
 
 
-class BaseClient:
+__all__ = [
+    "PostClient",
+    "AIClient",
+    "TagClient",
+    "BookClient",
+    "UserClient",
+]
+
+
+class BaseClient(ABCClient):
     """Base client for login."""
 
     def __init__(self) -> None:
         self.profile: Optional[mdl.ExtendedUser] = None
+        self._http_client: HttpClient = HttpClient()
         self._access_token: str = ""  # TODO: ability to login by access token
         self._refresh_token: str = ""  # TODO: ability to update access token
         self._token_type: str = ""
-        self._auth: bool = False  # Flag that specifies API requests type
 
     async def login(self, login: str, password: str) -> None:
         """
@@ -29,48 +39,23 @@ class BaseClient:
         :param login: User email or username
         :param password: User password
         """
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
+        async with self._http_client as client:
+            response = await client.post(
                 const.LOGIN_URL,
-                headers=self._headers,
                 data=json.dumps({"login": login, "password": password})
-            ) as response:
-                logger.debug(f"Sent POST request [{response.status}]: {response.url}")
-                data = await response.json()
+            )
 
-                if not response.ok:
-                    raise errors.AuthorizationError(response.status, data.get("error"))
+            if not response.ok:
+                raise errors.AuthorizationError(response.status, **response.json)
 
-                self._token_type = data["token_type"]
-                self._access_token = data["access_token"]
-                self._refresh_token = data["refresh_token"]
-                self.profile = mdl.ExtendedUser(**data["current_user"])
-                self._auth = True
-                logger.info(f"Successfully logged in as {self.profile.name}.")
-
-    @property
-    def _headers(self) -> dict[str, str]:
-        headers = const.HEADERS.copy()
-        if self._auth:
-            headers["authorization"] = f"{self._token_type} {self._access_token}"
-        return headers
-
-    @property
-    def _session(self) -> aiohttp.ClientSession:
-        return aiohttp.ClientSession(headers=self._headers)
-
-    @staticmethod
-    def _from_locals(
-        loc: dict[str, Any],
-        rm_list: tuple[str, ...] = ("self", "session")
-    ) -> dict[str, Any]:
-        """
-        Get kwargs for paginator from locals of calling function.
-
-        :param loc: locals of outer function
-        :param rm_list: positions from calling function to be removed
-        """
-        return {k: v for k, v in loc.copy().items() if k not in rm_list}
+            self._access_token = response.json["access_token"]
+            self._refresh_token = response.json["refresh_token"]
+            self._token_type = response.json["token_type"]
+            self.profile = mdl.ExtendedUser(**response.json["current_user"])
+            self._http_client.headers.update(
+                authorization=f"{self._token_type} {self._access_token}"
+            )
+            logger.info(f"Successfully logged in as {self.profile.name}.")
 
 
 class PostClient(BaseClient):
@@ -116,10 +101,9 @@ class PostClient(BaseClient):
         :param limit: Maximum amount of posts per page
         :return: Asynchronous generator which yields posts
         """
-        async with self._session as session:
+        async with self._http_client as client:
             async for page in PostPaginator(
-                mdl.Post, session, const.POST_URL,
-                **self._from_locals(locals())
+                client, const.POST_URL, **from_locals(locals(), ["self", "client"])
             ):
                 for post in page.items:
                     yield post
@@ -171,9 +155,9 @@ class PostClient(BaseClient):
 
         :param post_id: ID of specific post
         """
-        async with self._session as session:
+        async with self._http_client as client:
             async for page in Paginator(
-                mdl.Comment, session, const.COMMENT_URL.format(post_id=post_id)
+                client, const.COMMENT_URL.format(post_id=post_id), mdl.Comment
             ):
                 for comment in page.items:
                     yield comment
@@ -193,14 +177,13 @@ class PostClient(BaseClient):
         note that it greatly reduces performance
         :param with_comments: Whether to attach post comments
         """
-        async with self._session as session:
-            async with session.get(f"{const.POST_URL}/{post_id}") as response:
-                logger.debug(f"Sent POST request [{response.status}]: {response.url}")
-                if not response.ok:
-                    raise errors.PostNotFoundError(post_id)
-                data = await response.json()
-                logger.debug(f"Response JSON: {data}")
-                post = mdl.Post(**data)
+        async with self._http_client as client:
+            response = await client.get(f"{const.POST_URL}/{post_id}")
+
+            if not response.ok:
+                raise errors.PageNotFoundError(response.status, post_id=post_id)
+
+            post = mdl.Post(**response.json)
 
         if with_similar_posts:
             post.similar_posts = [
@@ -232,10 +215,10 @@ class AIClient(BaseClient):
         :param limit: Maximum amount of posts per page
         :return: Asynchronous generator which yields AI posts
         """
-        async with self._session as session:
+        async with self._http_client as client:
             async for page in Paginator(
-                mdl.AIPost, session, const.AI_POST_URL,
-                **self._from_locals(locals())
+                client, const.AI_POST_URL, mdl.AIPost,
+                **from_locals(locals(), ["self", "client"])
             ):
                 for post in page.items:
                     yield post
@@ -246,14 +229,13 @@ class AIClient(BaseClient):
 
         :param post_id: ID of specific post
         """
-        async with self._session as session:
-            async with session.get(f"{const.AI_POST_URL}/{post_id}") as response:
-                logger.debug(f"Sent POST request [{response.status}]: {response.url}")
-                if not response.ok:
-                    raise errors.PostNotFoundError(post_id)
-                data = await response.json()
-                logger.debug(f"Response JSON: {data}")
-                return mdl.AIPost(**data)
+        async with self._http_client as client:
+            response = await client.get(f"{const.AI_POST_URL}/{post_id}")
+
+            if not response.ok:
+                raise errors.PageNotFoundError(response.status, post_id=post_id)
+
+            return mdl.AIPost(**response.json)
 
     async def create_ai_post(self):  # TODO: TBA
         raise NotImplementedError
@@ -288,10 +270,10 @@ class TagClient(BaseClient):
         :param limit: Maximum amount of tags per page
         :return: Asynchronous generator which yields tags
         """
-        async with self._session as session:
+        async with self._http_client as client:
             async for page in TagPaginator(
-                mdl.PageTag, session, const.TAG_URL,
-                **self._from_locals(locals())
+                client, const.TAG_URL,
+                **from_locals(locals(), ["self", "client"])
             ):
                 for tag in page.items:
                     yield tag
@@ -304,14 +286,14 @@ class TagClient(BaseClient):
         """
         ref = "name" if isinstance(name_or_id, str) else "id"
         url = const.TAG_WIKI_URL.format(ref=ref, name_or_id=name_or_id)
-        async with self._session as session:
-            async with session.get(url) as response:
-                logger.debug(f"Sent POST request [{response.status}]: {response.url}")
-                if not response.ok:
-                    raise errors.TagNotFoundError(name_or_id)
-                data = await response.json()
-                logger.debug(f"Response JSON: {data}")
-                return mdl.WikiTag(wiki=data["wiki"], **data["tag"])
+
+        async with self._http_client as client:
+            response = await client.get(url)
+
+            if not response.ok:
+                raise errors.PageNotFoundError(response.status, name_or_id=name_or_id)
+
+            return mdl.WikiTag(wiki=response.json["wiki"], **response.json["tag"])
 
 
 class BookClient(BaseClient):
@@ -346,10 +328,10 @@ class UserClient(BaseClient):
         :param limit: Maximum amount of users per page
         :return: Asynchronous generator which yields users
         """
-        async with self._session as session:
+        async with self._http_client as client:
             async for page in UserPaginator(
-                mdl.User, session, const.USER_URL,
-                **self._from_locals(locals())
+                client, const.USER_URL,
+                **from_locals(locals(), ["self", "client"])
             ):
                 for user in page.items:
                     yield user
@@ -365,21 +347,11 @@ class UserClient(BaseClient):
             f"{'name/' if isinstance(name_or_id, str) else ''}"
             f"{name_or_id}"
         )
-        async with self._session as session:
-            async with session.get(url) as response:
-                logger.debug(f"Sent POST request [{response.status}]: {response.url}")
-                if not response.ok:
-                    raise errors.UserNotFoundError(name_or_id)
-                data = await response.json()
-                logger.debug(f"Response JSON: {data}")
-                return mdl.User(**data)
 
+        async with self._http_client as client:
+            response = await client.get(url)
 
-class SankakuClient(  # noqa
-    PostClient,
-    AIClient,
-    TagClient,
-    BookClient,
-    UserClient
-):
-    """Simple client for Sankaku API."""
+            if not response.ok:
+                raise errors.PageNotFoundError(response.status, name_or_id=name_or_id)
+
+            return mdl.User(**response.json)

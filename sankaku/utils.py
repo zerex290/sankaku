@@ -1,7 +1,7 @@
 import asyncio
 from datetime import datetime
 from functools import wraps
-from typing import TypeVar, ParamSpec, Optional
+from typing import TypeVar, ParamSpec, Optional, Any
 from collections.abc import Callable, Awaitable
 
 
@@ -9,7 +9,7 @@ from sankaku.errors import RateLimitError
 from sankaku.typedefs import Timestamp
 
 
-__all__ = ["ratelimit", "convert_ts_to_datetime"]
+__all__ = ["ratelimit", "convert_ts_to_datetime", "from_locals"]
 
 
 _T = TypeVar("_T")
@@ -30,7 +30,7 @@ def ratelimit(
     if all(locals().values()):
         raise RateLimitError
     elif not any(locals().values()):
-        raise TypeError("At least argument must be specified.")
+        raise TypeError("At least one argument must be specified.")
 
     sleep_time: float = (1 / rps) if rps else (60 / rpm)  # type: ignore[operator]
 
@@ -48,3 +48,13 @@ def convert_ts_to_datetime(ts: Timestamp) -> Optional[datetime]:
     if ts.get("s") is None:
         return None
     return datetime.utcfromtimestamp(ts["s"]).astimezone()  # type: ignore[arg-type]
+
+
+def from_locals(loc: dict[str, Any], exclude: list[str]) -> dict[str, Any]:
+    """
+    Get kwargs from locals of outer function.
+
+    :param loc: locals of outer function
+    :param exclude: positions to be excluded
+    """
+    return {k: v for k, v in loc.copy().items() if k not in exclude}
