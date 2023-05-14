@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional
 from datetime import datetime
 
@@ -68,7 +70,7 @@ class PageBook(BaseModel):
     is_deleted: bool
     cover_post_id: Optional[int]
     name: Optional[str]
-    parent_pool: Optional["PageBook"]
+    parent_pool: Optional[PageBook]
 
 
 class Book(PageBook):

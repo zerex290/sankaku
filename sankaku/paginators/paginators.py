@@ -124,7 +124,7 @@ class PostPaginator(Paginator[mdl.Post]):
             match items:
                 case [_, None]:
                     continue
-                case ["order" | "rating" | "file_type" as k, v] if v != types.FileType.IMAGE:  # noqa
+                case ["order" | "rating" | "file_type" as k, v] if v is not types.FileType.IMAGE:  # noqa
                     self.tags.append(f"{k}:{v.value}")
                 case ["threshold" | "recommended_for" | "voted" as k, v]:
                     self.tags.append(f"{k}:{v}")
@@ -133,7 +133,7 @@ class PostPaginator(Paginator[mdl.Post]):
                 case ["date", _]:
                     date = "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in self.date)  # type: ignore[union-attr]
                     self.tags.append(f"date:{date}")
-                case ["video_duration", _] if self.file_type != types.FileType.VIDEO:  # noqa
+                case ["video_duration", _] if self.file_type is not types.FileType.VIDEO:  # noqa
                     raise errors.VideoDurationError
                 case ["video_duration", _]:
                     duration = "..".join(str(sec) for sec in self.video_duration)  # type: ignore[union-attr]

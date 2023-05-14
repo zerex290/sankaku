@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional
 from datetime import datetime
 
@@ -69,7 +71,7 @@ class Comment(BaseModel):
     body: str
     score: int
     parent_id: Optional[int]
-    children: list["Comment"]
+    children: list[Comment]
     deleted: bool
     deleted_by: dict  # Seen only empty dictionaries so IDK real type
     updated_at: Optional[datetime]
@@ -107,7 +109,7 @@ class Post(BasePost):
     video_duration: Optional[float]
 
     # The following fields are missing in API response
-    similar_posts: list["Post"] = []
+    similar_posts: list[Post] = []
     comments: list[Comment] = []
 
 

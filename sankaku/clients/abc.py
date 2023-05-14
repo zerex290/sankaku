@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Self
 
 from sankaku.models.http import ClientResponse
 
@@ -11,7 +11,7 @@ class ABCHttpClient(ABC):
     def __init__(self, *args, **kwargs) -> None:
         pass
 
-    async def __aenter__(self) -> "ABCHttpClient":
+    async def __aenter__(self) -> Self:
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
