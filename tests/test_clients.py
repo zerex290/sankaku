@@ -4,6 +4,7 @@ import pytest  # noqa
 
 from sankaku import errors, models as mdl, types
 from sankaku.clients import SankakuClient
+from sankaku.utils import from_locals
 
 
 class TestBaseClient:
@@ -65,7 +66,7 @@ class TestPostClient:
             (
                 1, 40, "in-larger-tags", types.PostOrder.QUALITY,
                 None, types.Rating.EXPLICIT, None, None, types.FileType.IMAGE,
-                None, "Moldus", None, None,
+                None, "Nigredo", None, None,
                 None, None
             ),
             (
@@ -77,7 +78,7 @@ class TestPostClient:
             (
                 1, 10, None, types.PostOrder.DATE,
                 None, None, 4, types.FileSize.LARGE, None,
-                None, None, "Moldus", ["female", "solo"],
+                None, None, "Nigredo", ["female", "solo"],
                 None, None
             )
         ]
@@ -89,9 +90,9 @@ class TestPostClient:
         video_duration, recommended_for, favorited_by, tags,
         added_by, voted
     ):
-        kwargs = locals().copy()
-        del kwargs["self"], kwargs["lclient"]
-        post = await anext(lclient.browse_posts(**kwargs))
+        post = await anext(
+            lclient.browse_posts(**from_locals(locals(), ("self", "lclient")))
+        )
         assert isinstance(post, mdl.Post)
 
     async def test_get_favorited_posts_unauthorized(self, nlclient: SankakuClient):
@@ -222,9 +223,9 @@ class TestTagClient:
         order, rating, max_post_count,
         sort_parameter, sort_direction
     ):
-        kwargs = locals().copy()
-        del kwargs["self"], kwargs["lclient"]
-        tag = await anext(lclient.browse_tags(**kwargs))
+        tag = await anext(
+            lclient.browse_tags(**from_locals(locals(), ("self", "lclient")))
+        )
         assert isinstance(tag, mdl.PageTag)
 
     @pytest.mark.parametrize(
@@ -234,15 +235,90 @@ class TestTagClient:
         wiki_tag = await lclient.get_tag(name_or_id)
         assert isinstance(wiki_tag, mdl.WikiTag)
 
+    async def test_get_non_existent_tag(self, lclient: SankakuClient):
+        with pytest.raises(errors.PageNotFoundError):
+            await lclient.get_tag(-10_000)
+
 
 class TestBookClient:
-    async def test_browse_books(self, nlclient: SankakuClient):
-        with pytest.raises(NotImplementedError):
-            await nlclient.browse_books()
+    async def test_browse_default(self, nlclient: SankakuClient):
+        assert isinstance(await anext(nlclient.browse_books()), mdl.PageBook)
 
-    async def test_get_recommended_books(self, nlclient: SankakuClient):
-        with pytest.raises(NotImplementedError):
-            await nlclient.get_recommended_books()
+    @pytest.mark.parametrize(["page_number", "limit"], [(-3, 40), (1, -22)])
+    async def test_browse_with_incorrect_page_number_or_limit(
+            self, nlclient: SankakuClient,
+            page_number, limit
+    ):
+        with pytest.raises(errors.SankakuServerError):
+            async for _ in nlclient.browse_books(
+                page_number=page_number, limit=limit
+            ):
+                break
+
+    @pytest.mark.parametrize(
+        [
+            "order", "rating", "recommended_for",
+            "favorited_by", "tags", "added_by",
+            "voted", "page_number", "limit"
+        ],
+        [
+            (
+                types.BookOrder.RANDOM, types.Rating.EXPLICIT, "reichan",
+                None, None, None,
+                None, 1, 50
+            ),
+            (
+                types.BookOrder.POPULARITY, None, None,
+                "Nigredo", None, None,
+                "Nigredo", None, None
+            ),
+            (
+                None, None, None,
+                None, ["genshin_impact"], ["yanququ"],
+                None, 1, 10
+            )
+        ]
+    )
+    async def test_browse_with_random_args(
+            self, lclient: SankakuClient,
+            order, rating, recommended_for,
+            favorited_by, tags, added_by,
+            voted, page_number, limit
+    ):
+        book = await anext(
+            lclient.browse_books(**from_locals(locals(), ("self", "lclient")))
+        )
+        assert isinstance(book, mdl.PageBook)
+
+    async def test_favorited_books_unauthorized(self, nlclient: SankakuClient):
+        with pytest.raises(errors.LoginRequirementError):
+            await anext(nlclient.get_favorited_books())
+
+    async def test_favorited_books_authorized(self, lclient: SankakuClient):
+        assert isinstance(await anext(lclient.get_favorited_books()), mdl.PageBook)
+
+    async def test_recommended_books_unauthorized(self, nlclient: SankakuClient):
+        with pytest.raises(errors.LoginRequirementError):
+            await anext(nlclient.get_recommended_books())
+
+    async def test_recommended_books_authorized(self, lclient: SankakuClient):
+        assert isinstance(await anext(lclient.get_recommended_books()), mdl.PageBook)
+
+    async def test_recently_read_books_unauthorized(self, nlclient: SankakuClient):
+        with pytest.raises(errors.LoginRequirementError):
+            await anext(nlclient.get_recently_read_books())
+
+    async def test_recently_read_books_authorized(self, lclient: SankakuClient):
+        assert isinstance(await anext(lclient.get_recently_read_books()), mdl.PageBook)
+
+    @pytest.mark.parametrize(["book_id"], [(1000,)])
+    async def test_get_book(self, nlclient: SankakuClient, book_id):
+        book = await nlclient.get_book(book_id)
+        assert isinstance(book, mdl.Book)
+
+    async def test_get_non_existent_book(self, lclient: SankakuClient):
+        with pytest.raises(errors.PageNotFoundError):
+            await lclient.get_book(-10_000)
 
 
 class TestUserClient:

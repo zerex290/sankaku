@@ -50,11 +50,13 @@ def convert_ts_to_datetime(ts: Timestamp) -> Optional[datetime]:
     return datetime.utcfromtimestamp(ts["s"]).astimezone()  # type: ignore[arg-type]
 
 
-def from_locals(loc: dict[str, Any], exclude: list[str]) -> dict[str, Any]:
+def from_locals(
+    loc: dict[str, Any], exclude: tuple[str, ...] = ("self",)
+) -> dict[str, Any]:
     """
-    Get kwargs from locals of outer function.
+    Get arguments of calling function from its locals to pass them to paginator.
 
-    :param loc: locals of outer function
-    :param exclude: positions to be excluded
+    :param loc: locals of calling function
+    :param exclude: arguments to be excluded
     """
     return {k: v for k, v in loc.copy().items() if k not in exclude}

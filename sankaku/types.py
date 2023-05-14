@@ -83,3 +83,12 @@ class UserLevel(Enum):
     MEMBER = 20
     BLOCKED = 10
     UNACTIVATED = 0
+
+
+class BookOrder(Enum):
+    POPULARITY = "popularity"
+    DATE = "date"
+    QUALITY = "quality"
+    RANDOM = "random"
+    RECENTLY_FAVORITED = "recently_favorited"
+    RECENTLY_VOTED = "recently_voted"

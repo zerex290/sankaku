@@ -32,6 +32,7 @@ class BaseClient(ABCClient):
         self._refresh_token: str = ""  # TODO: ability to update access token
         self._token_type: str = ""
 
+    # TODO: add two-factor auth support
     async def login(self, login: str, password: str) -> None:
         """
         Login into sankakucomplex.com via login and password.
@@ -101,14 +102,13 @@ class PostClient(BaseClient):
         :return: Asynchronous generator which yields posts
         """
         async for page in PostPaginator(
-            self._http_client, const.POST_URL,
-            **from_locals(locals(), ["self", "client"])
+            self._http_client, const.POST_URL, **from_locals(locals())
         ):
             for post in page.items:
                 yield post
 
     async def get_favorited_posts(self) -> AsyncIterator[mdl.Post]:
-        """Shorthand way to get favorite posts of currently logged-in user."""
+        """Shorthand way to get favorited posts of currently logged-in user."""
 
         if self.profile is None:
             raise errors.LoginRequirementError
@@ -162,7 +162,7 @@ class PostClient(BaseClient):
             for comment in page.items:
                 yield comment
 
-    async def get_post(
+    async def get_post(  # TODO: add related pools info if they are present
         self,
         post_id: int,
         *,
@@ -215,8 +215,8 @@ class AIClient(BaseClient):
         :return: Asynchronous generator which yields AI posts
         """
         async for page in Paginator(
-            self._http_client, const.AI_POST_URL, mdl.AIPost,
-            **from_locals(locals(), ["self", "client"])
+            self._http_client, const.AI_POST_URL,
+            mdl.AIPost, **from_locals(locals())
         ):
             for post in page.items:
                 yield post
@@ -268,8 +268,7 @@ class TagClient(BaseClient):
         :return: Asynchronous generator which yields tags
         """
         async for page in TagPaginator(
-            self._http_client, const.TAG_URL,
-            **from_locals(locals(), ["self", "client"])
+            self._http_client, const.TAG_URL, **from_locals(locals())
         ):
             for tag in page.items:
                 yield tag
@@ -294,13 +293,64 @@ class TagClient(BaseClient):
 class BookClient(BaseClient):
     """Client for book (pool) browsing."""
 
-    async def browse_books(self):  # TODO: TBA
-        raise NotImplementedError
+    async def browse_books(
+        self,
+        order: Optional[types.BookOrder] = None,
+        rating: Optional[types.Rating] = None,
+        recommended_for: Optional[str] = None,
+        favorited_by: Optional[str] = None,
+        tags: Optional[list[str]] = None,
+        added_by: Optional[list[str]] = None,
+        voted: Optional[str] = None,
+        *,
+        page_number: Optional[int] = None,
+        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
+    ) -> AsyncIterator[mdl.PageBook]:
+        async for page in BookPaginator(
+            self._http_client, const.BOOK_URL, **from_locals(locals())
+        ):
+            for book in page.items:
+                yield book
 
-    async def get_recommended_books(self):  # TODO: TBA
+    async def get_favorited_books(self) -> AsyncIterator[mdl.PageBook]:
+        """Shorthand way to get favorited books for the currently logged-in user."""
+
+        if self.profile is None:
+            raise errors.LoginRequirementError
+
+        async for book in self.browse_books(favorited_by=self.profile.name):
+            yield book
+
+    async def get_recommended_books(self) -> AsyncIterator[mdl.PageBook]:
         """Shorthand way to get recommended books for the currently logged-in user."""
 
-        raise NotImplementedError
+        if self.profile is None:
+            raise errors.LoginRequirementError
+
+        async for book in self.browse_books(recommended_for=self.profile.name):
+            yield book
+
+    async def get_recently_read_books(self) -> AsyncIterator[mdl.PageBook]:
+        """Get recently read/opened books of the currently logged-in user."""
+
+        if self.profile is None:
+            raise errors.LoginRequirementError
+
+        async for book in self.browse_books(tags=[f"read:@{self.profile.id}@"]):
+            yield book
+
+    async def get_book(self, book_id: int) -> mdl.Book:
+        """
+        Get specific book by its ID.
+
+        :param book_id: ID of specific book
+        """
+        response = await self._http_client.get(f"{const.BOOK_URL}/{book_id}")
+
+        if not response.ok:
+            raise errors.PageNotFoundError(response.status, book_id=book_id)
+
+        return mdl.Book(**response.json)
 
 
 class UserClient(BaseClient):
@@ -324,8 +374,7 @@ class UserClient(BaseClient):
         :return: Asynchronous generator which yields users
         """
         async for page in UserPaginator(
-            self._http_client, const.USER_URL,
-            **from_locals(locals(), ["self", "client"])
+            self._http_client, const.USER_URL, **from_locals(locals())
         ):
             for user in page.items:
                 yield user

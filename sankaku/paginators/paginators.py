@@ -12,6 +12,7 @@ __all__ = [
     "Paginator",
     "PostPaginator",
     "TagPaginator",
+    "BookPaginator",
     "UserPaginator"
 ]
 
@@ -123,7 +124,7 @@ class PostPaginator(Paginator[mdl.Post]):
             match items:
                 case [_, None]:
                     continue
-                case ["rating" | "order" | "file_type" as k, v] if v != types.FileType.IMAGE:  # noqa
+                case ["order" | "rating" | "file_type" as k, v] if v != types.FileType.IMAGE:  # noqa
                     self.tags.append(f"{k}:{v.value}")
                 case ["threshold" | "recommended_for" | "voted" as k, v]:
                     self.tags.append(f"{k}:{v}")
@@ -188,6 +189,55 @@ class TagPaginator(Paginator[mdl.PageTag]):
                 sortBy=self.sort_parameter.value,
                 sortDirection=self.sort_direction.value
             )
+
+
+class BookPaginator(Paginator[mdl.PageBook]):
+    def __init__(
+        self,
+        http_client: HttpClient,
+        url: str,
+        model: type[mdl.PageBook] = mdl.PageBook,
+        page_number: Optional[int] = None,
+        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+        params: Optional[dict[str, str]] = None,
+        order: Optional[types.BookOrder] = None,
+        rating: Optional[types.Rating] = None,
+        recommended_for: Optional[str] = None,
+        favorited_by: Optional[str] = None,
+        tags: Optional[list[str]] = None,
+        added_by: Optional[list[str]] = None,
+        voted: Optional[str] = None
+    ) -> None:
+        self.order = order
+        self.rating = rating
+        self.recommended_for = recommended_for
+        self.favorited_by = favorited_by
+        self.tags = tags
+        self.added_by = added_by
+        self.voted = voted
+        super().__init__(http_client, url, model, page_number, limit, params)
+
+    def complete_params(self) -> None:
+        super().complete_params()
+        if self.tags is None:
+            self.tags = []
+
+        for items in self.__dict__.items():
+            match items:
+                case [_, None]:
+                    continue
+                case ["order" | "rating" as k, v]:  # noqa
+                    self.tags.append(f"{k}:{v.value}")
+                case ["recommended_for" | "voted" as k, v]:
+                    self.tags.append(f"{k}:{v}")
+                case ["favorited_by", _]:
+                    self.tags.append(f"fav:{self.favorited_by}")
+                case ["added_by", _]:
+                    for user in self.added_by:  # type: ignore[union-attr]
+                        self.tags.append(f"user:{user}")
+
+        if self.tags:
+            self.params["tags"] = " ".join(self.tags)
 
 
 class UserPaginator(Paginator[mdl.User]):
