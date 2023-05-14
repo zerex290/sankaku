@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Optional
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -67,11 +67,11 @@ class PageBook(BaseModel):
     locale: str
     is_deleted: bool
     cover_post_id: Optional[int]
-    name: str
-    parent_pool: Optional[Any]  # TODO: reveal real type
+    name: Optional[str]
+    parent_pool: Optional["PageBook"]
 
 
 class Book(PageBook):
-    child_pools: Optional[Any]  # TODO: reveal real type
+    child_pools: Optional[list[PageBook]]
     flagged_by_user: bool
     prem_post_count: int
