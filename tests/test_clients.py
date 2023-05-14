@@ -8,9 +8,20 @@ from sankaku.utils import from_locals
 
 
 class TestBaseClient:
-    async def test_login_with_invalid_data(self, nlclient: SankakuClient):
-        with pytest.raises(errors.AuthorizationError):
-            await nlclient.login("incorrect_login", "incorrect_password")
+    @pytest.mark.parametrize(
+        ["data", "expected"],
+        [
+            ({"access_token": "invalid"}, errors.AuthorizationError),
+            ({"login": "invalid", "password": "invalid"}, errors.AuthorizationError),
+            ({}, errors.SankakuError)
+        ]
+    )
+    async def test_login_with_invalid_data(
+            self, nlclient: SankakuClient,
+            data, expected
+    ):
+        with pytest.raises(expected):
+            await nlclient.login(**data)
 
     async def test_login_with_valid_data(self, lclient: SankakuClient):
         assert isinstance(lclient.profile, mdl.ExtendedUser)

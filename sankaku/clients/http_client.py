@@ -29,9 +29,10 @@ class HttpClient(ABCHttpClient):
     async def request(self, method: str, url: str, **kwargs) -> ClientResponse:
         """Make request to specified url."""
 
-        response = await self.session.request(
-            method, url, headers=self.headers, **kwargs
-        )
+        if kwargs.get("headers") is None:
+            kwargs["headers"] = self.headers
+
+        response = await self.session.request(method, url, **kwargs)
         logger.debug(f"Sent {method} request to {response.url}")
 
         if response.content_type != "application/json":

@@ -26,20 +26,12 @@ class BaseClient(ABCClient):
     """Base client for login."""
 
     def __init__(self) -> None:
-        self.profile: Optional[mdl.ExtendedUser] = None
+        self._profile: Optional[mdl.ExtendedUser] = None
         self._http_client: HttpClient = HttpClient()
-        self._access_token: str = ""  # TODO: ability to login by access token
-        self._refresh_token: str = ""  # TODO: ability to update access token
-        self._token_type: str = ""
+        self._access_token: Optional[str] = None  # TODO: ability to update access token
+        self._token_type: Optional[str] = None
 
-    # TODO: add two-factor auth support
-    async def login(self, login: str, password: str) -> None:
-        """
-        Login into sankakucomplex.com via login and password.
-
-        :param login: User email or username
-        :param password: User password
-        """
+    async def _login_via_credentials(self, login: str, password: str) -> None:
         response = await self._http_client.post(
             const.LOGIN_URL,
             data=json.dumps({"login": login, "password": password})
@@ -49,13 +41,70 @@ class BaseClient(ABCClient):
             raise errors.AuthorizationError(response.status, **response.json)
 
         self._access_token = response.json["access_token"]
-        self._refresh_token = response.json["refresh_token"]
         self._token_type = response.json["token_type"]
-        self.profile = mdl.ExtendedUser(**response.json["current_user"])
+        self._profile = mdl.ExtendedUser(**response.json["current_user"])
+
+    async def _login_via_access_token(self, access_token: str) -> None:
+        try:
+            self._profile = await self._get_profile(access_token)
+            # Update access token and token type after successful profile fetch
+            self._access_token = access_token
+            self._token_type = const.DEFAULT_TOKEN_TYPE
+        except errors.SankakuServerError as e:
+            raise errors.AuthorizationError(e.status, **e.kwargs)
+
+    async def _get_profile(self, access_token: str) -> mdl.ExtendedUser:
+        """Get user profile information from Sankaku server by access token."""
+
+        if self._profile is not None:
+            return self._profile
+
+        headers = {"authorization": f"{const.DEFAULT_TOKEN_TYPE} {access_token}"}
+        headers.update(self._http_client.headers)
+        response = await self._http_client.get(f"{const.USER_URL}/me", headers=headers)
+
+        if not response.ok:
+            raise errors.SankakuServerError(
+                response.status, "Failed to get user profile", **response.json
+            )
+
+        return mdl.ExtendedUser(**response.json["user"])
+
+    async def login(  # TODO: add two-factor auth support
+        self,
+        *,
+        access_token: Optional[str] = None,
+        login: Optional[str] = None,
+        password: Optional[str] = None
+    ) -> None:
+        """
+        Login into sankakucomplex.com via access token or credentials.
+        In case when all arguments are specified, preference will be given
+        to authorization by credentials.
+
+        :param access_token: User access token
+        :param login: User email or nickname
+        :param password: User password
+        """
+        match (access_token, login, password):
+            case [str(), str(), str()] | [_, str(), str()]:
+                await self._login_via_credentials(login, password)  # type: ignore[arg-type]
+            case [str(), _, _]:
+                await self._login_via_access_token(access_token)  # type: ignore[arg-type]
+            case _:
+                raise errors.SankakuError(
+                    "The given data is not enough "
+                    "or invalid (perhaps of the wrong type)."
+                )
+
         self._http_client.headers.update(
             authorization=f"{self._token_type} {self._access_token}"
         )
-        logger.info(f"Successfully logged in as {self.profile.name}.")
+        logger.info(f"Successfully logged in as {self._profile.name}.")  # type: ignore[union-attr]
+
+    @property
+    def profile(self) -> Optional[mdl.ExtendedUser]:
+        return self._profile
 
 
 class PostClient(BaseClient):
@@ -110,10 +159,10 @@ class PostClient(BaseClient):
     async def get_favorited_posts(self) -> AsyncIterator[mdl.Post]:
         """Shorthand way to get favorited posts of currently logged-in user."""
 
-        if self.profile is None:
+        if self._profile is None:
             raise errors.LoginRequirementError
 
-        async for post in self.browse_posts(favorited_by=self.profile.name):
+        async for post in self.browse_posts(favorited_by=self._profile.name):
             yield post
 
     async def get_top_posts(self) -> AsyncIterator[mdl.Post]:
@@ -131,10 +180,10 @@ class PostClient(BaseClient):
     async def get_recommended_posts(self) -> AsyncIterator[mdl.Post]:
         """Shorthand way to get recommended posts for the currently logged-in user."""
 
-        if self.profile is None:
+        if self._profile is None:
             raise errors.LoginRequirementError
 
-        async for post in self.browse_posts(recommended_for=self.profile.name):
+        async for post in self.browse_posts(recommended_for=self._profile.name):
             yield post
 
     async def get_similar_posts(self, post_id: int) -> AsyncIterator[mdl.Post]:
@@ -315,28 +364,28 @@ class BookClient(BaseClient):
     async def get_favorited_books(self) -> AsyncIterator[mdl.PageBook]:
         """Shorthand way to get favorited books for the currently logged-in user."""
 
-        if self.profile is None:
+        if self._profile is None:
             raise errors.LoginRequirementError
 
-        async for book in self.browse_books(favorited_by=self.profile.name):
+        async for book in self.browse_books(favorited_by=self._profile.name):
             yield book
 
     async def get_recommended_books(self) -> AsyncIterator[mdl.PageBook]:
         """Shorthand way to get recommended books for the currently logged-in user."""
 
-        if self.profile is None:
+        if self._profile is None:
             raise errors.LoginRequirementError
 
-        async for book in self.browse_books(recommended_for=self.profile.name):
+        async for book in self.browse_books(recommended_for=self._profile.name):
             yield book
 
     async def get_recently_read_books(self) -> AsyncIterator[mdl.PageBook]:
         """Get recently read/opened books of the currently logged-in user."""
 
-        if self.profile is None:
+        if self._profile is None:
             raise errors.LoginRequirementError
 
-        async for book in self.browse_books(tags=[f"read:@{self.profile.id}@"]):
+        async for book in self.browse_books(tags=[f"read:@{self._profile.id}@"]):
             yield book
 
     async def get_book(self, book_id: int) -> mdl.Book:

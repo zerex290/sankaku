@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 from sankaku.models.http import ClientResponse
 
@@ -37,5 +38,11 @@ class ABCClient(ABC):
         pass
 
     @abstractmethod
-    async def login(self, login: str, password: str) -> None:
+    async def login(
+        self,
+        *,
+        access_token: Optional[str] = None,
+        login: Optional[str] = None,
+        password: Optional[str] = None
+    ) -> None:
         pass

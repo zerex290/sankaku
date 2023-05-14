@@ -25,5 +25,9 @@ async def lclient() -> SankakuClient:
     """Client where authorization is performed."""
 
     client = SankakuClient()
-    await client.login(os.getenv("LOGIN"), os.getenv("PASSWORD"))
+    await client.login(
+        access_token=os.getenv("TOKEN"),
+        login=os.getenv("LOGIN"),
+        password=os.getenv("PASSWORD")
+    )
     return client

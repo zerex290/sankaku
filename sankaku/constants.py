@@ -33,3 +33,5 @@ PAGE_ALLOWED_ERRORS = [
     "snackbar__anonymous-recommendations-limit-reached",
     "snackbar__account_offset-forbidden"
 ]
+
+DEFAULT_TOKEN_TYPE = "Bearer"

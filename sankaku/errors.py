@@ -6,11 +6,14 @@ class SankakuError(Exception):
 
     msg: str = ""
 
+    def __init__(self, msg: Optional[str] = None) -> None:
+        self.msg = msg or self.msg
+
     def __repr__(self) -> str:
         return repr(self.msg)
 
     def __str__(self) -> str:
-        return self.msg
+        return str(self.msg)
 
 
 class RateLimitError(SankakuError):
@@ -34,15 +37,18 @@ class SankakuServerError(SankakuError):
             msg: Optional[str] = None,
             **kwargs
     ) -> None:
-        str_kwargs = ", ".join(f"{k}={v}" for k, v in kwargs.items())
-        delimiter = ": " if kwargs else ""
-        self.msg = f"[{status}] {msg or self.msg}{delimiter}{str_kwargs}."
+        self.status = status
+        self.kwargs = kwargs
+
+        str_kwargs = ", ".join(f"{k}={v}" for k, v in self.kwargs.items())
+        delimiter = ": " if self.kwargs else ""
+        self.msg = f"[{self.status}] {msg or self.msg}{delimiter}{str_kwargs}."
 
     def __repr__(self) -> str:
         return repr(self.msg)
 
     def __str__(self) -> str:
-        return self.msg
+        return str(self.msg)
 
 
 class PaginatorLastPage(SankakuServerError):
