@@ -70,7 +70,7 @@ class BaseClient(ABCClient):
 
         return mdl.ExtendedUser(**response.json["user"])
 
-    async def login(  # TODO: add two-factor auth support
+    async def login(
         self,
         *,
         access_token: Optional[str] = None,
@@ -141,12 +141,12 @@ class PostClient(BaseClient):
         :param file_size: Size (aspect ratio) of mediafile
         :param file_type: Type of mediafile in post
         :param video_duration: Video duration in seconds or in range of seconds
-        :param recommended_for: Display posts recommended for specified user
-        :param favorited_by: Users added post to their favourites
+        :param recommended_for: Posts recommended for specified user
+        :param favorited_by: Posts favorited by specified user
         :param tags: Tags available for search
-        :param added_by: Posts uploaded by specified user
+        :param added_by: Posts uploaded by specified users
         :param voted: Posts voted by specified user
-        :param page_number: Initial page number
+        :param page_number: Page number from which to start iteration
         :param limit: Maximum amount of posts per page
         :return: Asynchronous generator which yields posts
         """
@@ -259,7 +259,7 @@ class AIClient(BaseClient):
         """
         Iterate through the AI post browser.
 
-        :param page_number: Initial page number
+        :param page_number: Page number from which to start iteration
         :param limit: Maximum amount of posts per page
         :return: Asynchronous generator which yields AI posts
         """
@@ -312,7 +312,7 @@ class TagClient(BaseClient):
         :param max_post_count: Upper threshold for number of posts with tags found
         :param sort_parameter: Tag sorting parameter
         :param sort_direction: Tag sorting direction
-        :param page_number: Initial page number
+        :param page_number: Page number from which to start iteration
         :param limit: Maximum amount of tags per page
         :return: Asynchronous generator which yields tags
         """
@@ -355,6 +355,20 @@ class BookClient(BaseClient):
         page_number: Optional[int] = None,
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
     ) -> AsyncIterator[mdl.PageBook]:
+        """
+        Iterate through book pages.
+
+        :param order: Book order rule
+        :param rating: Books rating
+        :param recommended_for: Books recommended for specified user
+        :param favorited_by: Books favorited by specified user
+        :param tags: Tags available for search
+        :param added_by: Books uploaded by specified users
+        :param voted: Books voted by specified user
+        :param page_number: Page number from which to start iteration
+        :param limit: Maximum amount of books per page
+        :return: Asynchronous generator which returns books
+        """
         async for page in BookPaginator(
             self._http_client, const.BOOK_URL, **from_locals(locals())
         ):
@@ -418,7 +432,7 @@ class UserClient(BaseClient):
 
         :param order: User order rule
         :param level: User level type
-        :param page_number: Initial page number
+        :param page_number: Page number from which to start iteration
         :param limit: Maximum amount of users per page
         :return: Asynchronous generator which yields users
         """
