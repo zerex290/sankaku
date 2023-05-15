@@ -1,15 +1,6 @@
-<h1 align="center">
-  <a href="https://github.com/zerex290/sankaku">
-    <img src="" alt="Sankaku Complex"
-    width="150" height="150">
-  </a>
-  <div>sankaku</div>
-</h1>
-<p align="center"><em><b>For real men of culture </b></em></p>
+# Welcome to sankaku documentation
 
-## About
-
-Asynchronous API wrapper for [Sankaku Complex](https://beta.sankakucomplex.com)
+Unofficial API wrapper for [Sankaku Complex](https://beta.sankakucomplex.com)
 with *type-hinting*, pydantic *data validation* and an optional *logging support*
 with loguru.
 
@@ -19,14 +10,6 @@ with loguru.
 - Deserialization of raw json data thanks to pydantic models
 - Enumerations for API request parameters to provide better user experience
   > For instance, you can type `types.TagType.ARTIST` instead of `types[]=1`
-
----
-
-Documentation: TBA
-
-Source code: https://github.com/zerex290/sankaku
-
----
 
 ## Requirements
 
@@ -43,8 +26,7 @@ pip install sankaku
 
 ## Example
 
-It's very simple to use and doesn't require to always keep opened browser page
-with documentation because all methods are self-explanatory.
+Simple example of usage:
 
 ```py
 import asyncio
