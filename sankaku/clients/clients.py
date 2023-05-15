@@ -61,7 +61,7 @@ class BaseClient(ABCClient):
 
         headers = {"authorization": f"{const.DEFAULT_TOKEN_TYPE} {access_token}"}
         headers.update(self._http_client.headers)
-        response = await self._http_client.get(f"{const.USER_URL}/me", headers=headers)
+        response = await self._http_client.get(f"{const.PROFILE_URL}", headers=headers)
 
         if not response.ok:
             raise errors.SankakuServerError(
@@ -199,7 +199,7 @@ class PostClient(BaseClient):
 
     async def get_post_comments(self, post_id: int) -> AsyncIterator[mdl.Comment]:
         """
-        Get comments on the post.
+        Get comments of the specific post.
 
         :param post_id: ID of specific post
         """
@@ -211,37 +211,18 @@ class PostClient(BaseClient):
             for comment in page.items:
                 yield comment
 
-    async def get_post(  # TODO: add related pools info if they are present
-        self,
-        post_id: int,
-        *,
-        with_similar_posts: bool = False,
-        with_comments: bool = False
-    ) -> mdl.Post:
+    async def get_post(self, post_id: int) -> mdl.Post:
         """
         Get specific post by its ID.
 
         :param post_id: ID of specific post
-        :param with_similar_posts:  Whether to search similar posts;
-        note that it greatly reduces performance
-        :param with_comments: Whether to attach post comments
         """
         response = await self._http_client.get(f"{const.POST_URL}/{post_id}")
 
         if not response.ok:
             raise errors.PageNotFoundError(response.status, post_id=post_id)
 
-        post = mdl.Post(**response.json)
-
-        if with_similar_posts:
-            post.similar_posts = [
-                sim async for sim in self.get_similar_posts(post_id)
-            ]
-        if with_comments:
-            post.comments = [
-                com async for com in self.get_post_comments(post_id)
-            ]
-        return post
+        return mdl.Post(**response.json)
 
     async def create_post(self):  # TODO: TBA
         raise NotImplementedError
@@ -328,8 +309,8 @@ class TagClient(BaseClient):
 
         :param name_or_id: tag name or ID
         """
-        ref = "name" if isinstance(name_or_id, str) else "id"
-        url = const.TAG_WIKI_URL.format(ref=ref, name_or_id=name_or_id)
+        ref = "/name" if isinstance(name_or_id, str) else "/id"
+        url = f"{const.TAG_WIKI_URL}{ref}/{name_or_id}"
 
         response = await self._http_client.get(url)
 
@@ -402,6 +383,18 @@ class BookClient(BaseClient):
         async for book in self.browse_books(tags=[f"read:@{self._profile.id}@"]):
             yield book
 
+    async def get_related_books(self, post_id: int) -> AsyncIterator[mdl.PageBook]:
+        """
+        Get books related to specific post.
+
+        :param post_id: ID of specific post
+        """
+        async for page in BookPaginator(
+            self._http_client, const.RELATED_BOOK_URL.format(post_id=post_id)
+        ):
+            for book in page.items:
+                yield book
+
     async def get_book(self, book_id: int) -> mdl.Book:
         """
         Get specific book by its ID.
@@ -448,11 +441,8 @@ class UserClient(BaseClient):
 
         :param name_or_id: username or ID
         """
-        url = (
-            f"{const.USER_URL}/"
-            f"{'name/' if isinstance(name_or_id, str) else ''}"
-            f"{name_or_id}"
-        )
+        ref = "/name" if isinstance(name_or_id, str) else ""
+        url = f"{const.USER_URL}{ref}/{name_or_id}"
 
         response = await self._http_client.get(url)
 

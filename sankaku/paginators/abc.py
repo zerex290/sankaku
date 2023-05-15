@@ -2,8 +2,7 @@ from abc import ABC, abstractmethod
 from collections.abc import AsyncIterator
 from typing import Generic, TypeVar
 
-from sankaku import errors
-from sankaku.models import Page
+from sankaku import errors, models as mdl
 
 
 _T = TypeVar("_T")
@@ -16,17 +15,17 @@ class ABCPaginator(ABC, Generic[_T]):
     def __init__(self, *args, **kwargs) -> None:
         pass
 
-    def __aiter__(self) -> AsyncIterator[Page[_T]]:
+    def __aiter__(self) -> AsyncIterator[mdl.Page[_T]]:
         return self
 
-    async def __anext__(self) -> Page[_T]:
+    async def __anext__(self) -> mdl.Page[_T]:
         try:
             return await self.next_page()
         except errors.PaginatorLastPage:
             raise StopAsyncIteration
 
     @abstractmethod
-    async def next_page(self) -> Page[_T]:
+    async def next_page(self) -> mdl.Page[_T]:
         """Returns paginator next page."""
 
     @abstractmethod

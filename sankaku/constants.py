@@ -10,6 +10,7 @@ HEADERS: dict[str, str] = {
     "host": "capi-v2.sankakucomplex.com"
 }
 
+
 BASE_URL = "https://login.sankakucomplex.com"
 API_URL = "https://capi-v2.sankakucomplex.com"
 
@@ -17,12 +18,15 @@ LOGIN_URL = f"{BASE_URL}/auth/token"
 POST_URL = f"{API_URL}/posts"
 AI_POST_URL = f"{API_URL}/ai_posts"
 TAG_URL = f"{API_URL}/tags"
+TAG_WIKI_URL = f"{API_URL}/tag-and-wiki"
 BOOK_URL = f"{API_URL}/pools"
 USER_URL = f"{API_URL}/users"
+PROFILE_URL = f"{USER_URL}/me"
 
 # Not fully completed urls for usage with str.format()
-TAG_WIKI_URL = f"{API_URL}/tag-and-wiki/{{ref}}/{{name_or_id}}"
-COMMENT_URL = f"{API_URL}/posts/{{post_id}}/comments"
+COMMENT_URL = f"{POST_URL}/{{post_id}}/comments"
+RELATED_BOOK_URL = f"{API_URL}/post/{{post_id}}/pools"
+
 
 BASE_RPS = 3
 BASE_RPM = 180

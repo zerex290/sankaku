@@ -126,28 +126,18 @@ class TestPostClient:
     async def test_get_recommended_posts_authorized(self, lclient: SankakuClient):
         assert isinstance(await anext(lclient.get_recommended_posts()), mdl.Post)
 
-    @pytest.mark.parametrize(
-        ["post_id", "with_similar_posts", "with_comments"],
-        [
-            (32948875, False, False),
-            (32948875, True, False),
-            (33108291, False, True)
-        ]
-    )
-    async def test_get_post(
-        self, nlclient: SankakuClient,
-        post_id, with_similar_posts, with_comments
-    ):
-        post = await nlclient.get_post(
-            post_id,
-            with_similar_posts=with_similar_posts,
-            with_comments=with_comments
-        )
+    @pytest.mark.parametrize(["post_id"], [(32948875,)])
+    async def test_get_similar_posts(self, lclient: SankakuClient, post_id):
+        assert isinstance(await anext(lclient.get_similar_posts(post_id)), mdl.Post)
+
+    @pytest.mark.parametrize(["post_id"], [(33108291,)])
+    async def test_get_post_comments(self, lclient: SankakuClient, post_id):
+        assert isinstance(await anext(lclient.get_post_comments(post_id)), mdl.Comment)
+
+    @pytest.mark.parametrize(["post_id"], [(32948875,), (33108291,)])
+    async def test_get_post(self, nlclient: SankakuClient, post_id):
+        post = await nlclient.get_post(post_id)
         assert isinstance(post, mdl.Post)
-        if with_similar_posts:
-            assert post.similar_posts
-        if with_comments:
-            assert post.comments
 
     async def test_get_non_existent_post(self, lclient: SankakuClient):
         with pytest.raises(errors.PageNotFoundError):
@@ -321,6 +311,10 @@ class TestBookClient:
 
     async def test_recently_read_books_authorized(self, lclient: SankakuClient):
         assert isinstance(await anext(lclient.get_recently_read_books()), mdl.PageBook)
+
+    @pytest.mark.parametrize(["post_id"], [(27038477,)])
+    async def test_get_related_books(self, lclient: SankakuClient, post_id):
+        assert isinstance(await anext(lclient.get_related_books(post_id)), mdl.PageBook)
 
     @pytest.mark.parametrize(["book_id"], [(1000,)])
     async def test_get_book(self, nlclient: SankakuClient, book_id):

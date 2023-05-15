@@ -108,10 +108,6 @@ class Post(BasePost):
     sequence: Optional[int]
     video_duration: Optional[float]
 
-    # The following fields are missing in API response
-    similar_posts: list[Post] = []
-    comments: list[Comment] = []
-
 
 class AIPost(BasePost):
     """

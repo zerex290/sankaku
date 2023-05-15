@@ -109,8 +109,6 @@ from sankaku import types
                 generation_directives=None,
                 tags=[],
                 video_duration=None,
-                similar_posts=[],
-                comments=[]
             )
         )
     ]
