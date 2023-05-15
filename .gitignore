@@ -1,7 +1,7 @@
-# virtual environment files
+# Virtual env
 virtualenv/
 
-# cached files
+# Cache
 *.pyc
 **.idea/
 **__pycache__/
@@ -10,6 +10,10 @@ virtualenv/
 **/.pytest_cache/
 *.log
 
-# tests
+# Tests
 test.py
 /pytest.ini
+
+# Packaging
+*.egg-info/
+dist/
