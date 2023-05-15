@@ -10,5 +10,6 @@ _T = TypeVar("_T")
 
 @dataclass()
 class Page(Generic[_T]):
+    """Model that describes page containing content with specific type."""
     number: int
     items: list[_T]

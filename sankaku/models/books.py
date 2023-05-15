@@ -25,6 +25,7 @@ class BookState(BaseModel):
 
 
 class PageBook(BaseModel):
+    """Model that describes books on book pages."""
     id: int
     name_en: Optional[str]
     name_ja: Optional[str]
@@ -74,6 +75,7 @@ class PageBook(BaseModel):
 
 
 class Book(PageBook):
+    """Model that describes specific book."""
     child_pools: Optional[list[PageBook]]
     flagged_by_user: bool
     prem_post_count: int

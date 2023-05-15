@@ -12,8 +12,7 @@ __all__ = ["PostTag", "PageTag", "Wiki", "WikiTag"]
 
 
 class BaseTag(BaseModel):
-    """Model with a minimum amount of information that all tags have."""
-
+    """Model that contains minimum amount of information that all tags have."""
     id: int
     name: str
     name_en: str
@@ -27,7 +26,6 @@ class BaseTag(BaseModel):
 
 class TagMixin(BaseModel):
     """Additional data that certain tags have."""
-
     count: int
     tag_name: str = Field(alias="tagName")
     total_post_count: int
@@ -36,14 +34,12 @@ class TagMixin(BaseModel):
 
 class PostTag(BaseTag, TagMixin):
     """Model that describes tags related to posts."""
-
     locale: str
     version: Optional[int]
 
 
 class NestedTag(BaseTag):
     """Model that describes tags with specific relation to certain tag on tag page."""
-
     post_count: int = Field(alias="postCount")
     cached_related: Optional[list[int]] = Field(alias="cachedRelated")
     cached_related_expires_on: datetime = Field(alias="cachedRelatedExpiresOn")
@@ -73,6 +69,7 @@ class NestedTag(BaseTag):
 
     @validator("cached_related", "parent_tags", "child_tags", pre=True)
     def flatten(cls, v) -> Optional[list[int]]:  # noqa
+        """Flatten nested lists into one."""
         if not v:
             return None
         tag_ids = v.split(",") if "," in v else v.split()
@@ -84,7 +81,6 @@ class NestedTag(BaseTag):
 
 class Translations(BaseModel):
     """Model that describes tag translations if they are present."""
-
     root_id: int = Field(alias="rootId")
     lang: str
     translation: str
@@ -92,7 +88,6 @@ class Translations(BaseModel):
 
 class PageTag(PostTag):
     """Model that describes tags on tag page."""
-
     translations: list[Translations]
     related_tags: list[NestedTag]
     child_tags: list[NestedTag]
@@ -100,6 +95,7 @@ class PageTag(PostTag):
 
 
 class Wiki(BaseModel):
+    """Model that describes wiki information for specific tag."""
     id: int
     title: str
     body: str
@@ -118,7 +114,6 @@ class Wiki(BaseModel):
 
 class WikiTag(BaseTag, TagMixin):
     """Model that describes tag on wiki page."""
-
     related_tags: list[PostTag]
     child_tags: list[PostTag]
     parent_tags: list[PostTag]

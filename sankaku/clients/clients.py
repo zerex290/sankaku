@@ -23,8 +23,7 @@ __all__ = [
 
 
 class BaseClient(ABCClient):
-    """Base client for login."""
-
+    """Base client used for login."""
     def __init__(self) -> None:
         self._profile: Optional[mdl.ExtendedUser] = None
         self._http_client: HttpClient = HttpClient()
@@ -55,7 +54,6 @@ class BaseClient(ABCClient):
 
     async def _get_profile(self, access_token: str) -> mdl.ExtendedUser:
         """Get user profile information from Sankaku server by access token."""
-
         if self._profile is not None:
             return self._profile
 
@@ -77,8 +75,7 @@ class BaseClient(ABCClient):
         login: Optional[str] = None,
         password: Optional[str] = None
     ) -> None:
-        """
-        Login into sankakucomplex.com via access token or credentials.
+        """Login into sankakucomplex.com via access token or credentials.
         In case when all arguments are specified, preference will be given
         to authorization by credentials.
 
@@ -109,7 +106,6 @@ class BaseClient(ABCClient):
 
 class PostClient(BaseClient):
     """Client for post browsing."""
-
     async def browse_posts(
         self,
         order: Optional[types.PostOrder] = None,
@@ -130,8 +126,7 @@ class PostClient(BaseClient):
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
 
     ) -> AsyncIterator[mdl.Post]:
-        """
-        Iterate through the post browser.
+        """Get posts from post pages.
 
         :param order: Post order rule
         :param date: Date or range of dates
@@ -148,7 +143,6 @@ class PostClient(BaseClient):
         :param voted: Posts voted by specified user
         :param page_number: Page number from which to start iteration
         :param limit: Maximum amount of posts per page
-        :return: Asynchronous generator which yields posts
         """
         async for page in PostPaginator(
             self._http_client, const.POST_URL, **from_locals(locals())
@@ -158,7 +152,6 @@ class PostClient(BaseClient):
 
     async def get_favorited_posts(self) -> AsyncIterator[mdl.Post]:
         """Shorthand way to get favorited posts of currently logged-in user."""
-
         if self._profile is None:
             raise errors.LoginRequirementError
 
@@ -167,19 +160,16 @@ class PostClient(BaseClient):
 
     async def get_top_posts(self) -> AsyncIterator[mdl.Post]:
         """Shorthand way to get top posts."""
-
         async for post in self.browse_posts(order=types.PostOrder.QUALITY):
             yield post
 
     async def get_popular_posts(self) -> AsyncIterator[mdl.Post]:
         """Shorthand way to get popular posts."""
-
         async for post in self.browse_posts(order=types.PostOrder.POPULARITY):
             yield post
 
     async def get_recommended_posts(self) -> AsyncIterator[mdl.Post]:
         """Shorthand way to get recommended posts for the currently logged-in user."""
-
         if self._profile is None:
             raise errors.LoginRequirementError
 
@@ -187,22 +177,13 @@ class PostClient(BaseClient):
             yield post
 
     async def get_similar_posts(self, post_id: int) -> AsyncIterator[mdl.Post]:
-        """
-        Get posts similar (recommended) for specific post.
-
-        :param post_id: ID of specific post
-        :return: Asynchronous generator which yields similar posts
-        """
+        """Get posts similar (recommended) for specific post by its ID."""
         tag = f"recommended_for_post:{post_id}"
         async for post in self.browse_posts(tags=[tag]):
             yield post
 
     async def get_post_comments(self, post_id: int) -> AsyncIterator[mdl.Comment]:
-        """
-        Get comments of the specific post.
-
-        :param post_id: ID of specific post
-        """
+        """Get comments of the specific post by its ID."""
         async for page in Paginator(
             self._http_client,
             const.COMMENT_URL.format(post_id=post_id),
@@ -212,11 +193,7 @@ class PostClient(BaseClient):
                 yield comment
 
     async def get_post(self, post_id: int) -> mdl.Post:
-        """
-        Get specific post by its ID.
-
-        :param post_id: ID of specific post
-        """
+        """Get specific post by its ID."""
         response = await self._http_client.get(f"{const.POST_URL}/{post_id}")
 
         if not response.ok:
@@ -230,19 +207,16 @@ class PostClient(BaseClient):
 
 class AIClient(BaseClient):
     """Client for working with Sankaku built-in AI."""
-
     async def browse_ai_posts(
         self,
         *,
         page_number: Optional[int] = None,
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
     ) -> AsyncIterator[mdl.AIPost]:
-        """
-        Iterate through the AI post browser.
+        """Get AI created posts from AI dedicated post pages.
 
         :param page_number: Page number from which to start iteration
         :param limit: Maximum amount of posts per page
-        :return: Asynchronous generator which yields AI posts
         """
         async for page in Paginator(
             self._http_client, const.AI_POST_URL,
@@ -252,11 +226,7 @@ class AIClient(BaseClient):
                 yield post
 
     async def get_ai_post(self, post_id: int) -> mdl.AIPost:
-        """
-        Get specific AI post by its ID.
-
-        :param post_id: ID of specific post
-        """
+        """Get specific AI post by its ID."""
         response = await self._http_client.get(f"{const.AI_POST_URL}/{post_id}")
 
         if not response.ok:
@@ -270,7 +240,6 @@ class AIClient(BaseClient):
 
 class TagClient(BaseClient):
     """Client for tag browsing."""
-
     async def browse_tags(
         self,
         tag_type: Optional[types.TagType] = None,  # TODO: ability to specify multiple tags
@@ -284,8 +253,7 @@ class TagClient(BaseClient):
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
 
     ) -> AsyncIterator[mdl.PageTag]:
-        """
-        Iterate through the tag pages.
+        """Get tags from tag pages.
 
         :param tag_type: Tag type filter
         :param order: Tag order rule
@@ -295,7 +263,6 @@ class TagClient(BaseClient):
         :param sort_direction: Tag sorting direction
         :param page_number: Page number from which to start iteration
         :param limit: Maximum amount of tags per page
-        :return: Asynchronous generator which yields tags
         """
         async for page in TagPaginator(
             self._http_client, const.TAG_URL, **from_locals(locals())
@@ -304,11 +271,7 @@ class TagClient(BaseClient):
                 yield tag
 
     async def get_tag(self, name_or_id: str | int) -> mdl.WikiTag:
-        """
-        Get specific tag by its name or ID.
-
-        :param name_or_id: tag name or ID
-        """
+        """Get specific tag by its name or ID."""
         ref = "/name" if isinstance(name_or_id, str) else "/id"
         url = f"{const.TAG_WIKI_URL}{ref}/{name_or_id}"
 
@@ -322,7 +285,6 @@ class TagClient(BaseClient):
 
 class BookClient(BaseClient):
     """Client for book (pool) browsing."""
-
     async def browse_books(
         self,
         order: Optional[types.BookOrder] = None,
@@ -336,8 +298,7 @@ class BookClient(BaseClient):
         page_number: Optional[int] = None,
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
     ) -> AsyncIterator[mdl.PageBook]:
-        """
-        Iterate through book pages.
+        """Get books from book (pool) pages.
 
         :param order: Book order rule
         :param rating: Books rating
@@ -348,7 +309,6 @@ class BookClient(BaseClient):
         :param voted: Books voted by specified user
         :param page_number: Page number from which to start iteration
         :param limit: Maximum amount of books per page
-        :return: Asynchronous generator which returns books
         """
         async for page in BookPaginator(
             self._http_client, const.BOOK_URL, **from_locals(locals())
@@ -358,7 +318,6 @@ class BookClient(BaseClient):
 
     async def get_favorited_books(self) -> AsyncIterator[mdl.PageBook]:
         """Shorthand way to get favorited books for the currently logged-in user."""
-
         if self._profile is None:
             raise errors.LoginRequirementError
 
@@ -367,7 +326,6 @@ class BookClient(BaseClient):
 
     async def get_recommended_books(self) -> AsyncIterator[mdl.PageBook]:
         """Shorthand way to get recommended books for the currently logged-in user."""
-
         if self._profile is None:
             raise errors.LoginRequirementError
 
@@ -376,7 +334,6 @@ class BookClient(BaseClient):
 
     async def get_recently_read_books(self) -> AsyncIterator[mdl.PageBook]:
         """Get recently read/opened books of the currently logged-in user."""
-
         if self._profile is None:
             raise errors.LoginRequirementError
 
@@ -384,11 +341,7 @@ class BookClient(BaseClient):
             yield book
 
     async def get_related_books(self, post_id: int) -> AsyncIterator[mdl.PageBook]:
-        """
-        Get books related to specific post.
-
-        :param post_id: ID of specific post
-        """
+        """Get books related to specific post by its ID."""
         async for page in BookPaginator(
             self._http_client, const.RELATED_BOOK_URL.format(post_id=post_id)
         ):
@@ -396,11 +349,7 @@ class BookClient(BaseClient):
                 yield book
 
     async def get_book(self, book_id: int) -> mdl.Book:
-        """
-        Get specific book by its ID.
-
-        :param book_id: ID of specific book
-        """
+        """Get specific book by its ID."""
         response = await self._http_client.get(f"{const.BOOK_URL}/{book_id}")
 
         if not response.ok:
@@ -411,7 +360,6 @@ class BookClient(BaseClient):
 
 class UserClient(BaseClient):
     """Client for browsing users."""
-
     async def browse_users(
         self,
         order: Optional[types.UserOrder] = None,
@@ -420,14 +368,12 @@ class UserClient(BaseClient):
         page_number: Optional[int] = None,
         limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
     ) -> AsyncIterator[mdl.User]:
-        """
-        Iterate through user pages.
+        """Get user profiles from user pages.
 
         :param order: User order rule
         :param level: User level type
         :param page_number: Page number from which to start iteration
         :param limit: Maximum amount of users per page
-        :return: Asynchronous generator which yields users
         """
         async for page in UserPaginator(
             self._http_client, const.USER_URL, **from_locals(locals())
@@ -436,11 +382,7 @@ class UserClient(BaseClient):
                 yield user
 
     async def get_user(self, name_or_id: str | int) -> mdl.User:
-        """
-        Get specific user by its name or ID.
-
-        :param name_or_id: username or ID
-        """
+        """Get specific user by its name or ID."""
         ref = "/name" if isinstance(name_or_id, str) else ""
         url = f"{const.USER_URL}{ref}/{name_or_id}"
 

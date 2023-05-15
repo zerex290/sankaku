@@ -11,7 +11,6 @@ __all__ = ["Author", "User", "ExtendedUser"]
 
 class BaseUser(BaseModel):
     """User profile with a minimum amount of information."""
-
     id: int
     name: str
     avatar: str
@@ -19,7 +18,7 @@ class BaseUser(BaseModel):
 
 
 class Author(BaseUser):
-    """Model used to describe users who are the authors of posts or wiki pages."""
+    """Model that describes users who are the authors of posts or wiki pages."""
 
 
 class User(BaseUser):
@@ -61,7 +60,6 @@ class User(BaseUser):
 
 class ExtendedUser(User):
     """Profile of the currently logged-in user."""
-
     email: str
     hide_ads: bool
     subscription_level: int
@@ -77,4 +75,5 @@ class ExtendedUser(User):
 
     @validator("blacklisted_tags", pre=True)
     def flatten_blacklisted_tags(cls, v) -> list[str]:  # noqa
+        """Flatten nested lists into one."""
         return [tag[0] for tag in v]

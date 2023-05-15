@@ -4,9 +4,11 @@ from typing import Optional, Self
 from sankaku.models.http import ClientResponse
 
 
-class ABCHttpClient(ABC):
-    """Abstract HTTP client"""
+__all__ = ["ABCHttpClient", "ABCClient"]
 
+
+class ABCHttpClient(ABC):
+    """Abstract client for handling http requests."""
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
         pass
@@ -23,7 +25,7 @@ class ABCHttpClient(ABC):
 
     @abstractmethod
     async def close(self) -> None:
-        pass
+        """Close previously created client session."""
 
     @abstractmethod
     async def request(self, method: str, url: str, **kwargs) -> ClientResponse:
@@ -31,8 +33,7 @@ class ABCHttpClient(ABC):
 
 
 class ABCClient(ABC):
-    """Abstract Sankaku client"""
-
+    """Abstract Sankaku client."""
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
         pass
@@ -45,4 +46,4 @@ class ABCClient(ABC):
         login: Optional[str] = None,
         password: Optional[str] = None
     ) -> None:
-        pass
+        """Login into sankakucomplex.com via access token or credentials."""

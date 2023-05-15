@@ -1,3 +1,5 @@
+"""Miscellaneous support functions that are used at different places."""
+
 import asyncio
 from datetime import datetime
 from functools import wraps
@@ -45,6 +47,7 @@ def ratelimit(
 
 
 def convert_ts_to_datetime(ts: Timestamp) -> Optional[datetime]:
+    """Convert timestamp in datetime dict into datetime class."""
     if ts.get("s") is None:
         return None
     return datetime.utcfromtimestamp(ts["s"]).astimezone()  # type: ignore[arg-type]
@@ -53,8 +56,7 @@ def convert_ts_to_datetime(ts: Timestamp) -> Optional[datetime]:
 def from_locals(
     loc: dict[str, Any], exclude: tuple[str, ...] = ("self",)
 ) -> dict[str, Any]:
-    """
-    Get arguments of calling function from its locals to pass them to paginator.
+    """Get arguments of calling function from its locals to pass them to paginator.
 
     :param loc: locals of calling function
     :param exclude: arguments to be excluded

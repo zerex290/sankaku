@@ -1,3 +1,7 @@
+"""Necessary constants such as hardcoded headers, API urls and endpoints,
+default values of parameters etc.
+"""
+
 HEADERS: dict[str, str] = {
     "user-agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "

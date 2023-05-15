@@ -1,9 +1,20 @@
 from typing import Optional
 
 
+__all__ = [
+    "SankakuError",
+    "RateLimitError",
+    "LoginRequirementError",
+    "VideoDurationError",
+    "SankakuServerError",
+    "PaginatorLastPage",
+    "PageNotFoundError",
+    "AuthorizationError"
+]
+
+
 class SankakuError(Exception):
     """Base error class for raising exceptions without any special params."""
-
     msg: str = ""
 
     def __init__(self, msg: Optional[str] = None) -> None:
@@ -30,7 +41,6 @@ class VideoDurationError(SankakuError):
 
 class SankakuServerError(SankakuError):
     """Error class for parametrized exceptions."""
-
     def __init__(
             self,
             status: Optional[int],

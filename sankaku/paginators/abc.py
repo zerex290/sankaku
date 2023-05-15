@@ -5,12 +5,14 @@ from typing import Generic, TypeVar
 from sankaku import errors, models as mdl
 
 
+__all__ = ["ABCPaginator"]
+
+
 _T = TypeVar("_T")
 
 
 class ABCPaginator(ABC, Generic[_T]):
     """Abstract paginator class."""
-
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
         pass
@@ -26,7 +28,7 @@ class ABCPaginator(ABC, Generic[_T]):
 
     @abstractmethod
     async def next_page(self) -> mdl.Page[_T]:
-        """Returns paginator next page."""
+        """Get paginator next page."""
 
     @abstractmethod
     def complete_params(self) -> None:

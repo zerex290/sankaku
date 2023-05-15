@@ -10,11 +10,7 @@ __all__ = ["HttpClient"]
 
 
 class HttpClient(ABCHttpClient):
-    """
-    HTTP client for API requests.
-    Uses single session for all requests.
-    """
-
+    """HTTP client for API requests that instances use a single session."""
     def __init__(self) -> None:
         self.headers: dict[str, str] = const.HEADERS.copy()
         self.session: ClientSession = ClientSession()
@@ -28,7 +24,6 @@ class HttpClient(ABCHttpClient):
 
     async def request(self, method: str, url: str, **kwargs) -> ClientResponse:
         """Make request to specified url."""
-
         if kwargs.get("headers") is None:
             kwargs["headers"] = self.headers
 
@@ -54,11 +49,9 @@ class HttpClient(ABCHttpClient):
         return client_response
 
     async def get(self, url: str, **kwargs) -> ClientResponse:
-        """GET request to specified url which returns json response."""
-
+        """Send GET request to specified url."""
         return await self.request("GET", url, **kwargs)
 
     async def post(self, url: str, **kwargs) -> ClientResponse:
-        """POST request to specified url which returns json response."""
-
+        """Send POST request to specified url."""
         return await self.request("POST", url, **kwargs)

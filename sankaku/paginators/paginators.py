@@ -22,7 +22,6 @@ _T = TypeVar("_T")
 
 class Paginator(ABCPaginator[_T]):
     """Basic paginator for iteration without any special parameters."""
-
     def __init__(
         self,
         http_client: HttpClient,
@@ -43,8 +42,7 @@ class Paginator(ABCPaginator[_T]):
 
     @ratelimit(rps=const.BASE_RPS)
     async def next_page(self) -> mdl.Page[_T]:  # type: ignore[override]
-        """Returns paginator next page."""
-
+        """Get paginator next page."""
         response = await self.http_client.get(self.url, params=self.params)
         match response.json:
             case [] | {"data": []}:
@@ -62,7 +60,6 @@ class Paginator(ABCPaginator[_T]):
 
     def complete_params(self) -> None:
         """Complete params passed to paginator for further use."""
-
         self.params["lang"] = "en"
         if self.page_number is not None:
             self.params["page"] = str(self.page_number)
@@ -71,13 +68,12 @@ class Paginator(ABCPaginator[_T]):
 
     def _construct_page(self, data: list[dict]) -> mdl.Page[_T]:
         """Construct and return page model."""
-
         items = [self.model(**d) for d in data]
         return mdl.Page[_T](number=self.page_number - 1, items=items)
 
 
 class PostPaginator(Paginator[mdl.Post]):
-
+    """Paginator used for iteration through post pages."""
     def __init__(
         self,
         http_client: HttpClient,
@@ -151,6 +147,7 @@ class PostPaginator(Paginator[mdl.Post]):
 
 
 class TagPaginator(Paginator[mdl.PageTag]):
+    """Paginator used for iteration through tag pages."""
     def __init__(
         self,
         http_client: HttpClient,
@@ -192,6 +189,7 @@ class TagPaginator(Paginator[mdl.PageTag]):
 
 
 class BookPaginator(Paginator[mdl.PageBook]):
+    """Paginator used for iteration through book pages."""
     def __init__(
         self,
         http_client: HttpClient,
@@ -241,6 +239,7 @@ class BookPaginator(Paginator[mdl.PageBook]):
 
 
 class UserPaginator(Paginator[mdl.User]):
+    """Paginator used for iteration through user pages."""
     def __init__(
         self,
         http_client: HttpClient,

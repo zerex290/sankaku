@@ -15,6 +15,7 @@ __all__ = ["Comment", "Post", "AIPost"]
 
 
 class GenerationDirectives(BaseModel):
+    """Model that describes additional fields for AI-generated posts."""
     width: int
     height: int
     prompt: str
@@ -25,6 +26,7 @@ class GenerationDirectives(BaseModel):
 
 
 class BasePost(BaseModel):
+    """Model that contains minimum amount of information that all posts have."""
     id: int
     created_at: datetime
     rating: types.Rating
@@ -42,6 +44,7 @@ class BasePost(BaseModel):
 
     @property
     def file_type(self) -> Optional[types.FileType]:
+        """Get type of the file."""
         match self.extension:
             case "png" | "jpeg" | "webp":
                 return types.FileType.IMAGE
@@ -64,6 +67,7 @@ class BasePost(BaseModel):
 
 
 class Comment(BaseModel):
+    """Model that describes comments related to posts if they are exist."""
     id: int
     created_at: datetime
     post_id: int
@@ -80,6 +84,7 @@ class Comment(BaseModel):
 
 
 class Post(BasePost):
+    """Model that describes posts."""
     sample_url: Optional[str]
     sample_width: int
     sample_height: int
@@ -110,10 +115,11 @@ class Post(BasePost):
 
 
 class AIPost(BasePost):
-    """
+    """Model that describes AI-generated posts.
+
     There is possibility that AI posts have the same fields as common posts,
-    but I don't have premium account to check it properly.
-    This model is actual for non-premium accounts.
+    but premium account is needed to check it properly. So this model is
+    actual for non-premium accounts.
     """
     updated_at: Optional[datetime]
     post_associated_id: Optional[int]
