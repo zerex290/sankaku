@@ -1,0 +1,47 @@
+site_name: sankaku
+site_description: Asynchronous API wrapper for Sankaku Complex
+site_url: https://zerex290.github.io/sankaku
+repo_name: zerex290/sankaku
+repo_url: https://github.com/zerex290/sankaku
+
+nav:
+  - Home: index.md
+  - Authorization: authorization.md
+  - Clients:
+      - Introduction: clients/index.md
+      - PostClient: clients/post-client.md
+      - AIClient: clients/ai-client.md
+      - TagClient: clients/tag-client.md
+      - BookClient: clients/book-client.md
+      - UserClient: clients/user-client.md
+      - HttpClient: clients/http-client.md
+  - API reference:
+      - Table of contents: api/index.md
+
+theme:
+  name: material
+  logo: logo.png
+  icon:
+    repo: fontawesome/brands/github-alt
+
+  features:
+    - navigation.tabs
+    - content.code.copy
+
+  palette:
+    scheme: slate
+    primary: deep purple
+    accent: purple
+
+  font:
+    text: Crete Round
+    code: JetBrains Mono
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

@@ -1,7 +1,7 @@
 <h1 align="center">
   <a href="https://github.com/zerex290/sankaku">
-    <img src="" alt="Sankaku Complex"
-    width="150" height="150">
+    <img src="https://raw.githubusercontent.com/zerex290/sankaku/main/docs/icon.png" alt="Sankaku Complex"
+    width="150" height="150"/>
   </a>
   <div>sankaku</div>
 </h1>
@@ -22,7 +22,7 @@ with loguru.
 
 ---
 
-Documentation: TBA
+Documentation: https://zerex290.github.io/sankaku/
 
 Source code: https://github.com/zerex290/sankaku
 
@@ -60,7 +60,7 @@ docker run -it --name sankaku -w /opt -v$(pwd):/opt python:3.11 bash
 ## Example
 
 It's very simple to use and doesn't require to always keep opened browser page
-with documentation because all methods are self-explanatory.
+with documentation because all methods are self-explanatory:
 
 ```py
 import asyncio
