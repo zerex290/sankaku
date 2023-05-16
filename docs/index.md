@@ -1,3 +1,7 @@
+---
+title: Documentation for sankaku
+---
+
 # Welcome to sankaku documentation
 
 Unofficial API wrapper for [Sankaku Complex](https://beta.sankakucomplex.com)
