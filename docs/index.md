@@ -1,14 +1,10 @@
----
-title: Documentation for sankaku
----
-
 # Welcome to sankaku documentation
 
-Unofficial API wrapper for [Sankaku Complex](https://beta.sankakucomplex.com)
+It is an unofficial API wrapper for [Sankaku Complex](https://beta.sankakucomplex.com)
 with *type-hinting*, pydantic *data validation* and an optional *logging support*
 with loguru.
 
-### Features:
+### Features
 
 - Type-hints
 - Deserialization of raw json data thanks to pydantic models
@@ -30,9 +26,7 @@ pip install sankaku
 
 ## Example
 
-Simple example of usage:
-
-```py
+```py linenums="1"
 import asyncio
 from sankaku import SankakuClient
 

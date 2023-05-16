@@ -1,6 +1,4 @@
----
-title: About UserClient
----
+# About UserClient
 
 Methods of UserClient enables you browse pages with users or get specific user.
 
@@ -8,7 +6,7 @@ Methods of UserClient enables you browse pages with users or get specific user.
 
 User browsing can be parametrized by specifying Order rule or level of users:
 
-```python
+```python linenums="1"
 import asyncio
 from datetime import datetime
 from sankaku.clients import UserClient
@@ -31,7 +29,7 @@ asyncio.run(main())
 By analogy with `get_tag()` method you can get information about specific user
 by its nickname or id:
 
-```python
+```python linenums="1"
 import asyncio
 from sankaku.clients import UserClient
 

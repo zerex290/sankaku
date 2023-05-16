@@ -1,6 +1,4 @@
----
-title: About PostClient
----
+# About PostClient
 
 Client for post browsing has several times more methods than other clients.
 That applies to `browse_posts()` method too.
@@ -9,7 +7,7 @@ That applies to `browse_posts()` method too.
 
 Here simple code snippet with post browsing:
 
-```python
+```python linenums="1"
 import asyncio
 from datetime import datetime
 from sankaku.clients import PostClient
@@ -19,8 +17,11 @@ async def main():
     client = PostClient()
 
     async for post in client.browse_posts(
-        types.PostOrder.QUALITY, [datetime(2020, 1, 12), datetime(2022, 1, 12)],
-        tags=["animated"], file_type=types.FileType.VIDEO, rating=types.Rating.SAFE
+        types.PostOrder.QUALITY,
+        [datetime(2020, 1, 12), datetime(2022, 1, 12)],
+        tags=["animated"],
+        file_type=types.FileType.VIDEO,
+        rating=types.Rating.SAFE
     ):
         print(post.file_url)
         # ... Continue browsing posts or break
@@ -32,7 +33,7 @@ asyncio.run(main())
 
 You can get specific post by its ID like that:
 
-```python
+```python linenums="1"
 import asyncio
 from sankaku.clients import PostClient
 

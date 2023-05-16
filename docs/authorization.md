@@ -1,7 +1,3 @@
----
-title: Authorization
----
-
 # The authorization process
 
 Authorization on [Sankaku Complex](https://beta.sankakucomplex.com) can be
@@ -9,21 +5,17 @@ performed in two ways:
 - via access token
 - via credentials (login and password)
 
----
+### Note
 
-### Disclaimer
-
-> It is **not necessary** to login into Sankaku Complex at all. You are free
+> It is **not** necessary to login into Sankaku Complex at all. You are free
 > to send requests to server as unauthorized user, but in that case some methods
 > will be unavailable to you (e.g. `get_favorited_posts()`, `get_favorited_books()` etc.).
-
----
 
 ## Authorization via access token
 
 The following code block shows how to login into account using access token:
 
-```python
+```python linenums="1"
 import asyncio
 import os
 from sankaku import SankakuClient
@@ -31,8 +23,8 @@ from sankaku import SankakuClient
 async def main():
     client = SankakuClient()
     await client.login(access_token=os.getenv("ACCESS_TOKEN"))
-    # We're using virtual environment variables to prevent private data from
-    # accidentally leaking.
+    # We're using virtual environment variables to prevent
+    # private data from accidentally leaking.
     
     # ... Continue to work with API
 
@@ -44,14 +36,16 @@ asyncio.run(main())
 Authorization method by credentials is the same as in previous example,
 but now user should pass two arguments to `login()` method:
 
-```python
+```python linenums="1"
 import asyncio
 import os
 from sankaku import SankakuClient
 
 async def main():
     client = SankakuClient()
-    await client.login(login=os.getenv("LOGIN"), password=os.getenv("PASSWORD"))
+    await client.login(
+        login=os.getenv("LOGIN"), password=os.getenv("PASSWORD")
+    )
 
     # ... Continue to work with API
 

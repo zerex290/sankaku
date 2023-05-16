@@ -1,15 +1,13 @@
----
-title: About TagClient
----
+# About TagClient
 
 Tag client has methods for browsing pages with tags and for fetching specific tag.
 
 ## Browsing tags with TagClient
 
-Unlike AI-generated posts, whom browsing is restricted and can't be parametrized,
+Unlike AI-generated posts, whose browsing is restricted and can't be parametrized,
 method `browse_tags()` can be parametrized in same way as on website:
 
-```python
+```python linenums="1"
 import asyncio
 from sankaku.clients import TagClient
 from sankaku import types
@@ -32,7 +30,7 @@ asyncio.run(main())
 Unlike posts, AI-generated posts or books, specific tag can be returned by its
 name or id:
 
-```python
+```python linenums="1"
 import asyncio
 from sankaku.clients import TagClient
 

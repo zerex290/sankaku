@@ -1,6 +1,4 @@
----
-title: About BookClient
----
+# About BookClient
 
 BookClient resembles PostClient in terms of functionality. It's because posts
 and books are strongly related.
@@ -9,7 +7,7 @@ and books are strongly related.
 
 The following code shows how to browse pages with books:
 
-```python
+```python linenums="1"
 import asyncio
 from sankaku.clients import BookClient
 from sankaku import types
@@ -30,7 +28,7 @@ asyncio.run(main())
 If specific post id has some books as its parents, you can use
 `get_related_books()` method to get such books:
 
-```python
+```python linenums="1"
 import asyncio
 from sankaku.clients import BookClient
 
