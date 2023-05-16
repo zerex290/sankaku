@@ -22,7 +22,7 @@ with loguru.
 
 ---
 
-Documentation: https://zerex290.github.io/sankaku/
+Documentation: https://zerex290.github.io/sankaku
 
 Source code: https://github.com/zerex290/sankaku
 
@@ -37,19 +37,22 @@ Source code: https://github.com/zerex290/sankaku
 
 ## Installation
 
+To install sankaku via pip write following line of code in your terminal:
+
 ```commandline
 pip install sankaku
 ```
 
-To install the sankaku repository via Docker, you can follow these steps:
+To install the sankaku via Docker, you can follow these steps:
 
 Step 1: Install Docker
-Ensure that Docker is installed on your machine. If Docker is not already installed, you can download and install it from the official Docker website (https://www.docker.com/get-started).
+: Ensure that Docker is installed on your machine. If Docker is not already
+installed, you can download and install it from the official
+[Docker website](https://www.docker.com/get-started).
 
-step 2: 
-Open a command prompt.
-Navigate to the directory where you want to install Sankaku.
-Type the following command:
+Step 2: Use docker to install sankaku
+: Open a command prompt. Navigate to the directory where you want
+to install Sankaku. Type the following command:
 
 ```commandline
 git clone https://github.com/zerex290/sankaku.git
@@ -57,7 +60,7 @@ cd sankaku
 docker run -it --name sankaku -w /opt -v$(pwd):/opt python:3.11 bash
 ```
 
-## Example
+## Usage example
 
 It's very simple to use and doesn't require to always keep opened browser page
 with documentation because all methods are self-explanatory:
