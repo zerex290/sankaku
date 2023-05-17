@@ -17,6 +17,7 @@ test.py
 # Packaging
 *.egg-info/
 dist/
+build/
 
 # mkdocs
 /site
