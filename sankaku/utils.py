@@ -23,11 +23,11 @@ def ratelimit(
     rps: Optional[int] = None,
     rpm: Optional[int] = None
 ) -> Callable[[Callable[_P, Awaitable[_T]]], Callable[_P, Awaitable[_T]]]:
-    """
-    Limit the number of requests.
+    """Limit the number of requests.
 
-    :param rps: Request per second
-    :param rpm: Requests per minute
+    Args:
+        rps: Request per second
+        rpm: Requests per minute
     """
     if all(locals().values()):
         raise RateLimitError
@@ -40,7 +40,7 @@ def ratelimit(
         @wraps(func)
         async def inner(*args: _P.args, **kwargs: _P.kwargs) -> _T:
             await asyncio.sleep(sleep_time)
-            return await func(*args, **kwargs)
+            return await func(*args, **kwargs)  # noqa
         return inner
 
     return wrapper
@@ -58,7 +58,8 @@ def from_locals(
 ) -> dict[str, Any]:
     """Get arguments of calling function from its locals to pass them to paginator.
 
-    :param loc: locals of calling function
-    :param exclude: arguments to be excluded
+    Args:
+        loc: locals of calling function
+        exclude: arguments to be excluded
     """
     return {k: v for k, v in loc.copy().items() if k not in exclude}

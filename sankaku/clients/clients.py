@@ -79,9 +79,10 @@ class BaseClient(ABCClient):
         In case when all arguments are specified, preference will be given
         to authorization by credentials.
 
-        :param access_token: User access token
-        :param login: User email or nickname
-        :param password: User password
+        Args:
+            access_token: User access token
+            login: User email or nickname
+            password: User password
         """
         match (access_token, login, password):
             case [str(), str(), str()] | [_, str(), str()]:
@@ -128,21 +129,22 @@ class PostClient(BaseClient):
     ) -> AsyncIterator[mdl.Post]:
         """Get posts from post pages.
 
-        :param order: Post order rule
-        :param date: Date or range of dates
-        :param rating: Post rating
-        :param threshold: Vote (quality) filter of posts
-        :param hide_posts_in_books: Whether show post from books or not
-        :param file_size: Size (aspect ratio) of mediafile
-        :param file_type: Type of mediafile in post
-        :param video_duration: Video duration in seconds or in range of seconds
-        :param recommended_for: Posts recommended for specified user
-        :param favorited_by: Posts favorited by specified user
-        :param tags: Tags available for search
-        :param added_by: Posts uploaded by specified users
-        :param voted: Posts voted by specified user
-        :param page_number: Page number from which to start iteration
-        :param limit: Maximum amount of posts per page
+        Args:
+            order: Post order rule
+            date: Date or range of dates
+            rating: Post rating
+            threshold: Vote (quality) filter of posts
+            hide_posts_in_books: Whether show post from books or not
+            file_size: Size (aspect ratio) of mediafile
+            file_type: Type of mediafile in post
+            video_duration: Video duration in seconds or in range of seconds
+            recommended_for: Posts recommended for specified user
+            favorited_by: Posts favorited by specified user
+            tags: Tags available for search
+            added_by: Posts uploaded by specified users
+            voted: Posts voted by specified user
+            page_number: Page number from which to start iteration
+            limit: Maximum amount of posts per page
         """
         async for page in PostPaginator(
             self._http_client, const.POST_URL, **from_locals(locals())
@@ -215,8 +217,9 @@ class AIClient(BaseClient):
     ) -> AsyncIterator[mdl.AIPost]:
         """Get AI created posts from AI dedicated post pages.
 
-        :param page_number: Page number from which to start iteration
-        :param limit: Maximum amount of posts per page
+        Args:
+            page_number: Page number from which to start iteration
+            limit: Maximum amount of posts per page
         """
         async for page in Paginator(
             self._http_client, const.AI_POST_URL,
@@ -255,14 +258,15 @@ class TagClient(BaseClient):
     ) -> AsyncIterator[mdl.PageTag]:
         """Get tags from tag pages.
 
-        :param tag_type: Tag type filter
-        :param order: Tag order rule
-        :param rating: Tag rating
-        :param max_post_count: Upper threshold for number of posts with tags found
-        :param sort_parameter: Tag sorting parameter
-        :param sort_direction: Tag sorting direction
-        :param page_number: Page number from which to start iteration
-        :param limit: Maximum amount of tags per page
+        Args:
+            tag_type: Tag type filter
+            order: Tag order rule
+            rating: Tag rating
+            max_post_count: Upper threshold for number of posts with tags found
+            sort_parameter: Tag sorting parameter
+            sort_direction: Tag sorting direction
+            page_number: Page number from which to start iteration
+            limit: Maximum amount of tags per page
         """
         async for page in TagPaginator(
             self._http_client, const.TAG_URL, **from_locals(locals())
@@ -300,15 +304,16 @@ class BookClient(BaseClient):
     ) -> AsyncIterator[mdl.PageBook]:
         """Get books from book (pool) pages.
 
-        :param order: Book order rule
-        :param rating: Books rating
-        :param recommended_for: Books recommended for specified user
-        :param favorited_by: Books favorited by specified user
-        :param tags: Tags available for search
-        :param added_by: Books uploaded by specified users
-        :param voted: Books voted by specified user
-        :param page_number: Page number from which to start iteration
-        :param limit: Maximum amount of books per page
+        Args:
+            order: Book order rule
+            rating: Books rating
+            recommended_for: Books recommended for specified user
+            favorited_by: Books favorited by specified user
+            tags: Tags available for search
+            added_by: Books uploaded by specified users
+            voted: Books voted by specified user
+            page_number: Page number from which to start iteration
+            limit: Maximum amount of books per page
         """
         async for page in BookPaginator(
             self._http_client, const.BOOK_URL, **from_locals(locals())
@@ -370,10 +375,11 @@ class UserClient(BaseClient):
     ) -> AsyncIterator[mdl.User]:
         """Get user profiles from user pages.
 
-        :param order: User order rule
-        :param level: User level type
-        :param page_number: Page number from which to start iteration
-        :param limit: Maximum amount of users per page
+        Args:
+            order: User order rule
+            level: User level type
+            page_number: Page number from which to start iteration
+            limit: Maximum amount of users per page
         """
         async for page in UserPaginator(
             self._http_client, const.USER_URL, **from_locals(locals())
