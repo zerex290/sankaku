@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="sankaku",
-    version="1.0.0",
+    version="1.0.1",
     author="zerex290",
     author_email="zerex290@gmail.com",
     description="Asynchronous API wrapper for Sankaku Complex.",
