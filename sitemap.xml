@@ -2,52 +2,117 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://zerex290.github.io/sankaku/</loc>
-         <lastmod>2023-05-16</lastmod>
+         <lastmod>2023-05-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zerex290.github.io/sankaku/authorization/</loc>
-         <lastmod>2023-05-16</lastmod>
+         <lastmod>2023-05-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zerex290.github.io/sankaku/api/</loc>
-         <lastmod>2023-05-16</lastmod>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/errors/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/types/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/utils/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/clients/abc/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/clients/clients/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/clients/http_client/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/models/books/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/models/http/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/models/pages/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/models/posts/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/models/tags/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/models/users/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/paginators/abc/</loc>
+         <lastmod>2023-05-17</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://zerex290.github.io/sankaku/api/paginators/paginators/</loc>
+         <lastmod>2023-05-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zerex290.github.io/sankaku/clients/</loc>
-         <lastmod>2023-05-16</lastmod>
+         <lastmod>2023-05-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zerex290.github.io/sankaku/clients/ai-client/</loc>
-         <lastmod>2023-05-16</lastmod>
+         <lastmod>2023-05-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zerex290.github.io/sankaku/clients/book-client/</loc>
-         <lastmod>2023-05-16</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://zerex290.github.io/sankaku/clients/http-client/</loc>
-         <lastmod>2023-05-16</lastmod>
+         <lastmod>2023-05-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zerex290.github.io/sankaku/clients/post-client/</loc>
-         <lastmod>2023-05-16</lastmod>
+         <lastmod>2023-05-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zerex290.github.io/sankaku/clients/tag-client/</loc>
-         <lastmod>2023-05-16</lastmod>
+         <lastmod>2023-05-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://zerex290.github.io/sankaku/clients/user-client/</loc>
-         <lastmod>2023-05-16</lastmod>
+         <lastmod>2023-05-17</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

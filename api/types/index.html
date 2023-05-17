@@ -1,0 +1,3586 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Asynchronous API wrapper for Sankaku Complex">
+      
+      
+      
+        <link rel="canonical" href="https://zerex290.github.io/sankaku/api/types/">
+      
+      
+        <link rel="prev" href="../errors/">
+      
+      
+        <link rel="next" href="../utils/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
+    
+    
+      
+        <title>sankaku.types - sankaku</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.85bb2934.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.a6bdf11c.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Crete+Round:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Crete Round";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#documentation-for-sankakus-enum-types" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="sankaku" class="md-header__button md-logo" aria-label="sankaku" data-md-component="logo">
+      
+  <img src="../../logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            sankaku
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              sankaku.types
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+            
+              <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+              </label>
+            
+          
+            
+            
+            
+            <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
+            
+              <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+              </label>
+            
+          
+        </form>
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zerex290/sankaku" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zerex290/sankaku
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../.." class="md-tabs__link">
+      Home
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../authorization/" class="md-tabs__link">
+      Authorization
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../clients/" class="md-tabs__link">
+        Usage
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../" class="md-tabs__link md-tabs__link--active">
+        API Reference
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="sankaku" class="md-nav__button md-logo" aria-label="sankaku" data-md-component="logo">
+      
+  <img src="../../logo.png" alt="logo">
+
+    </a>
+    sankaku
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zerex290/sankaku" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zerex290/sankaku
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../authorization/" class="md-nav__link">
+        Authorization
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          Usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../clients/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../clients/post-client/" class="md-nav__link">
+        Working with posts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../clients/ai-client/" class="md-nav__link">
+        Working with AI
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../clients/tag-client/" class="md-nav__link">
+        Working with tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../clients/book-client/" class="md-nav__link">
+        Working with books
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../clients/user-client/" class="md-nav__link">
+        Working with users
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          API Reference
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          API Reference
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+          sankaku.clients
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_4_2">
+          <span class="md-nav__icon md-icon"></span>
+          sankaku.clients
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clients/abc/" class="md-nav__link">
+        abc
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clients/clients/" class="md-nav__link">
+        clients
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clients/http_client/" class="md-nav__link">
+        http_client
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
+          sankaku.models
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_4_3">
+          <span class="md-nav__icon md-icon"></span>
+          sankaku.models
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/books/" class="md-nav__link">
+        books
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/http/" class="md-nav__link">
+        http
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/pages/" class="md-nav__link">
+        pages
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/posts/" class="md-nav__link">
+        posts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/tags/" class="md-nav__link">
+        tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/users/" class="md-nav__link">
+        users
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+          sankaku.paginators
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_4_4">
+          <span class="md-nav__icon md-icon"></span>
+          sankaku.paginators
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paginators/abc/" class="md-nav__link">
+        abc
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../paginators/paginators/" class="md-nav__link">
+        paginators
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        sankaku.errors
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          sankaku.types
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        sankaku.types
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.Rating" class="md-nav__link">
+    Rating
+  </a>
+  
+    <nav class="md-nav" aria-label="Rating">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.Rating.SAFE" class="md-nav__link">
+    SAFE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.Rating.QUESTIONABLE" class="md-nav__link">
+    QUESTIONABLE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.Rating.EXPLICIT" class="md-nav__link">
+    EXPLICIT
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder" class="md-nav__link">
+    PostOrder
+  </a>
+  
+    <nav class="md-nav" aria-label="PostOrder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.POPULARITY" class="md-nav__link">
+    POPULARITY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.DATE" class="md-nav__link">
+    DATE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.QUALITY" class="md-nav__link">
+    QUALITY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.RANDOM" class="md-nav__link">
+    RANDOM
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.RECENTLY_FAVORITED" class="md-nav__link">
+    RECENTLY_FAVORITED
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.RECENTLY_VOTED" class="md-nav__link">
+    RECENTLY_VOTED
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter" class="md-nav__link">
+    SortParameter
+  </a>
+  
+    <nav class="md-nav" aria-label="SortParameter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.NAME" class="md-nav__link">
+    NAME
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.TRANSLATIONS" class="md-nav__link">
+    TRANSLATIONS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.TYPE" class="md-nav__link">
+    TYPE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.RATING" class="md-nav__link">
+    RATING
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.BOOK_COUNT" class="md-nav__link">
+    BOOK_COUNT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.POST_COUNT" class="md-nav__link">
+    POST_COUNT
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.SortDirection" class="md-nav__link">
+    SortDirection
+  </a>
+  
+    <nav class="md-nav" aria-label="SortDirection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortDirection.ASC" class="md-nav__link">
+    ASC
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortDirection.DESC" class="md-nav__link">
+    DESC
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.TagOrder" class="md-nav__link">
+    TagOrder
+  </a>
+  
+    <nav class="md-nav" aria-label="TagOrder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagOrder.POPULARITY" class="md-nav__link">
+    POPULARITY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagOrder.QUALITY" class="md-nav__link">
+    QUALITY
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.TagType" class="md-nav__link">
+    TagType
+  </a>
+  
+    <nav class="md-nav" aria-label="TagType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.ARTIST" class="md-nav__link">
+    ARTIST
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.COPYRIGHT" class="md-nav__link">
+    COPYRIGHT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.CHARACTER" class="md-nav__link">
+    CHARACTER
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.MEDIUM" class="md-nav__link">
+    MEDIUM
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.META" class="md-nav__link">
+    META
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.GENRE" class="md-nav__link">
+    GENRE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.STUDIO" class="md-nav__link">
+    STUDIO
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.FileType" class="md-nav__link">
+    FileType
+  </a>
+  
+    <nav class="md-nav" aria-label="FileType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileType.IMAGE" class="md-nav__link">
+    IMAGE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileType.GIF" class="md-nav__link">
+    GIF
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileType.VIDEO" class="md-nav__link">
+    VIDEO
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize" class="md-nav__link">
+    FileSize
+  </a>
+  
+    <nav class="md-nav" aria-label="FileSize">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.LARGE" class="md-nav__link">
+    LARGE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.HUGE" class="md-nav__link">
+    HUGE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.LONG" class="md-nav__link">
+    LONG
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.WALLPAPER" class="md-nav__link">
+    WALLPAPER
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.A_RATIO_16_9" class="md-nav__link">
+    A_RATIO_16_9
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.A_RATIO_4_3" class="md-nav__link">
+    A_RATIO_4_3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.A_RATIO_3_2" class="md-nav__link">
+    A_RATIO_3_2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.A_RATIO_1_1" class="md-nav__link">
+    A_RATIO_1_1
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder" class="md-nav__link">
+    UserOrder
+  </a>
+  
+    <nav class="md-nav" aria-label="UserOrder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.POSTS" class="md-nav__link">
+    POSTS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.FAVORITES" class="md-nav__link">
+    FAVORITES
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.NAME" class="md-nav__link">
+    NAME
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.NEWEST" class="md-nav__link">
+    NEWEST
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.OLDEST" class="md-nav__link">
+    OLDEST
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.LAST_SEEN" class="md-nav__link">
+    LAST_SEEN
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel" class="md-nav__link">
+    UserLevel
+  </a>
+  
+    <nav class="md-nav" aria-label="UserLevel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.ADMIN" class="md-nav__link">
+    ADMIN
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.SYSTEM_USER" class="md-nav__link">
+    SYSTEM_USER
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.MODERATOR" class="md-nav__link">
+    MODERATOR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.JANITOR" class="md-nav__link">
+    JANITOR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.CONTRIBUTOR" class="md-nav__link">
+    CONTRIBUTOR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.PRIVILEGED" class="md-nav__link">
+    PRIVILEGED
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.MEMBER" class="md-nav__link">
+    MEMBER
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.BLOCKED" class="md-nav__link">
+    BLOCKED
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.UNACTIVATED" class="md-nav__link">
+    UNACTIVATED
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder" class="md-nav__link">
+    BookOrder
+  </a>
+  
+    <nav class="md-nav" aria-label="BookOrder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder.DATE" class="md-nav__link">
+    DATE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder.QUALITY" class="md-nav__link">
+    QUALITY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder.RANDOM" class="md-nav__link">
+    RANDOM
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder.RECENTLY_FAVORITED" class="md-nav__link">
+    RECENTLY_FAVORITED
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder.RECENTLY_VOTED" class="md-nav__link">
+    RECENTLY_VOTED
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        sankaku.utils
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.Rating" class="md-nav__link">
+    Rating
+  </a>
+  
+    <nav class="md-nav" aria-label="Rating">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.Rating.SAFE" class="md-nav__link">
+    SAFE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.Rating.QUESTIONABLE" class="md-nav__link">
+    QUESTIONABLE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.Rating.EXPLICIT" class="md-nav__link">
+    EXPLICIT
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder" class="md-nav__link">
+    PostOrder
+  </a>
+  
+    <nav class="md-nav" aria-label="PostOrder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.POPULARITY" class="md-nav__link">
+    POPULARITY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.DATE" class="md-nav__link">
+    DATE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.QUALITY" class="md-nav__link">
+    QUALITY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.RANDOM" class="md-nav__link">
+    RANDOM
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.RECENTLY_FAVORITED" class="md-nav__link">
+    RECENTLY_FAVORITED
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.PostOrder.RECENTLY_VOTED" class="md-nav__link">
+    RECENTLY_VOTED
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter" class="md-nav__link">
+    SortParameter
+  </a>
+  
+    <nav class="md-nav" aria-label="SortParameter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.NAME" class="md-nav__link">
+    NAME
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.TRANSLATIONS" class="md-nav__link">
+    TRANSLATIONS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.TYPE" class="md-nav__link">
+    TYPE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.RATING" class="md-nav__link">
+    RATING
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.BOOK_COUNT" class="md-nav__link">
+    BOOK_COUNT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortParameter.POST_COUNT" class="md-nav__link">
+    POST_COUNT
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.SortDirection" class="md-nav__link">
+    SortDirection
+  </a>
+  
+    <nav class="md-nav" aria-label="SortDirection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortDirection.ASC" class="md-nav__link">
+    ASC
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.SortDirection.DESC" class="md-nav__link">
+    DESC
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.TagOrder" class="md-nav__link">
+    TagOrder
+  </a>
+  
+    <nav class="md-nav" aria-label="TagOrder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagOrder.POPULARITY" class="md-nav__link">
+    POPULARITY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagOrder.QUALITY" class="md-nav__link">
+    QUALITY
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.TagType" class="md-nav__link">
+    TagType
+  </a>
+  
+    <nav class="md-nav" aria-label="TagType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.ARTIST" class="md-nav__link">
+    ARTIST
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.COPYRIGHT" class="md-nav__link">
+    COPYRIGHT
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.CHARACTER" class="md-nav__link">
+    CHARACTER
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.MEDIUM" class="md-nav__link">
+    MEDIUM
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.META" class="md-nav__link">
+    META
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.GENRE" class="md-nav__link">
+    GENRE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.TagType.STUDIO" class="md-nav__link">
+    STUDIO
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.FileType" class="md-nav__link">
+    FileType
+  </a>
+  
+    <nav class="md-nav" aria-label="FileType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileType.IMAGE" class="md-nav__link">
+    IMAGE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileType.GIF" class="md-nav__link">
+    GIF
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileType.VIDEO" class="md-nav__link">
+    VIDEO
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize" class="md-nav__link">
+    FileSize
+  </a>
+  
+    <nav class="md-nav" aria-label="FileSize">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.LARGE" class="md-nav__link">
+    LARGE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.HUGE" class="md-nav__link">
+    HUGE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.LONG" class="md-nav__link">
+    LONG
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.WALLPAPER" class="md-nav__link">
+    WALLPAPER
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.A_RATIO_16_9" class="md-nav__link">
+    A_RATIO_16_9
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.A_RATIO_4_3" class="md-nav__link">
+    A_RATIO_4_3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.A_RATIO_3_2" class="md-nav__link">
+    A_RATIO_3_2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.FileSize.A_RATIO_1_1" class="md-nav__link">
+    A_RATIO_1_1
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder" class="md-nav__link">
+    UserOrder
+  </a>
+  
+    <nav class="md-nav" aria-label="UserOrder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.POSTS" class="md-nav__link">
+    POSTS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.FAVORITES" class="md-nav__link">
+    FAVORITES
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.NAME" class="md-nav__link">
+    NAME
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.NEWEST" class="md-nav__link">
+    NEWEST
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.OLDEST" class="md-nav__link">
+    OLDEST
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserOrder.LAST_SEEN" class="md-nav__link">
+    LAST_SEEN
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel" class="md-nav__link">
+    UserLevel
+  </a>
+  
+    <nav class="md-nav" aria-label="UserLevel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.ADMIN" class="md-nav__link">
+    ADMIN
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.SYSTEM_USER" class="md-nav__link">
+    SYSTEM_USER
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.MODERATOR" class="md-nav__link">
+    MODERATOR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.JANITOR" class="md-nav__link">
+    JANITOR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.CONTRIBUTOR" class="md-nav__link">
+    CONTRIBUTOR
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.PRIVILEGED" class="md-nav__link">
+    PRIVILEGED
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.MEMBER" class="md-nav__link">
+    MEMBER
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.BLOCKED" class="md-nav__link">
+    BLOCKED
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.UserLevel.UNACTIVATED" class="md-nav__link">
+    UNACTIVATED
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder" class="md-nav__link">
+    BookOrder
+  </a>
+  
+    <nav class="md-nav" aria-label="BookOrder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder.DATE" class="md-nav__link">
+    DATE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder.QUALITY" class="md-nav__link">
+    QUALITY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder.RANDOM" class="md-nav__link">
+    RANDOM
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder.RECENTLY_FAVORITED" class="md-nav__link">
+    RECENTLY_FAVORITED
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.types.BookOrder.RECENTLY_VOTED" class="md-nav__link">
+    RECENTLY_VOTED
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="documentation-for-sankakus-enum-types">Documentation for sankaku's <code>enum</code> types</h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.Rating" class="doc doc-heading">
+        <code>sankaku.types.Rating</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code>str</code>, <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.Rating.SAFE" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">SAFE</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.Rating.QUESTIONABLE" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">QUESTIONABLE</span> <span class="o">=</span> <span class="s1">&#39;q&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.Rating.EXPLICIT" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">EXPLICIT</span> <span class="o">=</span> <span class="s1">&#39;e&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.PostOrder" class="doc doc-heading">
+        <code>sankaku.types.PostOrder</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.PostOrder.POPULARITY" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">POPULARITY</span> <span class="o">=</span> <span class="s1">&#39;popularity&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.PostOrder.DATE" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">DATE</span> <span class="o">=</span> <span class="s1">&#39;date&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.PostOrder.QUALITY" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">QUALITY</span> <span class="o">=</span> <span class="s1">&#39;quality&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.PostOrder.RANDOM" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">RANDOM</span> <span class="o">=</span> <span class="s1">&#39;random&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.PostOrder.RECENTLY_FAVORITED" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">RECENTLY_FAVORITED</span> <span class="o">=</span> <span class="s1">&#39;recently_favorited&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.PostOrder.RECENTLY_VOTED" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">RECENTLY_VOTED</span> <span class="o">=</span> <span class="s1">&#39;recently_voted&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.SortParameter" class="doc doc-heading">
+        <code>sankaku.types.SortParameter</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.SortParameter.NAME" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">NAME</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.SortParameter.TRANSLATIONS" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">TRANSLATIONS</span> <span class="o">=</span> <span class="s1">&#39;name_ja&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.SortParameter.TYPE" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">TYPE</span> <span class="o">=</span> <span class="s1">&#39;type&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.SortParameter.RATING" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">RATING</span> <span class="o">=</span> <span class="s1">&#39;rating&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.SortParameter.BOOK_COUNT" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">BOOK_COUNT</span> <span class="o">=</span> <span class="s1">&#39;pool_count&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.SortParameter.POST_COUNT" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">POST_COUNT</span> <span class="o">=</span> <span class="s1">&#39;count&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.SortDirection" class="doc doc-heading">
+        <code>sankaku.types.SortDirection</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.SortDirection.ASC" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">ASC</span> <span class="o">=</span> <span class="s1">&#39;asc&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.SortDirection.DESC" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">DESC</span> <span class="o">=</span> <span class="s1">&#39;desc&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.TagOrder" class="doc doc-heading">
+        <code>sankaku.types.TagOrder</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.TagOrder.POPULARITY" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">POPULARITY</span> <span class="o">=</span> <span class="s1">&#39;popularity&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.TagOrder.QUALITY" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">QUALITY</span> <span class="o">=</span> <span class="s1">&#39;quality&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.TagType" class="doc doc-heading">
+        <code>sankaku.types.TagType</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.TagType.ARTIST" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">ARTIST</span> <span class="o">=</span> <span class="mi">1</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.TagType.COPYRIGHT" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">COPYRIGHT</span> <span class="o">=</span> <span class="mi">3</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.TagType.CHARACTER" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">CHARACTER</span> <span class="o">=</span> <span class="mi">4</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.TagType.MEDIUM" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">MEDIUM</span> <span class="o">=</span> <span class="mi">8</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.TagType.META" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">META</span> <span class="o">=</span> <span class="mi">9</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.TagType.GENRE" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">GENRE</span> <span class="o">=</span> <span class="mi">5</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.TagType.STUDIO" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">STUDIO</span> <span class="o">=</span> <span class="mi">2</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.FileType" class="doc doc-heading">
+        <code>sankaku.types.FileType</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileType.IMAGE" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">IMAGE</span> <span class="o">=</span> <span class="s1">&#39;image&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileType.GIF" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">GIF</span> <span class="o">=</span> <span class="s1">&#39;animated_gif&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileType.VIDEO" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">VIDEO</span> <span class="o">=</span> <span class="s1">&#39;video&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.FileSize" class="doc doc-heading">
+        <code>sankaku.types.FileSize</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileSize.LARGE" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">LARGE</span> <span class="o">=</span> <span class="s1">&#39;large_filesize&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileSize.HUGE" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">HUGE</span> <span class="o">=</span> <span class="s1">&#39;extremely_large_filesize&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileSize.LONG" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">LONG</span> <span class="o">=</span> <span class="s1">&#39;long_image&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileSize.WALLPAPER" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">WALLPAPER</span> <span class="o">=</span> <span class="s1">&#39;wallpaper&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileSize.A_RATIO_16_9" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">A_RATIO_16_9</span> <span class="o">=</span> <span class="s1">&#39;16:9_aspect_ratio&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileSize.A_RATIO_4_3" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">A_RATIO_4_3</span> <span class="o">=</span> <span class="s1">&#39;4:3_aspect_ratio&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileSize.A_RATIO_3_2" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">A_RATIO_3_2</span> <span class="o">=</span> <span class="s1">&#39;3:2_aspect_ratio&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.FileSize.A_RATIO_1_1" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">A_RATIO_1_1</span> <span class="o">=</span> <span class="s1">&#39;1:1_aspect_ratio&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.UserOrder" class="doc doc-heading">
+        <code>sankaku.types.UserOrder</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserOrder.POSTS" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">POSTS</span> <span class="o">=</span> <span class="s1">&#39;post_upload_count&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserOrder.FAVORITES" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">FAVORITES</span> <span class="o">=</span> <span class="s1">&#39;favorite_count&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserOrder.NAME" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">NAME</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserOrder.NEWEST" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">NEWEST</span> <span class="o">=</span> <span class="s1">&#39;newest&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserOrder.OLDEST" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">OLDEST</span> <span class="o">=</span> <span class="s1">&#39;oldest&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserOrder.LAST_SEEN" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">LAST_SEEN</span> <span class="o">=</span> <span class="s1">&#39;active&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.UserLevel" class="doc doc-heading">
+        <code>sankaku.types.UserLevel</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserLevel.ADMIN" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">ADMIN</span> <span class="o">=</span> <span class="mi">50</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserLevel.SYSTEM_USER" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">SYSTEM_USER</span> <span class="o">=</span> <span class="mi">45</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserLevel.MODERATOR" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">MODERATOR</span> <span class="o">=</span> <span class="mi">40</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserLevel.JANITOR" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">JANITOR</span> <span class="o">=</span> <span class="mi">35</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserLevel.CONTRIBUTOR" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">CONTRIBUTOR</span> <span class="o">=</span> <span class="mi">33</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserLevel.PRIVILEGED" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">PRIVILEGED</span> <span class="o">=</span> <span class="mi">30</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserLevel.MEMBER" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">MEMBER</span> <span class="o">=</span> <span class="mi">20</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserLevel.BLOCKED" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">BLOCKED</span> <span class="o">=</span> <span class="mi">10</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.UserLevel.UNACTIVATED" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">UNACTIVATED</span> <span class="o">=</span> <span class="mi">0</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.types.BookOrder" class="doc doc-heading">
+        <code>sankaku.types.BookOrder</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.BookOrder.DATE" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">DATE</span> <span class="o">=</span> <span class="s1">&#39;date&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.BookOrder.QUALITY" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">QUALITY</span> <span class="o">=</span> <span class="s1">&#39;quality&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.BookOrder.RANDOM" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">RANDOM</span> <span class="o">=</span> <span class="s1">&#39;random&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.BookOrder.RECENTLY_FAVORITED" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">RECENTLY_FAVORITED</span> <span class="o">=</span> <span class="s1">&#39;recently_favorited&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.types.BookOrder.RECENTLY_VOTED" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">RECENTLY_VOTED</span> <span class="o">=</span> <span class="s1">&#39;recently_voted&#39;</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "content.code.copy", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c2be25ad.min.js"></script>
+      
+    
+  </body>
+</html>
