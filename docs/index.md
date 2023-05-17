@@ -20,11 +20,32 @@ with loguru.
 
 ## Installation
 
+To install sankaku via pip write following line of code in your terminal:
+
 ```commandline
 pip install sankaku
 ```
 
-## Example
+To install the sankaku via Docker, you can follow these steps:
+
+###### Step 1: Install Docker
+
+Ensure that Docker is installed on your machine. If Docker is not already
+installed, you can download and install it from the official
+[Docker website](https://www.docker.com/get-started).
+
+###### Step 2: Use docker to install sankaku
+
+Open a command prompt. Navigate to the directory where you want
+to install Sankaku. Type the following command:
+
+```commandline
+git clone https://github.com/zerex290/sankaku.git
+cd sankaku
+docker run -it --name sankaku -w /opt -v$(pwd):/opt python:3.11 bash
+```
+
+## Usage example
 
 ```py linenums="1"
 import asyncio

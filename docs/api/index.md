@@ -1,3 +1,6 @@
-# Table of contents
+# Introduction to sankaku API
 
-In future versions...
+This section describes main objects used by sankaku.
+
+Predefined custom type definition and constant values are excluded from this
+section.

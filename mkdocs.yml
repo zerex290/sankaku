@@ -7,16 +7,41 @@ repo_url: https://github.com/zerex290/sankaku
 nav:
   - Home: index.md
   - Authorization: authorization.md
-  - Clients:
+  - Usage:
       - Introduction: clients/index.md
-      - PostClient: clients/post-client.md
-      - AIClient: clients/ai-client.md
-      - TagClient: clients/tag-client.md
-      - BookClient: clients/book-client.md
-      - UserClient: clients/user-client.md
-      - HttpClient: clients/http-client.md
-  - API reference:
-      - Table of contents: api/index.md
+      - Working with posts: clients/post-client.md
+      - Working with AI: clients/ai-client.md
+      - Working with tags: clients/tag-client.md
+      - Working with books: clients/book-client.md
+      - Working with users: clients/user-client.md
+  - API Reference:
+      - Introduction: api/index.md
+      - sankaku.clients:
+          - abc: api/clients/abc.md
+          - clients: api/clients/clients.md
+          - http_client: api/clients/http_client.md
+      - sankaku.models:
+          - books: api/models/books.md
+          - http: api/models/http.md
+          - pages: api/models/pages.md
+          - posts: api/models/posts.md
+          - tags: api/models/tags.md
+          - users: api/models/users.md
+      - sankaku.paginators:
+          - abc: api/paginators/abc.md
+          - paginators: api/paginators/paginators.md
+      - sankaku.errors: api/errors.md
+      - sankaku.types: api/types.md
+      - sankaku.utils: api/utils.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_root_heading: true
 
 theme:
   name: material
@@ -26,12 +51,25 @@ theme:
 
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - content.code.copy
+    - search.suggest
+    - search.highlight
 
   palette:
-    scheme: slate
-    primary: deep purple
-    accent: purple
+    - scheme: slate
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+    - scheme: default
+      primary: deep purple
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
 
   font:
     text: Crete Round
