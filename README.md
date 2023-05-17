@@ -24,6 +24,8 @@ with loguru.
 
 Documentation: https://zerex290.github.io/sankaku
 
+API Reference: https://zerex290.github.io/sankaku/api
+
 Source code: https://github.com/zerex290/sankaku
 
 ---
@@ -45,13 +47,15 @@ pip install sankaku
 
 To install the sankaku via Docker, you can follow these steps:
 
-Step 1: Install Docker
-: Ensure that Docker is installed on your machine. If Docker is not already
+###### Step 1: Install Docker
+
+Ensure that Docker is installed on your machine. If Docker is not already
 installed, you can download and install it from the official
 [Docker website](https://www.docker.com/get-started).
 
-Step 2: Use docker to install sankaku
-: Open a command prompt. Navigate to the directory where you want
+###### Step 2: Use docker to install sankaku
+
+Open a command prompt. Navigate to the directory where you want
 to install Sankaku. Type the following command:
 
 ```commandline
