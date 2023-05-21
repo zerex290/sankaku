@@ -1,18 +1,16 @@
 from abc import ABC, abstractmethod
-from collections.abc import AsyncIterator
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, AsyncIterator
 
 from sankaku import errors, models as mdl
 
-
 __all__ = ["ABCPaginator"]
-
 
 _T = TypeVar("_T")
 
 
 class ABCPaginator(ABC, Generic[_T]):
     """Abstract paginator class."""
+
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
         pass

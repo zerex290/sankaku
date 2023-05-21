@@ -3,26 +3,21 @@
 import asyncio
 from datetime import datetime
 from functools import wraps
-from typing import TypeVar, ParamSpec, Optional, Any
-from collections.abc import Callable, Awaitable
-
+from typing import TypeVar, Optional, Any, Dict, Tuple, Callable, Awaitable
 
 from sankaku.errors import RateLimitError
 from sankaku.typedefs import Timestamp
 
-
 __all__ = ["ratelimit", "convert_ts_to_datetime", "from_locals"]
 
-
 _T = TypeVar("_T")
-_P = ParamSpec("_P")
 
 
 def ratelimit(
-    *,
-    rps: Optional[int] = None,
-    rpm: Optional[int] = None
-) -> Callable[[Callable[_P, Awaitable[_T]]], Callable[_P, Awaitable[_T]]]:
+        *,
+        rps: Optional[int] = None,
+        rpm: Optional[int] = None
+) -> Callable[[Callable[..., Awaitable[_T]]], Callable[..., Awaitable[_T]]]:
     """Limit the number of requests.
 
     Args:
@@ -36,11 +31,12 @@ def ratelimit(
 
     sleep_time: float = (1 / rps) if rps else (60 / rpm)  # type: ignore[operator]
 
-    def wrapper(func: Callable[_P, Awaitable[_T]]) -> Callable[_P, Awaitable[_T]]:
+    def wrapper(func: Callable[..., Awaitable[_T]]) -> Callable[..., Awaitable[_T]]:
         @wraps(func)
-        async def inner(*args: _P.args, **kwargs: _P.kwargs) -> _T:
+        async def inner(*args, **kwargs) -> _T:
             await asyncio.sleep(sleep_time)
             return await func(*args, **kwargs)  # noqa
+
         return inner
 
     return wrapper
@@ -54,8 +50,8 @@ def convert_ts_to_datetime(ts: Timestamp) -> Optional[datetime]:
 
 
 def from_locals(
-    loc: dict[str, Any], exclude: tuple[str, ...] = ("self",)
-) -> dict[str, Any]:
+        loc: Dict[str, Any], exclude: Tuple[str, ...] = ("self",)
+) -> Dict[str, Any]:
     """Get arguments of calling function from its locals to pass them to paginator.
 
     Args:

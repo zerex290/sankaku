@@ -1,10 +1,9 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, Field, validator
 
 from sankaku import types
-
 
 __all__ = ["Author", "User", "ExtendedUser"]
 
@@ -55,7 +54,7 @@ class User(BaseUser):
     post_vote_count: Optional[int] = None
     pool_vote_count: Optional[int] = None
     recommended_posts_for_user: Optional[int] = None
-    subscriptions: list[str] = []
+    subscriptions: List[str] = []
 
 
 class ExtendedUser(User):
@@ -69,11 +68,11 @@ class ExtendedUser(User):
     is_verified: bool
     verifications_count: int
     blacklist_is_hidden: bool
-    blacklisted_tags: list[str]
-    blacklisted: list[str]
+    blacklisted_tags: List[str]
+    blacklisted: List[str]
     mfa_method: int
 
     @validator("blacklisted_tags", pre=True)
-    def flatten_blacklisted_tags(cls, v) -> list[str]:  # noqa
+    def flatten_blacklisted_tags(cls, v) -> List[str]:  # noqa
         """Flatten nested lists into one."""
         return [tag[0] for tag in v]

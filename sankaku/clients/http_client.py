@@ -1,19 +1,45 @@
+import os
+from typing import Dict
+
 from aiohttp import ClientSession
 from loguru import logger
 
-from .abc import ABCHttpClient
 from sankaku import errors, constants as const
 from sankaku.models.http import ClientResponse
-
+from .abc import ABCHttpClient
 
 __all__ = ["HttpClient"]
+
+try:
+    from aiohttp_socks import ProxyConnector as SocksProxyConnector
+except (ImportError, ModuleNotFoundError):
+    SocksProxyConnector = None
+
+
+def _get_socks_connector():
+    if SocksProxyConnector is not None:
+        proxy = os.environ.get('ALL_PROXY') or os.environ.get('HTTPS_PROXY') or os.environ.get('HTTP_PROXY')
+        if proxy.startswith('socks'):
+            return SocksProxyConnector.from_url(proxy)
+        else:
+            return None
+    else:
+        return None
 
 
 class HttpClient(ABCHttpClient):
     """HTTP client for API requests that instances use a single session."""
+
     def __init__(self) -> None:
-        self.headers: dict[str, str] = const.HEADERS.copy()
-        self.session: ClientSession = ClientSession()
+        self.headers: Dict[str, str] = const.HEADERS.copy()
+        socks_connector = _get_socks_connector()
+        if socks_connector:
+            # use socks connector
+            kwargs = {'connector': socks_connector}
+        else:
+            # use trust env option, aiohttp will read HTTP_PROXY and HTTPS_PROXY from env
+            kwargs = {'trust_env': True}
+        self.session: ClientSession = ClientSession(**kwargs)
 
     def __del__(self) -> None:
         if not self.session.closed and self.session.connector is not None:

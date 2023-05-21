@@ -1,17 +1,21 @@
 import json
-from typing import Optional, Literal, Annotated
-from collections.abc import AsyncIterator
 from datetime import datetime
+from typing import Optional, Union, List, AsyncIterator
+
+from ..typedefs import ValueRange
+
+try:
+    from typing import Literal, Annotated
+except (ModuleNotFoundError, ImportError):
+    from typing_extensions import Literal, Annotated
 
 from loguru import logger
 
-from .abc import ABCClient
-from .http_client import HttpClient
-from sankaku.typedefs import ValueRange
-from sankaku.utils import from_locals
 from sankaku import models as mdl, constants as const, types, errors
 from sankaku.paginators import *
-
+from sankaku.utils import from_locals
+from .abc import ABCClient
+from .http_client import HttpClient
 
 __all__ = [
     "PostClient",
@@ -24,6 +28,7 @@ __all__ = [
 
 class BaseClient(ABCClient):
     """Base client used for login."""
+
     def __init__(self) -> None:
         self._profile: Optional[mdl.ExtendedUser] = None
         self._http_client: HttpClient = HttpClient()
@@ -69,11 +74,11 @@ class BaseClient(ABCClient):
         return mdl.ExtendedUser(**response.json["user"])
 
     async def login(
-        self,
-        *,
-        access_token: Optional[str] = None,
-        login: Optional[str] = None,
-        password: Optional[str] = None
+            self,
+            *,
+            access_token: Optional[str] = None,
+            login: Optional[str] = None,
+            password: Optional[str] = None
     ) -> None:
         """Login into sankakucomplex.com via access token or credentials.
         In case when all arguments are specified, preference will be given
@@ -84,16 +89,15 @@ class BaseClient(ABCClient):
             login: User email or nickname
             password: User password
         """
-        match (access_token, login, password):
-            case [str(), str(), str()] | [_, str(), str()]:
-                await self._login_via_credentials(login, password)  # type: ignore[arg-type]
-            case [str(), _, _]:
-                await self._login_via_access_token(access_token)  # type: ignore[arg-type]
-            case _:
-                raise errors.SankakuError(
-                    "The given data is not enough "
-                    "or invalid (perhaps of the wrong type)."
-                )
+        if login and password:
+            await self._login_via_credentials(login, password)  # type: ignore[arg-type]
+        elif access_token and not login and not password:
+            await self._login_via_access_token(access_token)  # type: ignore[arg-type]
+        else:
+            raise errors.SankakuError(
+                "The given data is not enough "
+                "or invalid (perhaps of the wrong type)."
+            )
 
         self._http_client.headers.update(
             authorization=f"{self._token_type} {self._access_token}"
@@ -107,24 +111,25 @@ class BaseClient(ABCClient):
 
 class PostClient(BaseClient):
     """Client for post browsing."""
+
     async def browse_posts(
-        self,
-        order: Optional[types.PostOrder] = None,
-        date: Optional[list[datetime]] = None,
-        rating: Optional[types.Rating] = None,
-        threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-        hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
-        file_size: Optional[types.FileSize] = None,
-        file_type: Optional[types.FileType] = None,
-        video_duration: Optional[list[int]] = None,
-        recommended_for: Optional[str] = None,
-        favorited_by: Optional[str] = None,
-        tags: Optional[list[str]] = None,
-        added_by: Optional[list[str]] = None,
-        voted: Optional[str] = None,
-        *,
-        page_number: Optional[int] = None,
-        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
+            self,
+            order: Optional[types.PostOrder] = None,
+            date: Optional[List[datetime]] = None,
+            rating: Optional[types.Rating] = None,
+            threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+            hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
+            file_size: Optional[types.FileSize] = None,
+            file_type: Optional[types.FileType] = None,
+            video_duration: Optional[List[int]] = None,
+            recommended_for: Optional[str] = None,
+            favorited_by: Optional[str] = None,
+            tags: Optional[List[str]] = None,
+            added_by: Optional[List[str]] = None,
+            voted: Optional[str] = None,
+            *,
+            page_number: Optional[int] = None,
+            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
 
     ) -> AsyncIterator[mdl.Post]:
         """Get posts from post pages.
@@ -147,7 +152,7 @@ class PostClient(BaseClient):
             limit: Maximum amount of posts per page
         """
         async for page in PostPaginator(
-            self._http_client, const.POST_URL, **from_locals(locals())
+                self._http_client, const.POST_URL, **from_locals(locals())
         ):
             for post in page.items:
                 yield post
@@ -187,9 +192,9 @@ class PostClient(BaseClient):
     async def get_post_comments(self, post_id: int) -> AsyncIterator[mdl.Comment]:
         """Get comments of the specific post by its ID."""
         async for page in Paginator(
-            self._http_client,
-            const.COMMENT_URL.format(post_id=post_id),
-            mdl.Comment
+                self._http_client,
+                const.COMMENT_URL.format(post_id=post_id),
+                mdl.Comment
         ):
             for comment in page.items:
                 yield comment
@@ -209,11 +214,12 @@ class PostClient(BaseClient):
 
 class AIClient(BaseClient):
     """Client for working with Sankaku built-in AI."""
+
     async def browse_ai_posts(
-        self,
-        *,
-        page_number: Optional[int] = None,
-        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
+            self,
+            *,
+            page_number: Optional[int] = None,
+            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
     ) -> AsyncIterator[mdl.AIPost]:
         """Get AI created posts from AI dedicated post pages.
 
@@ -222,8 +228,8 @@ class AIClient(BaseClient):
             limit: Maximum amount of posts per page
         """
         async for page in Paginator(
-            self._http_client, const.AI_POST_URL,
-            mdl.AIPost, **from_locals(locals())
+                self._http_client, const.AI_POST_URL,
+                mdl.AIPost, **from_locals(locals())
         ):
             for post in page.items:
                 yield post
@@ -243,17 +249,18 @@ class AIClient(BaseClient):
 
 class TagClient(BaseClient):
     """Client for tag browsing."""
+
     async def browse_tags(
-        self,
-        tag_type: Optional[types.TagType] = None,  # TODO: ability to specify multiple tags
-        order: Optional[types.TagOrder] = None,
-        rating: Optional[types.Rating] = None,
-        max_post_count: Optional[int] = None,
-        sort_parameter: Optional[types.SortParameter] = None,
-        sort_direction: Optional[types.SortDirection] = None,
-        *,
-        page_number: Optional[int] = None,
-        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
+            self,
+            tag_type: Optional[types.TagType] = None,  # TODO: ability to specify multiple tags
+            order: Optional[types.TagOrder] = None,
+            rating: Optional[types.Rating] = None,
+            max_post_count: Optional[int] = None,
+            sort_parameter: Optional[types.SortParameter] = None,
+            sort_direction: Optional[types.SortDirection] = None,
+            *,
+            page_number: Optional[int] = None,
+            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
 
     ) -> AsyncIterator[mdl.PageTag]:
         """Get tags from tag pages.
@@ -269,12 +276,12 @@ class TagClient(BaseClient):
             limit: Maximum amount of tags per page
         """
         async for page in TagPaginator(
-            self._http_client, const.TAG_URL, **from_locals(locals())
+                self._http_client, const.TAG_URL, **from_locals(locals())
         ):
             for tag in page.items:
                 yield tag
 
-    async def get_tag(self, name_or_id: str | int) -> mdl.WikiTag:
+    async def get_tag(self, name_or_id: Union[str, int]) -> mdl.WikiTag:
         """Get specific tag by its name or ID."""
         ref = "/name" if isinstance(name_or_id, str) else "/id"
         url = f"{const.TAG_WIKI_URL}{ref}/{name_or_id}"
@@ -289,18 +296,19 @@ class TagClient(BaseClient):
 
 class BookClient(BaseClient):
     """Client for book (pool) browsing."""
+
     async def browse_books(
-        self,
-        order: Optional[types.BookOrder] = None,
-        rating: Optional[types.Rating] = None,
-        recommended_for: Optional[str] = None,
-        favorited_by: Optional[str] = None,
-        tags: Optional[list[str]] = None,
-        added_by: Optional[list[str]] = None,
-        voted: Optional[str] = None,
-        *,
-        page_number: Optional[int] = None,
-        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
+            self,
+            order: Optional[types.BookOrder] = None,
+            rating: Optional[types.Rating] = None,
+            recommended_for: Optional[str] = None,
+            favorited_by: Optional[str] = None,
+            tags: Optional[List[str]] = None,
+            added_by: Optional[List[str]] = None,
+            voted: Optional[str] = None,
+            *,
+            page_number: Optional[int] = None,
+            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
     ) -> AsyncIterator[mdl.PageBook]:
         """Get books from book (pool) pages.
 
@@ -316,7 +324,7 @@ class BookClient(BaseClient):
             limit: Maximum amount of books per page
         """
         async for page in BookPaginator(
-            self._http_client, const.BOOK_URL, **from_locals(locals())
+                self._http_client, const.BOOK_URL, **from_locals(locals())
         ):
             for book in page.items:
                 yield book
@@ -348,7 +356,7 @@ class BookClient(BaseClient):
     async def get_related_books(self, post_id: int) -> AsyncIterator[mdl.PageBook]:
         """Get books related to specific post by its ID."""
         async for page in BookPaginator(
-            self._http_client, const.RELATED_BOOK_URL.format(post_id=post_id)
+                self._http_client, const.RELATED_BOOK_URL.format(post_id=post_id)
         ):
             for book in page.items:
                 yield book
@@ -365,13 +373,14 @@ class BookClient(BaseClient):
 
 class UserClient(BaseClient):
     """Client for browsing users."""
+
     async def browse_users(
-        self,
-        order: Optional[types.UserOrder] = None,
-        level: Optional[types.UserLevel] = None,
-        *,
-        page_number: Optional[int] = None,
-        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
+            self,
+            order: Optional[types.UserOrder] = None,
+            level: Optional[types.UserLevel] = None,
+            *,
+            page_number: Optional[int] = None,
+            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
     ) -> AsyncIterator[mdl.User]:
         """Get user profiles from user pages.
 
@@ -382,12 +391,12 @@ class UserClient(BaseClient):
             limit: Maximum amount of users per page
         """
         async for page in UserPaginator(
-            self._http_client, const.USER_URL, **from_locals(locals())
+                self._http_client, const.USER_URL, **from_locals(locals())
         ):
             for user in page.items:
                 yield user
 
-    async def get_user(self, name_or_id: str | int) -> mdl.User:
+    async def get_user(self, name_or_id: Union[str, int]) -> mdl.User:
         """Get specific user by its name or ID."""
         ref = "/name" if isinstance(name_or_id, str) else ""
         url = f"{const.USER_URL}{ref}/{name_or_id}"

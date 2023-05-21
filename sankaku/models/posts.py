@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import Optional
 from datetime import datetime
+from typing import Optional, List
 
 from pydantic import BaseModel, Field, validator
 
@@ -9,7 +9,6 @@ from sankaku import types
 from sankaku.utils import convert_ts_to_datetime
 from .tags import PostTag
 from .users import Author
-
 
 __all__ = ["Comment", "Post", "AIPost"]
 
@@ -40,20 +39,19 @@ class BasePost(BaseModel):
     extension: Optional[str] = Field(alias="file_type")
     generation_directives: Optional[GenerationDirectives]
     md5: str
-    tags: list[PostTag]
+    tags: List[PostTag]
 
     @property
     def file_type(self) -> Optional[types.FileType]:
         """Get type of the file."""
-        match self.extension:
-            case "png" | "jpeg" | "webp":
-                return types.FileType.IMAGE
-            case "webm" | "mp4":
-                return types.FileType.VIDEO
-            case "gif":
-                return types.FileType.GIF
-            case _:
-                return None
+        if self.extension in ('png', 'jpeg', 'webp'):
+            return types.FileType.IMAGE
+        elif self.extension in ('webm', 'mp4'):
+            return types.FileType.VIDEO
+        elif self.extension in ('gif',):
+            return types.FileType.GIF
+        else:
+            return None
 
     # Validators
     _normalize_datetime = (
@@ -75,7 +73,7 @@ class Comment(BaseModel):
     body: str
     score: int
     parent_id: Optional[int]
-    children: list[Comment]
+    children: List[Comment]
     deleted: bool
     deleted_by: dict  # Seen only empty dictionaries so IDK real type
     updated_at: Optional[datetime]

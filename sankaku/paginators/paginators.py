@@ -1,12 +1,17 @@
-from typing import Optional, Literal, Annotated, TypeVar
 from datetime import datetime
+from typing import Optional, TypeVar, List, Dict, Type
 
-from .abc import ABCPaginator
-from sankaku.typedefs import ValueRange
-from sankaku.utils import ratelimit
+from ..typedefs import ValueRange
+
+try:
+    from typing import Literal, Annotated
+except (ModuleNotFoundError, ImportError):
+    from typing_extensions import Literal, Annotated
+
 from sankaku import models as mdl, constants as const, types, errors
 from sankaku.clients import HttpClient
-
+from sankaku.utils import ratelimit
+from .abc import ABCPaginator
 
 __all__ = [
     "Paginator",
@@ -16,27 +21,27 @@ __all__ = [
     "UserPaginator"
 ]
 
-
 _T = TypeVar("_T")
 
 
 class Paginator(ABCPaginator[_T]):
     """Basic paginator for iteration without any special parameters."""
+
     def __init__(
-        self,
-        http_client: HttpClient,
-        url: str,
-        model: type[_T],
-        page_number: Optional[int] = None,
-        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-        params: Optional[dict[str, str]] = None
+            self,
+            http_client: HttpClient,
+            url: str,
+            model: Type[_T],
+            page_number: Optional[int] = None,
+            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+            params: Optional[Dict[str, str]] = None
     ) -> None:
         self.http_client = http_client
         self.url = url
         self.model = model
         self.page_number = page_number or const.BASE_PAGE_NUMBER
         self.limit = limit or const.BASE_PAGE_LIMIT
-        self.params: dict[str, str] = params or {}
+        self.params: Dict[str, str] = params or {}
 
         self.complete_params()
 
@@ -44,15 +49,15 @@ class Paginator(ABCPaginator[_T]):
     async def next_page(self) -> mdl.Page[_T]:  # type: ignore[override]
         """Get paginator next page."""
         response = await self.http_client.get(self.url, params=self.params)
-        match response.json:
-            case [] | {"data": []}:
-                raise errors.PaginatorLastPage(response.status, page=self.page_number)
-            case {"code": code} if code in const.PAGE_ALLOWED_ERRORS:
-                raise errors.PaginatorLastPage(response.status, page=self.page_number)
-            case {"code": _, "errorId": _}:
-                raise errors.SankakuServerError(response.status, **response.json)
-            case {"data": list() as data} if data:
-                response.json = data
+        json_ = response.json
+        if json_ == [] or json_ == {'data': []}:
+            raise errors.PaginatorLastPage(response.status, page=self.page_number)
+        elif 'code' in json_ and 'errorId' in json_:
+            raise errors.SankakuServerError(response.status, **response.json)
+        elif 'code' in json_:
+            raise errors.PaginatorLastPage(response.status, page=self.page_number)
+        elif 'data' in json_:
+            response.json = json_['data']
 
         self.page_number += 1
         self.params["page"] = str(self.page_number)
@@ -66,7 +71,7 @@ class Paginator(ABCPaginator[_T]):
         if self.limit is not None:
             self.params["limit"] = str(self.limit)
 
-    def _construct_page(self, data: list[dict]) -> mdl.Page[_T]:
+    def _construct_page(self, data: List[dict]) -> mdl.Page[_T]:
         """Construct and return page model."""
         items = [self.model(**d) for d in data]
         return mdl.Page[_T](number=self.page_number - 1, items=items)
@@ -74,27 +79,28 @@ class Paginator(ABCPaginator[_T]):
 
 class PostPaginator(Paginator[mdl.Post]):
     """Paginator used for iteration through post pages."""
+
     def __init__(
-        self,
-        http_client: HttpClient,
-        url: str,
-        model: type[mdl.Post] = mdl.Post,
-        page_number: Optional[int] = None,
-        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-        params: Optional[dict[str, str]] = None,
-        order: Optional[types.PostOrder] = None,
-        date: Optional[list[datetime]] = None,
-        rating: Optional[types.Rating] = None,
-        threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-        hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
-        file_size: Optional[types.FileSize] = None,
-        file_type: Optional[types.FileType] = None,
-        video_duration: Optional[list[int]] = None,
-        recommended_for: Optional[str] = None,
-        favorited_by: Optional[str] = None,
-        tags: Optional[list[str]] = None,
-        added_by: Optional[list[str]] = None,
-        voted: Optional[str] = None
+            self,
+            http_client: HttpClient,
+            url: str,
+            model: Type[mdl.Post] = mdl.Post,
+            page_number: Optional[int] = None,
+            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+            params: Optional[Dict[str, str]] = None,
+            order: Optional[types.PostOrder] = None,
+            date: Optional[List[datetime]] = None,
+            rating: Optional[types.Rating] = None,
+            threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+            hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
+            file_size: Optional[types.FileSize] = None,
+            file_type: Optional[types.FileType] = None,
+            video_duration: Optional[List[int]] = None,
+            recommended_for: Optional[str] = None,
+            favorited_by: Optional[str] = None,
+            tags: Optional[List[str]] = None,
+            added_by: Optional[List[str]] = None,
+            voted: Optional[str] = None
     ) -> None:
         self.order = order
         self.date = date
@@ -116,29 +122,28 @@ class PostPaginator(Paginator[mdl.Post]):
         if self.tags is None:
             self.tags = []
 
-        for items in self.__dict__.items():
-            match items:
-                case [_, None]:
-                    continue
-                case ["order" | "rating" | "file_type" as k, v] if v is not types.FileType.IMAGE:  # noqa
-                    self.tags.append(f"{k}:{v.value}")
-                case ["threshold" | "recommended_for" | "voted" as k, v]:
-                    self.tags.append(f"{k}:{v}")
-                case ["file_size", _]:
-                    self.tags.append(self.file_size.value)  # type: ignore[union-attr]
-                case ["date", _]:
-                    date = "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in self.date)  # type: ignore[union-attr]
-                    self.tags.append(f"date:{date}")
-                case ["video_duration", _] if self.file_type is not types.FileType.VIDEO:  # noqa
-                    raise errors.VideoDurationError
-                case ["video_duration", _]:
-                    duration = "..".join(str(sec) for sec in self.video_duration)  # type: ignore[union-attr]
-                    self.tags.append(f"duration:{duration}")
-                case ["favorited_by", _]:
-                    self.tags.append(f"fav:{self.favorited_by}")
-                case ["added_by", _]:
-                    for user in self.added_by:  # type: ignore[union-attr]
-                        self.tags.append(f"user:{user}")
+        for k, v in self.__dict__.items():
+            if v is None:
+                continue
+            elif k in {"order", "rating", "file_type"} and v is not types.FileType.IMAGE:
+                self.tags.append(f"{k}:{v.value}")
+            elif k in {"threshold", "recommended_for", "voted"}:
+                self.tags.append(f"{k}:{v}")
+            elif k == 'file_size':
+                self.tags.append(self.file_size.value)  # type: ignore[union-attr]
+            elif k == 'date':
+                date = "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in self.date)  # type: ignore[union-attr]
+                self.tags.append(f"date:{date}")
+            elif k == 'video_duration' and self.file_type is not types.FileType.VIDEO:
+                raise errors.VideoDurationError
+            elif k == 'video_duration':
+                duration = "..".join(str(sec) for sec in self.video_duration)  # type: ignore[union-attr]
+                self.tags.append(f"duration:{duration}")
+            elif k == 'favorited_by':
+                self.tags.append(f"fav:{self.favorited_by}")
+            elif k == 'added_by':
+                for user in self.added_by:  # type: ignore[union-attr]
+                    self.tags.append(f"user:{user}")
 
         if self.hide_posts_in_books is not None:
             self.params["hide_posts_in_books"] = self.hide_posts_in_books
@@ -148,20 +153,21 @@ class PostPaginator(Paginator[mdl.Post]):
 
 class TagPaginator(Paginator[mdl.PageTag]):
     """Paginator used for iteration through tag pages."""
+
     def __init__(
-        self,
-        http_client: HttpClient,
-        url: str,
-        model: type[mdl.PageTag] = mdl.PageTag,
-        page_number: Optional[int] = None,
-        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-        params: Optional[dict[str, str]] = None,
-        tag_type: Optional[types.TagType] = None,
-        order: Optional[types.TagOrder] = None,
-        rating: Optional[types.Rating] = None,
-        max_post_count: Optional[int] = None,
-        sort_parameter: Optional[types.SortParameter] = None,
-        sort_direction: Optional[types.SortDirection] = None
+            self,
+            http_client: HttpClient,
+            url: str,
+            model: Type[mdl.PageTag] = mdl.PageTag,
+            page_number: Optional[int] = None,
+            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+            params: Optional[Dict[str, str]] = None,
+            tag_type: Optional[types.TagType] = None,
+            order: Optional[types.TagOrder] = None,
+            rating: Optional[types.Rating] = None,
+            max_post_count: Optional[int] = None,
+            sort_parameter: Optional[types.SortParameter] = None,
+            sort_direction: Optional[types.SortDirection] = None
     ) -> None:
         self.tag_type = tag_type
         self.order = order
@@ -190,21 +196,22 @@ class TagPaginator(Paginator[mdl.PageTag]):
 
 class BookPaginator(Paginator[mdl.PageBook]):
     """Paginator used for iteration through book pages."""
+
     def __init__(
-        self,
-        http_client: HttpClient,
-        url: str,
-        model: type[mdl.PageBook] = mdl.PageBook,
-        page_number: Optional[int] = None,
-        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-        params: Optional[dict[str, str]] = None,
-        order: Optional[types.BookOrder] = None,
-        rating: Optional[types.Rating] = None,
-        recommended_for: Optional[str] = None,
-        favorited_by: Optional[str] = None,
-        tags: Optional[list[str]] = None,
-        added_by: Optional[list[str]] = None,
-        voted: Optional[str] = None
+            self,
+            http_client: HttpClient,
+            url: str,
+            model: Type[mdl.PageBook] = mdl.PageBook,
+            page_number: Optional[int] = None,
+            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+            params: Optional[Dict[str, str]] = None,
+            order: Optional[types.BookOrder] = None,
+            rating: Optional[types.Rating] = None,
+            recommended_for: Optional[str] = None,
+            favorited_by: Optional[str] = None,
+            tags: Optional[List[str]] = None,
+            added_by: Optional[List[str]] = None,
+            voted: Optional[str] = None
     ) -> None:
         self.order = order
         self.rating = rating
@@ -220,19 +227,18 @@ class BookPaginator(Paginator[mdl.PageBook]):
         if self.tags is None:
             self.tags = []
 
-        for items in self.__dict__.items():
-            match items:
-                case [_, None]:
-                    continue
-                case ["order" | "rating" as k, v]:  # noqa
-                    self.tags.append(f"{k}:{v.value}")
-                case ["recommended_for" | "voted" as k, v]:
-                    self.tags.append(f"{k}:{v}")
-                case ["favorited_by", _]:
-                    self.tags.append(f"fav:{self.favorited_by}")
-                case ["added_by", _]:
-                    for user in self.added_by:  # type: ignore[union-attr]
-                        self.tags.append(f"user:{user}")
+        for k, v in self.__dict__.items():
+            if v is None:
+                continue
+            elif k in {"order", "rating"}:
+                self.tags.append(f"{k}:{v.value}")
+            elif k in {"recommended_for", "voted"}:
+                self.tags.append(f"{k}:{v}")
+            elif k == 'favorited_by':
+                self.tags.append(f"fav:{self.favorited_by}")
+            elif k == 'added_by':
+                for user in self.added_by:  # type: ignore[union-attr]
+                    self.tags.append(f"user:{user}")
 
         if self.tags:
             self.params["tags"] = " ".join(self.tags)
@@ -240,16 +246,17 @@ class BookPaginator(Paginator[mdl.PageBook]):
 
 class UserPaginator(Paginator[mdl.User]):
     """Paginator used for iteration through user pages."""
+
     def __init__(
-        self,
-        http_client: HttpClient,
-        url: str,
-        model: type[mdl.User] = mdl.User,
-        page_number: Optional[int] = None,
-        limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-        params: Optional[dict[str, str]] = None,
-        order: Optional[types.UserOrder] = None,
-        level: Optional[types.UserLevel] = None
+            self,
+            http_client: HttpClient,
+            url: str,
+            model: Type[mdl.User] = mdl.User,
+            page_number: Optional[int] = None,
+            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+            params: Optional[Dict[str, str]] = None,
+            order: Optional[types.UserOrder] = None,
+            level: Optional[types.UserLevel] = None
     ) -> None:
         self.order = order
         self.level = level

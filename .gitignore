@@ -21,3 +21,9 @@ build/
 
 # mkdocs
 /site
+
+.python-version
+.env
+.coverage
+/test_*.py
+/venv*

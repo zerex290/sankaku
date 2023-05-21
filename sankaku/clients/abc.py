@@ -1,19 +1,19 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Self
+from typing import Optional
 
 from sankaku.models.http import ClientResponse
-
 
 __all__ = ["ABCHttpClient", "ABCClient"]
 
 
 class ABCHttpClient(ABC):
     """Abstract client for handling http requests."""
+
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
         pass
 
-    async def __aenter__(self) -> Self:
+    async def __aenter__(self):
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
@@ -34,16 +34,17 @@ class ABCHttpClient(ABC):
 
 class ABCClient(ABC):
     """Abstract Sankaku client."""
+
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
         pass
 
     @abstractmethod
     async def login(
-        self,
-        *,
-        access_token: Optional[str] = None,
-        login: Optional[str] = None,
-        password: Optional[str] = None
+            self,
+            *,
+            access_token: Optional[str] = None,
+            login: Optional[str] = None,
+            password: Optional[str] = None
     ) -> None:
         """Login into sankakucomplex.com via access token or credentials."""
