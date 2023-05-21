@@ -1,10 +1,13 @@
+import asyncio
 import os
 from typing import Dict
 
 from aiohttp import ClientSession
+from aiohttp_retry import ExponentialRetry, RetryClient
 from loguru import logger
 
 from sankaku import errors, constants as const
+from sankaku.constants import BASE_RETRIES
 from sankaku.models.http import ClientResponse
 from .abc import ABCHttpClient
 
@@ -39,11 +42,17 @@ class HttpClient(ABCHttpClient):
         else:
             # use trust env option, aiohttp will read HTTP_PROXY and HTTPS_PROXY from env
             kwargs = {'trust_env': True}
-        self.session: ClientSession = ClientSession(**kwargs)
+        client_session: ClientSession = ClientSession(**kwargs)
+
+        retry_options = ExponentialRetry(attempts=BASE_RETRIES)
+        self.session: RetryClient = RetryClient(
+            raise_for_status=False,
+            retry_options=retry_options,
+            client_session=client_session
+        )
 
     def __del__(self) -> None:
-        if not self.session.closed and self.session.connector is not None:
-            self.session.connector.close()
+        asyncio.run(self.session.close())
 
     async def close(self) -> None:
         """There is no need to close client with single session."""
