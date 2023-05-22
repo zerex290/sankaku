@@ -1,4 +1,3 @@
-import asyncio
 import os
 from typing import Dict
 
@@ -35,6 +34,7 @@ class HttpClient(ABCHttpClient):
 
     def __init__(self) -> None:
         self.headers: Dict[str, str] = const.HEADERS.copy()
+
         socks_connector = _get_socks_connector()
         if socks_connector:
             # use socks connector
@@ -42,17 +42,18 @@ class HttpClient(ABCHttpClient):
         else:
             # use trust env option, aiohttp will read HTTP_PROXY and HTTPS_PROXY from env
             kwargs = {'trust_env': True}
-        client_session: ClientSession = ClientSession(**kwargs)
+        self._client_session: ClientSession = ClientSession(**kwargs)
 
         retry_options = ExponentialRetry(attempts=BASE_RETRIES)
         self.session: RetryClient = RetryClient(
             raise_for_status=False,
             retry_options=retry_options,
-            client_session=client_session
+            client_session=self._client_session
         )
 
     def __del__(self) -> None:
-        asyncio.run(self.session.close())
+        if not self._client_session.closed and self._client_session.connector is not None:
+            self._client_session.connector.close()
 
     async def close(self) -> None:
         """There is no need to close client with single session."""
