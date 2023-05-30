@@ -1,5 +1,5 @@
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 from aiohttp import ClientSession
 from aiohttp_retry import ExponentialRetry, RetryClient
@@ -18,15 +18,15 @@ except (ImportError, ModuleNotFoundError):
     SocksProxyConnector = None
 
 
-def _get_socks_connector():
-    if SocksProxyConnector is not None:
-        proxy = os.environ.get('ALL_PROXY') or os.environ.get('HTTPS_PROXY') or os.environ.get('HTTP_PROXY')
-        if proxy.startswith('socks'):
-            return SocksProxyConnector.from_url(proxy)
-        else:
-            return None
-    else:
+def _get_socks_connector() -> Optional[SocksProxyConnector]:
+    if SocksProxyConnector is None:
         return None
+
+    proxy = os.getenv("ALL_PROXY") or os.getenv("HTTPS_PROXY") or os.getenv("HTTP_PROXY")
+    if proxy is None or not proxy.startswith("socks"):
+        return None
+
+    return SocksProxyConnector.from_url(proxy)
 
 
 class HttpClient(ABCHttpClient):
@@ -36,7 +36,7 @@ class HttpClient(ABCHttpClient):
         self.headers: Dict[str, str] = const.HEADERS.copy()
 
         socks_connector = _get_socks_connector()
-        if socks_connector:
+        if socks_connector is not None:
             # use socks connector
             kwargs = {'connector': socks_connector}
         else:

@@ -41,7 +41,6 @@ setuptools.setup(
     ],
     python_requires=">=3.7",
     install_requires=requirements,  # this will change after you change requirements
-    tests_require=group_requirements['test'],
 
     # you can install other requirements like `pip install sankaku[socks]`
     extras_require=group_requirements,
