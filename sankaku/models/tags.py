@@ -34,7 +34,7 @@ class TagMixin(BaseModel):
 
 class PostTag(BaseTag, TagMixin):
     """Model that describes tags related to posts."""
-    locale: str
+    locale: Optional[str]
     version: Optional[int]
 
 
@@ -79,16 +79,26 @@ class NestedTag(BaseTag):
             return None
 
 
-class Translations(BaseModel):
-    """Model that describes tag translations if they are present."""
-    root_id: int = Field(alias="rootId")
+class BaseTranslations(BaseModel):
+    """Model that contain minimum information about tag translations."""
     lang: str
     translation: str
 
 
+class PageTagTranslations(BaseTranslations):
+    """Model that describes page tag translations."""
+    root_id: int = Field(alias="rootId")
+
+
+class WikiTagTranslations(BaseTranslations):
+    """Model that describes wiki tag translations."""
+    status: int
+    opacity: float
+
+
 class PageTag(PostTag):
     """Model that describes tags on tag page."""
-    translations: list[Translations]
+    translations: list[PageTagTranslations]
     related_tags: list[NestedTag]
     child_tags: list[NestedTag]
     parent_tags: list[NestedTag]
@@ -119,5 +129,5 @@ class WikiTag(BaseTag, TagMixin):
     parent_tags: list[PostTag]
     alias_tags: list[PostTag]
     implied_tags: list[PostTag]
-    translations: list[Translations]
+    translations: list[WikiTagTranslations]
     wiki: Wiki
