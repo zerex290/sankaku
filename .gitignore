@@ -12,7 +12,6 @@ virtualenv/
 
 # Tests
 test.py
-/pytest.ini
 
 # Packaging
 *.egg-info/
