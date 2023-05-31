@@ -3,12 +3,12 @@ from typing import Optional
 
 from sankaku.models.http import ClientResponse
 
+
 __all__ = ["ABCHttpClient", "ABCClient"]
 
 
 class ABCHttpClient(ABC):
     """Abstract client for handling http requests."""
-
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
         pass
@@ -34,7 +34,6 @@ class ABCHttpClient(ABC):
 
 class ABCClient(ABC):
     """Abstract Sankaku client."""
-
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
         pass

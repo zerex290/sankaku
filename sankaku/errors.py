@@ -1,5 +1,6 @@
 from typing import Optional
 
+
 __all__ = [
     "SankakuError",
     "RateLimitError",
@@ -40,7 +41,6 @@ class VideoDurationError(SankakuError):
 
 class SankakuServerError(SankakuError):
     """Error class for parametrized exceptions."""
-
     def __init__(
             self,
             status: Optional[int],

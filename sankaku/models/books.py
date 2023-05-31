@@ -10,6 +10,7 @@ from .posts import Post
 from .tags import PostTag
 from .users import Author
 
+
 __all__ = ["PageBook", "Book"]
 
 

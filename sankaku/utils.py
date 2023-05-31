@@ -5,19 +5,26 @@ from datetime import datetime
 from functools import wraps
 from typing import TypeVar, Optional, Any, Dict, Tuple, Callable, Awaitable
 
+try:
+    from typing import ParamSpec
+except (ModuleNotFoundError, ImportError):
+    from typing_extensions import ParamSpec  # type: ignore[assignment]
+
 from sankaku.errors import RateLimitError
 from sankaku.typedefs import Timestamp
+
 
 __all__ = ["ratelimit", "convert_ts_to_datetime", "from_locals"]
 
 _T = TypeVar("_T")
+_P = ParamSpec("_P")
 
 
 def ratelimit(
         *,
         rps: Optional[int] = None,
         rpm: Optional[int] = None
-) -> Callable[[Callable[..., Awaitable[_T]]], Callable[..., Awaitable[_T]]]:
+) -> Callable[[Callable[_P, Awaitable[_T]]], Callable[_P, Awaitable[_T]]]:
     """Limit the number of requests.
 
     Args:
@@ -31,9 +38,9 @@ def ratelimit(
 
     sleep_time: float = (1 / rps) if rps else (60 / rpm)  # type: ignore[operator]
 
-    def wrapper(func: Callable[..., Awaitable[_T]]) -> Callable[..., Awaitable[_T]]:
+    def wrapper(func: Callable[_P, Awaitable[_T]]) -> Callable[_P, Awaitable[_T]]:
         @wraps(func)
-        async def inner(*args, **kwargs) -> _T:
+        async def inner(*args: _P.args, **kwargs: _P.kwargs) -> _T:
             await asyncio.sleep(sleep_time)
             return await func(*args, **kwargs)  # noqa
 

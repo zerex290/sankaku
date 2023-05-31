@@ -3,6 +3,7 @@ from typing import Generic, TypeVar, AsyncIterator
 
 from sankaku import errors, models as mdl
 
+
 __all__ = ["ABCPaginator"]
 
 _T = TypeVar("_T")
@@ -10,7 +11,6 @@ _T = TypeVar("_T")
 
 class ABCPaginator(ABC, Generic[_T]):
     """Abstract paginator class."""
-
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
         pass

@@ -2,8 +2,6 @@ import json
 from datetime import datetime
 from typing import Optional, Union, List, AsyncIterator
 
-from ..typedefs import ValueRange
-
 try:
     from typing import Literal, Annotated
 except (ModuleNotFoundError, ImportError):
@@ -14,8 +12,10 @@ from loguru import logger
 from sankaku import models as mdl, constants as const, types, errors
 from sankaku.paginators import *
 from sankaku.utils import from_locals
+from sankaku.typedefs import ValueRange
 from .abc import ABCClient
 from .http_client import HttpClient
+
 
 __all__ = [
     "PostClient",
@@ -28,7 +28,6 @@ __all__ = [
 
 class BaseClient(ABCClient):
     """Base client used for login."""
-
     def __init__(self) -> None:
         self._profile: Optional[mdl.ExtendedUser] = None
         self._http_client: HttpClient = HttpClient()
@@ -111,7 +110,6 @@ class BaseClient(ABCClient):
 
 class PostClient(BaseClient):
     """Client for post browsing."""
-
     async def browse_posts(
             self,
             order: Optional[types.PostOrder] = None,
@@ -214,7 +212,6 @@ class PostClient(BaseClient):
 
 class AIClient(BaseClient):
     """Client for working with Sankaku built-in AI."""
-
     async def browse_ai_posts(
             self,
             *,
@@ -249,7 +246,6 @@ class AIClient(BaseClient):
 
 class TagClient(BaseClient):
     """Client for tag browsing."""
-
     async def browse_tags(
             self,
             tag_type: Optional[types.TagType] = None,  # TODO: ability to specify multiple tags
@@ -296,7 +292,6 @@ class TagClient(BaseClient):
 
 class BookClient(BaseClient):
     """Client for book (pool) browsing."""
-
     async def browse_books(
             self,
             order: Optional[types.BookOrder] = None,
@@ -373,7 +368,6 @@ class BookClient(BaseClient):
 
 class UserClient(BaseClient):
     """Client for browsing users."""
-
     async def browse_users(
             self,
             order: Optional[types.UserOrder] = None,

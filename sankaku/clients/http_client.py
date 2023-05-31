@@ -10,12 +10,14 @@ from sankaku.constants import BASE_RETRIES
 from sankaku.models.http import ClientResponse
 from .abc import ABCHttpClient
 
-__all__ = ["HttpClient"]
 
 try:
     from aiohttp_socks import ProxyConnector as SocksProxyConnector  # type: ignore[import]
 except (ImportError, ModuleNotFoundError):
     SocksProxyConnector = None
+
+
+__all__ = ["HttpClient"]
 
 
 def _get_socks_connector() -> Optional[SocksProxyConnector]:
@@ -31,17 +33,16 @@ def _get_socks_connector() -> Optional[SocksProxyConnector]:
 
 class HttpClient(ABCHttpClient):
     """HTTP client for API requests that instances use a single session."""
-
     def __init__(self) -> None:
         self.headers: Dict[str, str] = const.HEADERS.copy()
 
         socks_connector = _get_socks_connector()
         if socks_connector is not None:
             # use socks connector
-            kwargs = {'connector': socks_connector}
+            kwargs = {"connector": socks_connector}
         else:
             # use trust env option, aiohttp will read HTTP_PROXY and HTTPS_PROXY from env
-            kwargs = {'trust_env': True}
+            kwargs = {"trust_env": True}
         self._client_session: ClientSession = ClientSession(**kwargs)
 
         retry_options = ExponentialRetry(attempts=BASE_RETRIES)

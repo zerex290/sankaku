@@ -10,6 +10,7 @@ from sankaku.utils import convert_ts_to_datetime
 from .tags import PostTag
 from .users import Author
 
+
 __all__ = ["Comment", "Post", "AIPost"]
 
 

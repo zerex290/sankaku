@@ -1,8 +1,6 @@
 from datetime import datetime
 from typing import Optional, TypeVar, List, Dict, Type
 
-from ..typedefs import ValueRange
-
 try:
     from typing import Literal, Annotated
 except (ModuleNotFoundError, ImportError):
@@ -11,7 +9,9 @@ except (ModuleNotFoundError, ImportError):
 from sankaku import models as mdl, constants as const, types, errors
 from sankaku.clients import HttpClient
 from sankaku.utils import ratelimit
+from sankaku.typedefs import ValueRange
 from .abc import ABCPaginator
+
 
 __all__ = [
     "Paginator",
@@ -26,7 +26,6 @@ _T = TypeVar("_T")
 
 class Paginator(ABCPaginator[_T]):
     """Basic paginator for iteration without any special parameters."""
-
     def __init__(
             self,
             http_client: HttpClient,
@@ -50,14 +49,14 @@ class Paginator(ABCPaginator[_T]):
         """Get paginator next page."""
         response = await self.http_client.get(self.url, params=self.params)
         json_ = response.json
-        if 'code' in json_ and json_['code'] in const.PAGE_ALLOWED_ERRORS:
+        if "code" in json_ and json_["code"] in const.PAGE_ALLOWED_ERRORS:
             raise errors.PaginatorLastPage(response.status, page=self.page_number)
-        elif 'code' in json_:
+        elif "code" in json_:
             raise errors.SankakuServerError(response.status, **response.json)
         elif json_ == [] or (isinstance(json_, dict) and not json_["data"]):
             raise errors.PaginatorLastPage(response.status, page=self.page_number)
-        elif 'data' in json_:
-            response.json = json_['data']
+        elif "data" in json_:
+            response.json = json_["data"]
 
         self.page_number += 1
         self.params["page"] = str(self.page_number)
@@ -79,7 +78,6 @@ class Paginator(ABCPaginator[_T]):
 
 class PostPaginator(Paginator[mdl.Post]):
     """Paginator used for iteration through post pages."""
-
     def __init__(
             self,
             http_client: HttpClient,
@@ -125,23 +123,23 @@ class PostPaginator(Paginator[mdl.Post]):
         for k, v in self.__dict__.items():
             if v is None:
                 continue
-            elif k in {"order", "rating", "file_type"} and v is not types.FileType.IMAGE:
+            elif k in {"order", "rating", "file_type"} and v is not types.FileType.IMAGE:  # noqa
                 self.tags.append(f"{k}:{v.value}")
             elif k in {"threshold", "recommended_for", "voted"}:
                 self.tags.append(f"{k}:{v}")
-            elif k == 'file_size':
+            elif k == "file_size":
                 self.tags.append(self.file_size.value)  # type: ignore[union-attr]
-            elif k == 'date':
+            elif k == "date":
                 date = "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in self.date)  # type: ignore[union-attr]
                 self.tags.append(f"date:{date}")
-            elif k == 'video_duration' and self.file_type is not types.FileType.VIDEO:
+            elif k == "video_duration" and self.file_type is not types.FileType.VIDEO:  # noqa
                 raise errors.VideoDurationError
-            elif k == 'video_duration':
+            elif k == "video_duration":
                 duration = "..".join(str(sec) for sec in self.video_duration)  # type: ignore[union-attr]
                 self.tags.append(f"duration:{duration}")
-            elif k == 'favorited_by':
+            elif k == "favorited_by":
                 self.tags.append(f"fav:{self.favorited_by}")
-            elif k == 'added_by':
+            elif k == "added_by":
                 for user in self.added_by:  # type: ignore[union-attr]
                     self.tags.append(f"user:{user}")
 
@@ -153,7 +151,6 @@ class PostPaginator(Paginator[mdl.Post]):
 
 class TagPaginator(Paginator[mdl.PageTag]):
     """Paginator used for iteration through tag pages."""
-
     def __init__(
             self,
             http_client: HttpClient,
@@ -196,7 +193,6 @@ class TagPaginator(Paginator[mdl.PageTag]):
 
 class BookPaginator(Paginator[mdl.PageBook]):
     """Paginator used for iteration through book pages."""
-
     def __init__(
             self,
             http_client: HttpClient,
@@ -234,9 +230,9 @@ class BookPaginator(Paginator[mdl.PageBook]):
                 self.tags.append(f"{k}:{v.value}")
             elif k in {"recommended_for", "voted"}:
                 self.tags.append(f"{k}:{v}")
-            elif k == 'favorited_by':
+            elif k == "favorited_by":
                 self.tags.append(f"fav:{self.favorited_by}")
-            elif k == 'added_by':
+            elif k == "added_by":
                 for user in self.added_by:  # type: ignore[union-attr]
                     self.tags.append(f"user:{user}")
 
@@ -246,7 +242,6 @@ class BookPaginator(Paginator[mdl.PageBook]):
 
 class UserPaginator(Paginator[mdl.User]):
     """Paginator used for iteration through user pages."""
-
     def __init__(
             self,
             http_client: HttpClient,

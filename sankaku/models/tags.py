@@ -7,6 +7,7 @@ from sankaku import types
 from sankaku.utils import convert_ts_to_datetime
 from .users import Author
 
+
 __all__ = ["PostTag", "PageTag", "Wiki", "WikiTag"]
 
 

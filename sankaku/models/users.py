@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field, validator
 
 from sankaku import types
 
+
 __all__ = ["Author", "User", "ExtendedUser"]
 
 

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Generic, TypeVar, List
 
+
 __all__ = ["Page"]
 
 _T = TypeVar("_T")
