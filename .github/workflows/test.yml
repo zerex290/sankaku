@@ -1,15 +1,13 @@
 name: Code Test
 
 on:
-  push:
-    branches:
-      - main
+  - push
 
 jobs:
   unittest:
     name: Code test
     runs-on: ${{ matrix.os }}
-    if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       fail-fast: false
       matrix:
@@ -57,7 +55,7 @@ jobs:
         run: |
           echo "IS_PYPY=1" >> $GITHUB_ENV
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           fetch-depth: 20
           submodules: 'recursive'
@@ -78,7 +76,7 @@ jobs:
         run: |
           brew install tree cloc wget curl make zip
       - name: Set up python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
