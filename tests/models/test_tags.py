@@ -309,7 +309,14 @@ def test_page_tag_model(data, expected):
                 "parent_tags": [],
                 "alias_tags": [],
                 "implied_tags": [],
-                "translations": [],
+                "translations": [
+                    {
+                        "translation": "100 maitres de la peinture bishoujo",
+                        "lang": "fr",
+                        "status": 4,
+                        "opacity": 0.8
+                    }
+                ],
                 "total_post_count": 10,
                 "total_pool_count": 5,
                 "wiki": {
@@ -353,7 +360,14 @@ def test_page_tag_model(data, expected):
                 parent_tags=[],
                 alias_tags=[],
                 implied_tags=[],
-                translations=[],
+                translations=[
+                    dict(
+                        translation="100 maitres de la peinture bishoujo",
+                        lang="fr",
+                        status=4,
+                        opacity=0.8
+                    )
+                ],
                 total_post_count=10,
                 total_pool_count=5,
                 wiki=dict(
