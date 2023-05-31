@@ -69,13 +69,29 @@
 
 ---
 
-::: sankaku.models.tags.Translations
+::: sankaku.models.tags.BaseTranslations
+    options:
+      show_source: false
+      members:
+        - lang
+        - translation
+
+---
+
+::: sankaku.models.tags.PageTagTranslations
     options:
       show_source: false
       members:
         - root_id
-        - lang
-        - translation
+
+---
+
+::: sankaku.models.tags.WikiTagTranslations
+    options:
+      show_source: false
+      members:
+        - status
+        - opacity
 
 ---
 

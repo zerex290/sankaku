@@ -13,10 +13,12 @@ with loguru.
 
 ## Requirements
 
-- Python 3.11+
+- Python 3.7+
 - aiohttp
 - pydantic
 - loguru
+- aiohttp-retry
+- typing_extensions; python_version < '3.9'
 
 ## Installation
 
