@@ -7,7 +7,7 @@ from ..typedefs import ValueRange
 try:
     from typing import Literal, Annotated
 except (ModuleNotFoundError, ImportError):
-    from typing_extensions import Literal, Annotated
+    from typing_extensions import Literal, Annotated  # type: ignore[assignment]
 
 from loguru import logger
 

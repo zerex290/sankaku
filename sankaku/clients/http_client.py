@@ -13,7 +13,7 @@ from .abc import ABCHttpClient
 __all__ = ["HttpClient"]
 
 try:
-    from aiohttp_socks import ProxyConnector as SocksProxyConnector
+    from aiohttp_socks import ProxyConnector as SocksProxyConnector  # type: ignore[import]
 except (ImportError, ModuleNotFoundError):
     SocksProxyConnector = None
 
