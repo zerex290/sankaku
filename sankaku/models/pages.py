@@ -1,9 +1,7 @@
-from typing import Generic, TypeVar
 from dataclasses import dataclass
-
+from typing import Generic, TypeVar, List
 
 __all__ = ["Page"]
-
 
 _T = TypeVar("_T")
 
@@ -12,4 +10,4 @@ _T = TypeVar("_T")
 class Page(Generic[_T]):
     """Model that describes page containing content with specific type."""
     number: int
-    items: list[_T]
+    items: List[_T]

@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-from typing import Optional
 from datetime import datetime
+from typing import Optional, List
 
 from pydantic import BaseModel
 
 from sankaku import types
-from .users import Author
-from .tags import PostTag
 from .posts import Post
-
+from .tags import PostTag
+from .users import Author
 
 __all__ = ["PageBook", "Book"]
 
@@ -50,13 +49,13 @@ class PageBook(BaseModel):
     vote_count: int
     total_score: int
     comment_count: Optional[int]
-    tags: list[PostTag]
-    post_tags: list[PostTag]
-    artist_tags: list[PostTag]
-    genre_tags: list[PostTag]
+    tags: List[PostTag]
+    post_tags: List[PostTag]
+    artist_tags: List[PostTag]
+    genre_tags: List[PostTag]
     is_favorited: bool
     user_vote: Optional[int]
-    posts: list[Post]
+    posts: List[Post]
     file_url: Optional[str]
     sample_url: Optional[str]
     preview_url: Optional[str]
@@ -76,6 +75,6 @@ class PageBook(BaseModel):
 
 class Book(PageBook):
     """Model that describes specific book."""
-    child_pools: Optional[list[PageBook]]
+    child_pools: Optional[List[PageBook]]
     flagged_by_user: bool
     prem_post_count: int

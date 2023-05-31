@@ -1,23 +1,59 @@
+import os
+from typing import Dict, Optional
+
 from aiohttp import ClientSession
+from aiohttp_retry import ExponentialRetry, RetryClient
 from loguru import logger
 
-from .abc import ABCHttpClient
 from sankaku import errors, constants as const
+from sankaku.constants import BASE_RETRIES
 from sankaku.models.http import ClientResponse
-
+from .abc import ABCHttpClient
 
 __all__ = ["HttpClient"]
+
+try:
+    from aiohttp_socks import ProxyConnector as SocksProxyConnector
+except (ImportError, ModuleNotFoundError):
+    SocksProxyConnector = None
+
+
+def _get_socks_connector() -> Optional[SocksProxyConnector]:
+    if SocksProxyConnector is None:
+        return None
+
+    proxy = os.getenv("ALL_PROXY") or os.getenv("HTTPS_PROXY") or os.getenv("HTTP_PROXY")
+    if proxy is None or not proxy.startswith("socks"):
+        return None
+
+    return SocksProxyConnector.from_url(proxy)
 
 
 class HttpClient(ABCHttpClient):
     """HTTP client for API requests that instances use a single session."""
+
     def __init__(self) -> None:
-        self.headers: dict[str, str] = const.HEADERS.copy()
-        self.session: ClientSession = ClientSession()
+        self.headers: Dict[str, str] = const.HEADERS.copy()
+
+        socks_connector = _get_socks_connector()
+        if socks_connector is not None:
+            # use socks connector
+            kwargs = {'connector': socks_connector}
+        else:
+            # use trust env option, aiohttp will read HTTP_PROXY and HTTPS_PROXY from env
+            kwargs = {'trust_env': True}
+        self._client_session: ClientSession = ClientSession(**kwargs)
+
+        retry_options = ExponentialRetry(attempts=BASE_RETRIES)
+        self.session: RetryClient = RetryClient(
+            raise_for_status=False,
+            retry_options=retry_options,
+            client_session=self._client_session
+        )
 
     def __del__(self) -> None:
-        if not self.session.closed and self.session.connector is not None:
-            self.session.connector.close()
+        if not self._client_session.closed and self._client_session.connector is not None:
+            self._client_session.connector.close()
 
     async def close(self) -> None:
         """There is no need to close client with single session."""

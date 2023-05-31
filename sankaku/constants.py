@@ -1,8 +1,9 @@
 """Necessary constants such as hardcoded headers, API urls and endpoints,
 default values of parameters etc.
 """
+from typing import Dict
 
-HEADERS: dict[str, str] = {
+HEADERS: Dict[str, str] = {
     "user-agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
         "(KHTML, like Gecko) Chrome/94.0.4606.85 YaBrowser/21.11.0.1996 "
@@ -13,7 +14,6 @@ HEADERS: dict[str, str] = {
     "accept-encoding": "gzip, deflate, br",
     "host": "capi-v2.sankakucomplex.com"
 }
-
 
 BASE_URL = "https://login.sankakucomplex.com"
 API_URL = "https://capi-v2.sankakucomplex.com"
@@ -31,11 +31,12 @@ PROFILE_URL = f"{USER_URL}/me"
 COMMENT_URL = f"{POST_URL}/{{post_id}}/comments"
 RELATED_BOOK_URL = f"{API_URL}/post/{{post_id}}/pools"
 
-
 BASE_RPS = 3
 BASE_RPM = 180
 BASE_PAGE_NUMBER = 1
 BASE_PAGE_LIMIT = 40
+
+BASE_RETRIES = 3
 
 PAGE_ALLOWED_ERRORS = [
     "snackbar__anonymous-recommendations-limit-reached",

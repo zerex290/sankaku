@@ -32,7 +32,7 @@ Source code: https://github.com/zerex290/sankaku
 
 ## Requirements
 
-- Python 3.11+
+- Python 3.7+
 - aiohttp
 - pydantic
 - loguru

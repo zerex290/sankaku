@@ -1,12 +1,11 @@
-from typing import Optional
 from datetime import datetime
+from typing import Optional, List
 
 from pydantic import BaseModel, Field, validator
 
 from sankaku import types
 from sankaku.utils import convert_ts_to_datetime
 from .users import Author
-
 
 __all__ = ["PostTag", "PageTag", "Wiki", "WikiTag"]
 
@@ -41,7 +40,7 @@ class PostTag(BaseTag, TagMixin):
 class NestedTag(BaseTag):
     """Model that describes tags with specific relation to certain tag on tag page."""
     post_count: int = Field(alias="postCount")
-    cached_related: Optional[list[int]] = Field(alias="cachedRelated")
+    cached_related: Optional[List[int]] = Field(alias="cachedRelated")
     cached_related_expires_on: datetime = Field(alias="cachedRelatedExpiresOn")
     type: types.TagType = Field(alias="tagType")
     name_en: str = Field(alias="nameEn")
@@ -52,8 +51,8 @@ class NestedTag(BaseTag):
     popularity_safe: Optional[float] = Field(alias="scTagPopularitySafe")
     quality_ero: Optional[float] = Field(alias="scTagQualityEro")
     quality_safe: Optional[float] = Field(alias="scTagQualitySafe")
-    parent_tags: Optional[list[int]] = Field(alias="parentTags")
-    child_tags: Optional[list[int]] = Field(alias="childTags")
+    parent_tags: Optional[List[int]] = Field(alias="parentTags")
+    child_tags: Optional[List[int]] = Field(alias="childTags")
     pool_count: int = Field(alias="poolCount")
     premium_post_count: int = Field(alias="premPostCount")
     non_premium_post_count: int = Field(alias="nonPremPostCount")
@@ -68,7 +67,7 @@ class NestedTag(BaseTag):
     version: Optional[int]
 
     @validator("cached_related", "parent_tags", "child_tags", pre=True)
-    def flatten(cls, v) -> Optional[list[int]]:  # noqa
+    def flatten(cls, v) -> Optional[List[int]]:  # noqa
         """Flatten nested lists into one."""
         if not v:
             return None
@@ -88,10 +87,10 @@ class Translations(BaseModel):
 
 class PageTag(PostTag):
     """Model that describes tags on tag page."""
-    translations: list[Translations]
-    related_tags: list[NestedTag]
-    child_tags: list[NestedTag]
-    parent_tags: list[NestedTag]
+    translations: List[Translations]
+    related_tags: List[NestedTag]
+    child_tags: List[NestedTag]
+    parent_tags: List[NestedTag]
 
 
 class Wiki(BaseModel):
@@ -114,10 +113,10 @@ class Wiki(BaseModel):
 
 class WikiTag(BaseTag, TagMixin):
     """Model that describes tag on wiki page."""
-    related_tags: list[PostTag]
-    child_tags: list[PostTag]
-    parent_tags: list[PostTag]
-    alias_tags: list[PostTag]
-    implied_tags: list[PostTag]
-    translations: list[Translations]
+    related_tags: List[PostTag]
+    child_tags: List[PostTag]
+    parent_tags: List[PostTag]
+    alias_tags: List[PostTag]
+    implied_tags: List[PostTag]
+    translations: List[Translations]
     wiki: Wiki

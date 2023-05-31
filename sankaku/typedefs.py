@@ -1,6 +1,10 @@
 from dataclasses import dataclass
-from typing import TypedDict, Optional
+from typing import Optional
 
+try:
+    from typing import TypedDict
+except (ImportError, ModuleNotFoundError):
+    from typing_extensions import TypedDict
 
 __all__ = ["ValueRange", "Timestamp"]
 
