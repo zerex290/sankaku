@@ -36,6 +36,8 @@ Source code: https://github.com/zerex290/sankaku
 - aiohttp
 - pydantic
 - loguru
+- aiohttp-retry
+- typing_extensions; python_version < '3.9'
 
 ## Installation
 
