@@ -68,8 +68,6 @@ class HttpClient(ABCHttpClient):
         logger.debug(f"Sent {method} request to {response.url}")
 
         if response.content_type != "application/json":
-            if response.status == 500:
-                print(await response.text())
             raise errors.SankakuServerError(
                 response.status, "Invalid response content type",
                 content_type=response.content_type
