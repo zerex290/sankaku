@@ -18,7 +18,7 @@ with loguru.
 - pydantic
 - loguru
 - aiohttp-retry
-- typing_extensions; python_version < '3.9'
+- typing_extensions; python_version < '3.10'
 
 ## Installation
 

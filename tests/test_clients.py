@@ -30,7 +30,7 @@ class TestBaseClient:
 class TestPostClient:
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
-        assert isinstance(await anext(nlclient.browse_posts()), mdl.Post)
+        assert isinstance(await nlclient.browse_posts().__anext__(), mdl.Post)
 
     @pytest.mark.parametrize(
         ["file_type", "video_duration", "expected"],
@@ -42,10 +42,12 @@ class TestPostClient:
     ):
         """Case when arguments are incompatible."""
         with pytest.raises(expected):
-            await anext(
+            await (
                 nlclient.browse_posts(
-                    file_type=file_type, video_duration=video_duration
+                    file_type=file_type,
+                    video_duration=video_duration
                 )
+                .__anext__()
             )
 
     @pytest.mark.parametrize(["page_number", "limit"], [(-1, 40), (1, -40)])
@@ -101,38 +103,40 @@ class TestPostClient:
         video_duration, recommended_for, favorited_by, tags,
         added_by, voted
     ):
-        post = await anext(
-            lclient.browse_posts(**from_locals(locals(), ("self", "lclient")))
+        post = await (
+            lclient.
+            browse_posts(**from_locals(locals(), ("self", "lclient")))
+            .__anext__()
         )
         assert isinstance(post, mdl.Post)
 
     async def test_get_favorited_posts_unauthorized(self, nlclient: SankakuClient):
         with pytest.raises(errors.LoginRequirementError):
-            await anext(nlclient.get_favorited_posts())
+            await nlclient.get_favorited_posts().__anext__()
 
     async def test_get_favorited_posts_authorized(self, lclient: SankakuClient):
-        assert isinstance(await anext(lclient.get_favorited_posts()), mdl.Post)
+        assert isinstance(await lclient.get_favorited_posts().__anext__(), mdl.Post)
 
     async def test_get_top_posts(self, nlclient: SankakuClient):
-        assert isinstance(await anext(nlclient.get_top_posts()), mdl.Post)
+        assert isinstance(await nlclient.get_top_posts().__anext__(), mdl.Post)
 
     async def test_get_popular_posts(self, nlclient: SankakuClient):
-        assert isinstance(await anext(nlclient.get_popular_posts()), mdl.Post)
+        assert isinstance(await nlclient.get_popular_posts().__anext__(), mdl.Post)
 
     async def test_get_recommended_posts_unauthorized(self, nlclient: SankakuClient):
         with pytest.raises(errors.LoginRequirementError):
-            await anext(nlclient.get_recommended_posts())
+            await nlclient.get_recommended_posts().__anext__()
 
     async def test_get_recommended_posts_authorized(self, lclient: SankakuClient):
-        assert isinstance(await anext(lclient.get_recommended_posts()), mdl.Post)
+        assert isinstance(await lclient.get_recommended_posts().__anext__(), mdl.Post)
 
     @pytest.mark.parametrize(["post_id"], [(32948875,)])
     async def test_get_similar_posts(self, lclient: SankakuClient, post_id):
-        assert isinstance(await anext(lclient.get_similar_posts(post_id)), mdl.Post)
+        assert isinstance(await lclient.get_similar_posts(post_id).__anext__(), mdl.Post)
 
     @pytest.mark.parametrize(["post_id"], [(33108291,)])
     async def test_get_post_comments(self, lclient: SankakuClient, post_id):
-        assert isinstance(await anext(lclient.get_post_comments(post_id)), mdl.Comment)
+        assert isinstance(await lclient.get_post_comments(post_id).__anext__(), mdl.Comment)
 
     @pytest.mark.parametrize(["post_id"], [(32948875,), (33108291,)])
     async def test_get_post(self, nlclient: SankakuClient, post_id):
@@ -151,7 +155,7 @@ class TestPostClient:
 class TestAIClient:
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
-        assert isinstance(await anext(nlclient.browse_ai_posts()), mdl.AIPost)
+        assert isinstance(await nlclient.browse_ai_posts().__anext__(), mdl.AIPost)
 
     @pytest.mark.parametrize(["page_number", "limit"], [(-1, 50), (1, -50)])
     async def test_browse_with_incorrect_page_number_or_limit(
@@ -181,7 +185,7 @@ class TestAIClient:
 class TestTagClient:
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
-        assert isinstance(await anext(nlclient.browse_tags()), mdl.PageTag)
+        assert isinstance(await nlclient.browse_tags().__anext__(), mdl.PageTag)
 
     @pytest.mark.parametrize(["page_number", "limit"], [(-1, 22), (1, -86)])
     async def test_browse_with_incorrect_page_number_or_limit(
@@ -224,8 +228,10 @@ class TestTagClient:
         order, rating, max_post_count,
         sort_parameter, sort_direction
     ):
-        tag = await anext(
-            lclient.browse_tags(**from_locals(locals(), ("self", "lclient")))
+        tag = await (
+            lclient.
+            browse_tags(**from_locals(locals(), ("self", "lclient"))).
+            __anext__()
         )
         assert isinstance(tag, mdl.PageTag)
 
@@ -243,7 +249,7 @@ class TestTagClient:
 
 class TestBookClient:
     async def test_browse_default(self, nlclient: SankakuClient):
-        assert isinstance(await anext(nlclient.browse_books()), mdl.PageBook)
+        assert isinstance(await nlclient.browse_books().__anext__(), mdl.PageBook)
 
     @pytest.mark.parametrize(["page_number", "limit"], [(-3, 40), (1, -22)])
     async def test_browse_with_incorrect_page_number_or_limit(
@@ -286,35 +292,37 @@ class TestBookClient:
             favorited_by, tags, added_by,
             voted, page_number, limit
     ):
-        book = await anext(
-            lclient.browse_books(**from_locals(locals(), ("self", "lclient")))
+        book = await (
+            lclient.
+            browse_books(**from_locals(locals(), ("self", "lclient")))
+            .__anext__()
         )
         assert isinstance(book, mdl.PageBook)
 
     async def test_favorited_books_unauthorized(self, nlclient: SankakuClient):
         with pytest.raises(errors.LoginRequirementError):
-            await anext(nlclient.get_favorited_books())
+            await nlclient.get_favorited_books().__anext__()
 
     async def test_favorited_books_authorized(self, lclient: SankakuClient):
-        assert isinstance(await anext(lclient.get_favorited_books()), mdl.PageBook)
+        assert isinstance(await lclient.get_favorited_books().__anext__(), mdl.PageBook)
 
     async def test_recommended_books_unauthorized(self, nlclient: SankakuClient):
         with pytest.raises(errors.LoginRequirementError):
-            await anext(nlclient.get_recommended_books())
+            await nlclient.get_recommended_books().__anext__()
 
     async def test_recommended_books_authorized(self, lclient: SankakuClient):
-        assert isinstance(await anext(lclient.get_recommended_books()), mdl.PageBook)
+        assert isinstance(await lclient.get_recommended_books().__anext__(), mdl.PageBook)
 
     async def test_recently_read_books_unauthorized(self, nlclient: SankakuClient):
         with pytest.raises(errors.LoginRequirementError):
-            await anext(nlclient.get_recently_read_books())
+            await nlclient.get_recently_read_books().__anext__()
 
     async def test_recently_read_books_authorized(self, lclient: SankakuClient):
-        assert isinstance(await anext(lclient.get_recently_read_books()), mdl.PageBook)
+        assert isinstance(await lclient.get_recently_read_books().__anext__(), mdl.PageBook)
 
     @pytest.mark.parametrize(["post_id"], [(27038477,)])
     async def test_get_related_books(self, lclient: SankakuClient, post_id):
-        assert isinstance(await anext(lclient.get_related_books(post_id)), mdl.PageBook)
+        assert isinstance(await lclient.get_related_books(post_id).__anext__(), mdl.PageBook)
 
     @pytest.mark.parametrize(["book_id"], [(1000,)])
     async def test_get_book(self, nlclient: SankakuClient, book_id):
@@ -330,9 +338,9 @@ class TestUserClient:
     async def test_browse_users(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
 
-        assert isinstance(await anext(nlclient.browse_users()), mdl.User)
+        assert isinstance(await nlclient.browse_users().__anext__(), mdl.User)
         assert isinstance(
-            await anext(nlclient.browse_users(level=types.UserLevel.MEMBER)),
+            await nlclient.browse_users(level=types.UserLevel.MEMBER).__anext__(),
             mdl.User
         )
 
