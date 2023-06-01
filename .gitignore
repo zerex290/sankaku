@@ -24,6 +24,8 @@ build/
 
 .python-version
 .env
+**.env
+**.secrets
 .coverage
 /test_*.py
 /venv*
