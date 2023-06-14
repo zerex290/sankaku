@@ -44,7 +44,6 @@ class User(BaseUser):
     show_popup_version: int
     credits: int
     credits_subs: int
-    is_ai_beta: bool
 
     # The following fields can be missing in API json response
     last_logged_in_at: Optional[datetime] = None
@@ -56,6 +55,7 @@ class User(BaseUser):
     pool_vote_count: Optional[int] = None
     recommended_posts_for_user: Optional[int] = None
     subscriptions: List[str] = []
+    is_ai_beta: Optional[bool] = None
 
 
 class ExtendedUser(User):
