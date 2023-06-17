@@ -92,6 +92,7 @@
       members:
         - status
         - opacity
+        - id
 
 ---
 

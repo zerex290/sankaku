@@ -11,6 +11,7 @@
         - batch_count
         - sampling_steps
         - negative_prompt
+        - version
 
 ---
 

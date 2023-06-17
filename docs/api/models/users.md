@@ -37,10 +37,6 @@
         - series_update_count
         - tag_update_count
         - artist_update_count
-        - show_popup_version
-        - credits
-        - credits_subs
-        - is_ai_beta
         - last_logged_in_at
         - favorite_count
         - post_favorite_count
@@ -50,6 +46,10 @@
         - pool_vote_count
         - recommended_posts_for_user
         - subscriptions
+        - show_popup_version
+        - credits
+        - credits_subs
+        - is_ai_beta
 
 ---
 

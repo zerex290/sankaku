@@ -21,6 +21,7 @@ nav:
           - clients: api/clients/clients.md
           - http_client: api/clients/http_client.md
       - sankaku.models:
+          - base: api/models/base.md
           - books: api/models/books.md
           - http: api/models/http.md
           - pages: api/models/pages.md
