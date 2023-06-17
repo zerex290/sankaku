@@ -365,7 +365,8 @@ def test_page_tag_model(data, expected):
                         translation="100 maitres de la peinture bishoujo",
                         lang="fr",
                         status=4,
-                        opacity=0.8
+                        opacity=0.8,
+                        id=None
                     )
                 ],
                 total_post_count=10,

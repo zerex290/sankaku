@@ -1,17 +1,18 @@
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel, Field, validator
+from pydantic import Field, validator
 
 from sankaku import types
 from sankaku.utils import convert_ts_to_datetime
+from .base import SankakuResponseModel
 from .users import Author
 
 
 __all__ = ["PostTag", "PageTag", "Wiki", "WikiTag"]
 
 
-class BaseTag(BaseModel):
+class BaseTag(SankakuResponseModel):
     """Model that contains minimum amount of information that all tags have."""
     id: int
     name: str
@@ -24,7 +25,7 @@ class BaseTag(BaseModel):
     rating: Optional[types.Rating]
 
 
-class TagMixin(BaseModel):
+class TagMixin(SankakuResponseModel):
     """Additional data that certain tags have."""
     count: int
     tag_name: str = Field(alias="tagName")
@@ -79,7 +80,7 @@ class NestedTag(BaseTag):
             return None
 
 
-class BaseTranslations(BaseModel):
+class BaseTranslations(SankakuResponseModel):
     """Model that contain minimum information about tag translations."""
     lang: str
     translation: str
@@ -95,6 +96,9 @@ class WikiTagTranslations(BaseTranslations):
     status: int
     opacity: float
 
+    # The following fields can be missing in server JSON response
+    id: Optional[int] = None
+
 
 class PageTag(PostTag):
     """Model that describes tags on tag page."""
@@ -104,7 +108,7 @@ class PageTag(PostTag):
     parent_tags: List[NestedTag]
 
 
-class Wiki(BaseModel):
+class Wiki(SankakuResponseModel):
     """Model that describes wiki information for specific tag."""
     id: int
     title: str

@@ -245,7 +245,8 @@ def test_comment_model(data, expected):
                     batch_size=50,
                     batch_count=1,
                     sampling_steps=50,
-                    negative_prompt="bad quality"
+                    negative_prompt="bad quality",
+                    version=None
                 ),
                 md5="93b5f88ffe0b9ec49dd2d0b0289fd3ff",
                 tags=[]

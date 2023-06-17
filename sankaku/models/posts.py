@@ -3,10 +3,11 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel, Field, validator
+from pydantic import Field, validator
 
 from sankaku import types
 from sankaku.utils import convert_ts_to_datetime
+from .base import SankakuResponseModel
 from .tags import PostTag
 from .users import Author
 
@@ -14,7 +15,7 @@ from .users import Author
 __all__ = ["Comment", "Post", "AIPost"]
 
 
-class GenerationDirectives(BaseModel):
+class GenerationDirectives(SankakuResponseModel):
     """Model that describes additional fields for AI-generated posts."""
     width: int
     height: int
@@ -24,8 +25,11 @@ class GenerationDirectives(BaseModel):
     sampling_steps: int
     negative_prompt: str
 
+    # The following fields can be missing in server JSON response
+    version: Optional[str] = None  # https://imgur.com/a/aMJ7fR2
 
-class BasePost(BaseModel):
+
+class BasePost(SankakuResponseModel):
     """Model that contains minimum amount of information that all posts have."""
     id: int
     created_at: datetime
@@ -65,7 +69,7 @@ class BasePost(BaseModel):
         return v.split("/")[-1] if v else None
 
 
-class Comment(BaseModel):
+class Comment(SankakuResponseModel):
     """Model that describes comments related to posts if they are exist."""
     id: int
     created_at: datetime

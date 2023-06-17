@@ -1,15 +1,16 @@
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel, Field, validator
+from pydantic import Field, validator
 
 from sankaku import types
+from .base import SankakuResponseModel
 
 
 __all__ = ["Author", "User", "ExtendedUser"]
 
 
-class BaseUser(BaseModel):
+class BaseUser(SankakuResponseModel):
     """User profile with a minimum amount of information."""
     id: int
     name: str
@@ -41,12 +42,8 @@ class User(BaseUser):
     series_update_count: int
     tag_update_count: int
     artist_update_count: int
-    show_popup_version: int
-    credits: int
-    credits_subs: int
-    is_ai_beta: bool
 
-    # The following fields can be missing in API json response
+    # The following fields can be missing in server JSON response
     last_logged_in_at: Optional[datetime] = None
     favorite_count: Optional[int] = None
     post_favorite_count: Optional[int]
@@ -57,6 +54,13 @@ class User(BaseUser):
     recommended_posts_for_user: Optional[int] = None
     subscriptions: List[str] = []
 
+    # The following fields was removed from server JSON response
+    # TODO: Remove in future versions
+    show_popup_version: Optional[int] = None  # Still present in ExtendedUser
+    credits: Optional[int] = None  # Still present in ExtendedUser
+    credits_subs: Optional[int] = None  # Still present in ExtendedUser
+    is_ai_beta: Optional[bool] = None
+
 
 class ExtendedUser(User):
     """Profile of the currently logged-in user."""
@@ -64,6 +68,7 @@ class ExtendedUser(User):
     hide_ads: bool
     subscription_level: int
     filter_content: bool
+    has_mail: bool
     receive_dmails: bool
     email_verification_status: str
     is_verified: bool

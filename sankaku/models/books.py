@@ -3,9 +3,8 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel
-
 from sankaku import types
+from .base import SankakuResponseModel
 from .posts import Post
 from .tags import PostTag
 from .users import Author
@@ -14,7 +13,7 @@ from .users import Author
 __all__ = ["PageBook", "Book"]
 
 
-class BookState(BaseModel):
+class BookState(SankakuResponseModel):
     current_page: int
     sequence: int
     post_id: int
@@ -24,7 +23,7 @@ class BookState(BaseModel):
     percent: int
 
 
-class PageBook(BaseModel):
+class PageBook(SankakuResponseModel):
     """Model that describes books on book pages."""
     id: int
     name_en: Optional[str]
