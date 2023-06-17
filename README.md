@@ -37,7 +37,7 @@ Source code: https://github.com/zerex290/sankaku
 - pydantic
 - loguru
 - aiohttp-retry
-- typing_extensions; python_version < '3.9'
+- typing_extensions; python_version < '3.10'
 
 ## Installation
 
@@ -63,7 +63,7 @@ to install Sankaku. Type the following command:
 ```commandline
 git clone https://github.com/zerex290/sankaku.git
 cd sankaku
-docker run -it --name sankaku -w /opt -v$(pwd):/opt python:3.11 bash
+docker run -it --name sankaku -w /opt -v$(pwd):/opt python:3 bash
 ```
 
 ## Usage example
