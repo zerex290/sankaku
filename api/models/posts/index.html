@@ -614,6 +614,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../base/" class="md-nav__link">
+        base
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../books/" class="md-nav__link">
         books
       </a>
@@ -742,6 +756,13 @@
           <li class="md-nav__item">
   <a href="#sankaku.models.posts.GenerationDirectives.negative_prompt" class="md-nav__link">
     negative_prompt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sankaku.models.posts.GenerationDirectives.version" class="md-nav__link">
+    version
   </a>
   
 </li>
@@ -1439,6 +1460,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sankaku.models.posts.GenerationDirectives.version" class="md-nav__link">
+    version
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1929,7 +1957,7 @@
 
   <div class="doc doc-contents first">
       <p class="doc doc-class-bases">
-        Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+        Bases: <code><a class="autorefs autorefs-internal" title="sankaku.models.base.SankakuResponseModel" href="../base/#sankaku.models.base.SankakuResponseModel">SankakuResponseModel</a></code></p>
 
   
       <p>Model that describes additional fields for AI-generated posts.</p>
@@ -2079,6 +2107,26 @@
 
 </div>
 
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="sankaku.models.posts.GenerationDirectives.version" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></code>
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+</h3>
+
+
+  <div class="doc doc-contents ">
+  </div>
+
+</div>
+
 
 
 
@@ -2103,7 +2151,7 @@
 
   <div class="doc doc-contents first">
       <p class="doc doc-class-bases">
-        Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+        Bases: <code><a class="autorefs autorefs-internal" title="sankaku.models.base.SankakuResponseModel" href="../base/#sankaku.models.base.SankakuResponseModel">SankakuResponseModel</a></code></p>
 
   
       <p>Model that contains minimum amount of information that all posts have.</p>
@@ -2318,8 +2366,8 @@
 <code class="highlight language-python"><span class="n">extension</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s1">&#39;file_type&#39;</span><span class="p">)</span></code>
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
       <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
   </span>
 
 </h3>
@@ -2432,7 +2480,7 @@
 
   <div class="doc doc-contents first">
       <p class="doc doc-class-bases">
-        Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+        Bases: <code><a class="autorefs autorefs-internal" title="sankaku.models.base.SankakuResponseModel" href="../base/#sankaku.models.base.SankakuResponseModel">SankakuResponseModel</a></code></p>
 
   
       <p>Model that describes comments related to posts if they are exist.</p>

@@ -10,27 +10,27 @@
       
       
       
-        <link rel="canonical" href="https://zerex290.github.io/sankaku/clients/user-client/">
+        <link rel="canonical" href="https://zerex290.github.io/sankaku/api/models/base/">
       
       
-        <link rel="prev" href="../book-client/">
+        <link rel="prev" href="../../clients/http_client/">
       
       
-        <link rel="next" href="../../api/">
+        <link rel="next" href="../books/">
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
     
     
       
-        <title>Working with users - sankaku</title>
+        <title>base - sankaku</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.85bb2934.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.a6bdf11c.min.css">
       
       
 
@@ -46,9 +46,9 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -77,7 +77,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#about-userclient" class="md-skip">
+        <a href="#documentation-for-basepy" class="md-skip">
           Skip to content
         </a>
       
@@ -93,9 +93,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="sankaku" class="md-header__button md-logo" aria-label="sankaku" data-md-component="logo">
+    <a href="../../.." title="sankaku" class="md-header__button md-logo" aria-label="sankaku" data-md-component="logo">
       
-  <img src="../../logo.png" alt="logo">
+  <img src="../../../logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -111,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Working with users
+              base
             
           </span>
         </div>
@@ -208,7 +208,7 @@
 
 
   <li class="md-tabs__item">
-    <a href="../.." class="md-tabs__link">
+    <a href="../../.." class="md-tabs__link">
       Home
     </a>
   </li>
@@ -220,10 +220,26 @@
 
 
   <li class="md-tabs__item">
-    <a href="../../authorization/" class="md-tabs__link">
+    <a href="../../../authorization/" class="md-tabs__link">
       Authorization
     </a>
   </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../clients/" class="md-tabs__link">
+        Usage
+      </a>
+    </li>
+  
 
       
         
@@ -237,23 +253,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../" class="md-tabs__link md-tabs__link--active">
-        Usage
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-
-
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../api/" class="md-tabs__link">
+      <a href="../../" class="md-tabs__link md-tabs__link--active">
         API Reference
       </a>
     </li>
@@ -287,9 +287,9 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="sankaku" class="md-nav__button md-logo" aria-label="sankaku" data-md-component="logo">
+    <a href="../../.." title="sankaku" class="md-nav__button md-logo" aria-label="sankaku" data-md-component="logo">
       
-  <img src="../../logo.png" alt="logo">
+  <img src="../../../logo.png" alt="logo">
 
     </a>
     sankaku
@@ -317,7 +317,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         Home
       </a>
     </li>
@@ -332,9 +332,128 @@
   
   
     <li class="md-nav__item">
-      <a href="../../authorization/" class="md-nav__link">
+      <a href="../../../authorization/" class="md-nav__link">
         Authorization
       </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          Usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../clients/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../clients/post-client/" class="md-nav__link">
+        Working with posts
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../clients/ai-client/" class="md-nav__link">
+        Working with AI
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../clients/tag-client/" class="md-nav__link">
+        Working with tags
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../clients/book-client/" class="md-nav__link">
+        Working with books
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../clients/user-client/" class="md-nav__link">
+        Working with users
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -354,174 +473,7 @@
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
-      
-      
-      
-        <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-          Usage
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-        <label class="md-nav__title" for="__nav_3">
-          <span class="md-nav__icon md-icon"></span>
-          Usage
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
-        Introduction
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../post-client/" class="md-nav__link">
-        Working with posts
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ai-client/" class="md-nav__link">
-        Working with AI
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../tag-client/" class="md-nav__link">
-        Working with tags
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../book-client/" class="md-nav__link">
-        Working with books
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-    
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Working with users
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Working with users
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#browsing-users-with-userclient" class="md-nav__link">
-    Browsing users with UserClient
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#getting-specific-user" class="md-nav__link">
-    Getting specific user
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-    
-      
-      
-      
-
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
       
       
       
@@ -530,7 +482,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           API Reference
@@ -543,7 +495,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
+      <a href="../../" class="md-nav__link">
         Introduction
       </a>
     </li>
@@ -584,7 +536,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/clients/abc/" class="md-nav__link">
+      <a href="../../clients/abc/" class="md-nav__link">
         abc
       </a>
     </li>
@@ -598,7 +550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/clients/clients/" class="md-nav__link">
+      <a href="../../clients/clients/" class="md-nav__link">
         clients
       </a>
     </li>
@@ -612,7 +564,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/clients/http_client/" class="md-nav__link">
+      <a href="../../clients/http_client/" class="md-nav__link">
         http_client
       </a>
     </li>
@@ -631,14 +583,16 @@
               
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" checked>
       
       
       
@@ -647,7 +601,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_4_3">
           <span class="md-nav__icon md-icon"></span>
           sankaku.models
@@ -658,11 +612,52 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../api/models/base/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          base
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         base
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sankaku.models.base.SankakuResponseModel" class="md-nav__link">
+    SankakuResponseModel
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -674,7 +669,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/models/books/" class="md-nav__link">
+      <a href="../books/" class="md-nav__link">
         books
       </a>
     </li>
@@ -688,7 +683,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/models/http/" class="md-nav__link">
+      <a href="../http/" class="md-nav__link">
         http
       </a>
     </li>
@@ -702,7 +697,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/models/pages/" class="md-nav__link">
+      <a href="../pages/" class="md-nav__link">
         pages
       </a>
     </li>
@@ -716,7 +711,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/models/posts/" class="md-nav__link">
+      <a href="../posts/" class="md-nav__link">
         posts
       </a>
     </li>
@@ -730,7 +725,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/models/tags/" class="md-nav__link">
+      <a href="../tags/" class="md-nav__link">
         tags
       </a>
     </li>
@@ -744,7 +739,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/models/users/" class="md-nav__link">
+      <a href="../users/" class="md-nav__link">
         users
       </a>
     </li>
@@ -792,7 +787,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/paginators/abc/" class="md-nav__link">
+      <a href="../../paginators/abc/" class="md-nav__link">
         abc
       </a>
     </li>
@@ -806,7 +801,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/paginators/paginators/" class="md-nav__link">
+      <a href="../../paginators/paginators/" class="md-nav__link">
         paginators
       </a>
     </li>
@@ -827,7 +822,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/errors/" class="md-nav__link">
+      <a href="../../errors/" class="md-nav__link">
         sankaku.errors
       </a>
     </li>
@@ -841,7 +836,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/types/" class="md-nav__link">
+      <a href="../../types/" class="md-nav__link">
         sankaku.types
       </a>
     </li>
@@ -855,7 +850,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api/utils/" class="md-nav__link">
+      <a href="../../utils/" class="md-nav__link">
         sankaku.utils
       </a>
     </li>
@@ -896,15 +891,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#browsing-users-with-userclient" class="md-nav__link">
-    Browsing users with UserClient
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#getting-specific-user" class="md-nav__link">
-    Getting specific user
+  <a href="#sankaku.models.base.SankakuResponseModel" class="md-nav__link">
+    SankakuResponseModel
   </a>
   
 </li>
@@ -927,71 +915,39 @@
   
 
 
-<h1 id="about-userclient">About UserClient</h1>
-<p>Methods of UserClient enables you browse pages with users or get specific user.</p>
-<h2 id="browsing-users-with-userclient">Browsing users with UserClient</h2>
-<p>User browsing can be parametrized by specifying Order rule or level of users:</p>
-<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-0-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-0-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-0-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-0-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-0-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-0-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-0-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-0-10">10</a></span>
-<span class="normal"><a href="#__codelineno-0-11">11</a></span>
-<span class="normal"><a href="#__codelineno-0-12">12</a></span>
-<span class="normal"><a href="#__codelineno-0-13">13</a></span>
-<span class="normal"><a href="#__codelineno-0-14">14</a></span>
-<span class="normal"><a href="#__codelineno-0-15">15</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">asyncio</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">sankaku.clients</span> <span class="kn">import</span> <span class="n">UserClient</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="kn">from</span> <span class="nn">sankaku</span> <span class="kn">import</span> <span class="n">types</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">UserClient</span><span class="p">()</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="k">async</span> <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">browse_users</span><span class="p">(</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a>        <span class="n">types</span><span class="o">.</span><span class="n">UserOrder</span><span class="o">.</span><span class="n">OLDEST</span><span class="p">,</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a>        <span class="n">types</span><span class="o">.</span><span class="n">UserLevel</span><span class="o">.</span><span class="n">CONTRIBUTOR</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="p">):</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">created_at</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span><span class="o">.</span><span class="n">astimezone</span><span class="p">())</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a>        <span class="c1"># ... Continue comparing or break</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+<h1 id="documentation-for-basepy">Documentation for <code>base.py</code></h1>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="sankaku.models.base.SankakuResponseModel" class="doc doc-heading">
+        <code>sankaku.models.base.SankakuResponseModel</code>
+
+
+</h2>
+
+
+  <div class="doc doc-contents first">
+      <p class="doc doc-class-bases">
+        Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+  
+      <p>Base model for sankaku JSON responses.</p>
+
+
+        <details class="quote">
+          <summary>Source code in <code>sankaku/models/base.py</code></summary>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-0-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="k">class</span> <span class="nc">SankakuResponseModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span><span class="p">):</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Base model for sankaku JSON responses.&quot;&quot;&quot;</span>
 </span></code></pre></div></td></tr></table></div>
-<h2 id="getting-specific-user">Getting specific user</h2>
-<p>By analogy with <code>get_tag()</code> method you can get information about specific user
-by its nickname or id:</p>
-<div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
-<span class="normal"><a href="#__codelineno-1-2"> 2</a></span>
-<span class="normal"><a href="#__codelineno-1-3"> 3</a></span>
-<span class="normal"><a href="#__codelineno-1-4"> 4</a></span>
-<span class="normal"><a href="#__codelineno-1-5"> 5</a></span>
-<span class="normal"><a href="#__codelineno-1-6"> 6</a></span>
-<span class="normal"><a href="#__codelineno-1-7"> 7</a></span>
-<span class="normal"><a href="#__codelineno-1-8"> 8</a></span>
-<span class="normal"><a href="#__codelineno-1-9"> 9</a></span>
-<span class="normal"><a href="#__codelineno-1-10">10</a></span>
-<span class="normal"><a href="#__codelineno-1-11">11</a></span>
-<span class="normal"><a href="#__codelineno-1-12">12</a></span>
-<span class="normal"><a href="#__codelineno-1-13">13</a></span>
-<span class="normal"><a href="#__codelineno-1-14">14</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">asyncio</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">sankaku.clients</span> <span class="kn">import</span> <span class="n">UserClient</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">UserClient</span><span class="p">()</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6"></a>    <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3242</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7"></a>    <span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;reichan&quot;</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8"></a>    <span class="n">user_by_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9"></a>    <span class="n">user_by_name</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="n">user_name</span><span class="p">)</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10"></a>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">user_by_id</span><span class="p">)</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">user_by_name</span><span class="p">)</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13"></a>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
-</span></code></pre></div></td></tr></table></div>
+        </details>
+
+  </div>
+
+</div>
 
 
 
@@ -1029,10 +985,10 @@ by its nickname or id:</p>
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "content.code.copy", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "content.code.copy", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c2be25ad.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.c2be25ad.min.js"></script>
       
     
   </body>
