@@ -16,7 +16,7 @@ HEADERS: Dict[str, str] = {
         "/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
     ),
     "accept-encoding": "gzip, deflate, br",
-    "host": "capi-v2.sankakucomplex.com",
+    "host": "https://login.sankakucomplex.com",
     "origin": "https://beta.sankakucomplex.com"
 }
 
