@@ -11,8 +11,13 @@ HEADERS: Dict[str, str] = {
     ),
     "content-type": "application/json; charset=utf-8",
     "x-requested-with": "com.android.browser",
+    "accept": (
+        "text/html,application/xhtml+xml,application/json,application"
+        "/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+    ),
     "accept-encoding": "gzip, deflate, br",
-    "host": "capi-v2.sankakucomplex.com"
+    "host": "capi-v2.sankakucomplex.com",
+    "origin": "https://beta.sankakucomplex.com"
 }
 
 BASE_URL = "https://login.sankakucomplex.com"
