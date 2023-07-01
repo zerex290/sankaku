@@ -35,8 +35,12 @@ class BaseClient(ABCClient):
         self._token_type: Optional[str] = None
 
     async def _login_via_credentials(self, login: str, password: str) -> None:
+        # try addition of referer to headers
+        headers = dict(referer=const.BASE_URL)
+        headers.update(self._http_client.headers)
         response = await self._http_client.post(
             const.LOGIN_URL,
+            headers=headers,
             data=json.dumps({"login": login, "password": password})
         )
 
