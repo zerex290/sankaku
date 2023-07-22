@@ -1,5 +1,3 @@
-import warnings
-
 from pydantic import BaseModel, Extra
 
 
