@@ -19,7 +19,7 @@
         <link rel="next" href="../../errors/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -1193,23 +1193,22 @@
 
 
 <h2 id="sankaku.paginators.paginators.Paginator" class="doc doc-heading">
-        <code>sankaku.paginators.paginators.Paginator</code>
+          <code>sankaku.paginators.paginators.Paginator</code>
 
 
 </h2>
 
 
   <div class="doc doc-contents first">
-      <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-internal" title="sankaku.paginators.abc.ABCPaginator" href="../abc/#sankaku.paginators.abc.ABCPaginator">ABCPaginator</a>[<span title="sankaku.paginators.paginators._T">_T</span>]</code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="sankaku.paginators.abc.ABCPaginator" href="../abc/#sankaku.paginators.abc.ABCPaginator">ABCPaginator</a>[<span title="sankaku.paginators.paginators._T">_T</span>]</code></p>
 
   
       <p>Basic paginator for iteration without any special parameters.</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-27">27</a></span>
+            <details class="quote">
+              <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-27">27</a></span>
 <span class="normal"><a href="#__codelineno-0-28">28</a></span>
 <span class="normal"><a href="#__codelineno-0-29">29</a></span>
 <span class="normal"><a href="#__codelineno-0-30">30</a></span>
@@ -1309,11 +1308,12 @@
 </span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75"></a>        <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
 </span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76"></a>        <span class="k">return</span> <span class="n">mdl</span><span class="o">.</span><span class="n">Page</span><span class="p">[</span><span class="n">_T</span><span class="p">](</span><span class="n">number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">page_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="n">items</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
   <div class="doc doc-children">
+
 
 
 
@@ -1335,9 +1335,9 @@
 
   <div class="doc doc-contents ">
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-29">29</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-29">29</a></span>
 <span class="normal"><a href="#__codelineno-0-30">30</a></span>
 <span class="normal"><a href="#__codelineno-0-31">31</a></span>
 <span class="normal"><a href="#__codelineno-0-32">32</a></span>
@@ -1371,10 +1371,11 @@
 </span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a>
 </span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">complete_params</span><span class="p">()</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1394,9 +1395,9 @@
   
       <p>Get paginator next page.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-47">47</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-47">47</a></span>
 <span class="normal"><a href="#__codelineno-0-48">48</a></span>
 <span class="normal"><a href="#__codelineno-0-49">49</a></span>
 <span class="normal"><a href="#__codelineno-0-50">50</a></span>
@@ -1430,10 +1431,11 @@
 </span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;page&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">page_number</span><span class="p">)</span>
 </span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_page</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1449,9 +1451,9 @@
   
       <p>Complete params passed to paginator for further use.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-65">65</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-65">65</a></span>
 <span class="normal"><a href="#__codelineno-0-66">66</a></span>
 <span class="normal"><a href="#__codelineno-0-67">67</a></span>
 <span class="normal"><a href="#__codelineno-0-68">68</a></span>
@@ -1465,7 +1467,7 @@
 </span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;limit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -1484,23 +1486,22 @@
 
 
 <h2 id="sankaku.paginators.paginators.PostPaginator" class="doc doc-heading">
-        <code>sankaku.paginators.paginators.PostPaginator</code>
+          <code>sankaku.paginators.paginators.PostPaginator</code>
 
 
 </h2>
 
 
   <div class="doc doc-contents first">
-      <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-internal" title="sankaku.paginators.paginators.Paginator" href="#sankaku.paginators.paginators.Paginator">Paginator</a>[<span title="sankaku.models">mdl</span>.<a class="autorefs autorefs-internal" title="sankaku.models.Post" href="../../models/posts/#sankaku.models.posts.Post">Post</a>]</code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="sankaku.paginators.paginators.Paginator" href="#sankaku.paginators.paginators.Paginator">Paginator</a>[<span title="sankaku.models">mdl</span>.<a class="autorefs autorefs-internal" title="sankaku.models.Post" href="../../models/posts/#sankaku.models.posts.Post">Post</a>]</code></p>
 
   
       <p>Paginator used for iteration through post pages.</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-79"> 79</a></span>
+            <details class="quote">
+              <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-79"> 79</a></span>
 <span class="normal"><a href="#__codelineno-0-80"> 80</a></span>
 <span class="normal"><a href="#__codelineno-0-81"> 81</a></span>
 <span class="normal"><a href="#__codelineno-0-82"> 82</a></span>
@@ -1642,11 +1643,12 @@
 </span><span id="__span-0-148"><a id="__codelineno-0-148" name="__codelineno-0-148"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
 </span><span id="__span-0-149"><a id="__codelineno-0-149" name="__codelineno-0-149"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
   <div class="doc doc-children">
+
 
 
 
@@ -1668,9 +1670,9 @@
 
   <div class="doc doc-contents ">
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-81"> 81</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-81"> 81</a></span>
 <span class="normal"><a href="#__codelineno-0-82"> 82</a></span>
 <span class="normal"><a href="#__codelineno-0-83"> 83</a></span>
 <span class="normal"><a href="#__codelineno-0-84"> 84</a></span>
@@ -1742,10 +1744,11 @@
 </span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">voted</span> <span class="o">=</span> <span class="n">voted</span>
 </span><span id="__span-0-116"><a id="__codelineno-0-116" name="__codelineno-0-116"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">http_client</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">page_number</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -1759,9 +1762,9 @@
 
   <div class="doc doc-contents ">
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-118">118</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-118">118</a></span>
 <span class="normal"><a href="#__codelineno-0-119">119</a></span>
 <span class="normal"><a href="#__codelineno-0-120">120</a></span>
 <span class="normal"><a href="#__codelineno-0-121">121</a></span>
@@ -1825,7 +1828,7 @@
 </span><span id="__span-0-148"><a id="__codelineno-0-148" name="__codelineno-0-148"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
 </span><span id="__span-0-149"><a id="__codelineno-0-149" name="__codelineno-0-149"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -1844,23 +1847,22 @@
 
 
 <h2 id="sankaku.paginators.paginators.TagPaginator" class="doc doc-heading">
-        <code>sankaku.paginators.paginators.TagPaginator</code>
+          <code>sankaku.paginators.paginators.TagPaginator</code>
 
 
 </h2>
 
 
   <div class="doc doc-contents first">
-      <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-internal" title="sankaku.paginators.paginators.Paginator" href="#sankaku.paginators.paginators.Paginator">Paginator</a>[<span title="sankaku.models">mdl</span>.<a class="autorefs autorefs-internal" title="sankaku.models.PageTag" href="../../models/tags/#sankaku.models.tags.PageTag">PageTag</a>]</code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="sankaku.paginators.paginators.Paginator" href="#sankaku.paginators.paginators.Paginator">Paginator</a>[<span title="sankaku.models">mdl</span>.<a class="autorefs autorefs-internal" title="sankaku.models.PageTag" href="../../models/tags/#sankaku.models.tags.PageTag">PageTag</a>]</code></p>
 
   
       <p>Paginator used for iteration through tag pages.</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-152">152</a></span>
+            <details class="quote">
+              <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-152">152</a></span>
 <span class="normal"><a href="#__codelineno-0-153">153</a></span>
 <span class="normal"><a href="#__codelineno-0-154">154</a></span>
 <span class="normal"><a href="#__codelineno-0-155">155</a></span>
@@ -1940,11 +1942,12 @@
 </span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a>                <span class="n">sortDirection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_direction</span><span class="o">.</span><span class="n">value</span>
 </span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191"></a>            <span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
   <div class="doc doc-children">
+
 
 
 
@@ -1966,9 +1969,9 @@
 
   <div class="doc doc-contents ">
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-154">154</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-154">154</a></span>
 <span class="normal"><a href="#__codelineno-0-155">155</a></span>
 <span class="normal"><a href="#__codelineno-0-156">156</a></span>
 <span class="normal"><a href="#__codelineno-0-157">157</a></span>
@@ -2012,10 +2015,11 @@
 </span><span id="__span-0-174"><a id="__codelineno-0-174" name="__codelineno-0-174"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">sort_direction</span> <span class="o">=</span> <span class="n">sort_direction</span> <span class="ow">or</span> <span class="n">types</span><span class="o">.</span><span class="n">SortDirection</span><span class="o">.</span><span class="n">DESC</span>
 </span><span id="__span-0-175"><a id="__codelineno-0-175" name="__codelineno-0-175"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">http_client</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">page_number</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -2029,9 +2033,9 @@
 
   <div class="doc doc-contents ">
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-177">177</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-177">177</a></span>
 <span class="normal"><a href="#__codelineno-0-178">178</a></span>
 <span class="normal"><a href="#__codelineno-0-179">179</a></span>
 <span class="normal"><a href="#__codelineno-0-180">180</a></span>
@@ -2061,7 +2065,7 @@
 </span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190"></a>            <span class="n">sortDirection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_direction</span><span class="o">.</span><span class="n">value</span>
 </span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191"></a>        <span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -2080,23 +2084,22 @@
 
 
 <h2 id="sankaku.paginators.paginators.BookPaginator" class="doc doc-heading">
-        <code>sankaku.paginators.paginators.BookPaginator</code>
+          <code>sankaku.paginators.paginators.BookPaginator</code>
 
 
 </h2>
 
 
   <div class="doc doc-contents first">
-      <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-internal" title="sankaku.paginators.paginators.Paginator" href="#sankaku.paginators.paginators.Paginator">Paginator</a>[<span title="sankaku.models">mdl</span>.<a class="autorefs autorefs-internal" title="sankaku.models.PageBook" href="../../models/books/#sankaku.models.books.PageBook">PageBook</a>]</code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="sankaku.paginators.paginators.Paginator" href="#sankaku.paginators.paginators.Paginator">Paginator</a>[<span title="sankaku.models">mdl</span>.<a class="autorefs autorefs-internal" title="sankaku.models.PageBook" href="../../models/books/#sankaku.models.books.PageBook">PageBook</a>]</code></p>
 
   
       <p>Paginator used for iteration through book pages.</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-194">194</a></span>
+            <details class="quote">
+              <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-194">194</a></span>
 <span class="normal"><a href="#__codelineno-0-195">195</a></span>
 <span class="normal"><a href="#__codelineno-0-196">196</a></span>
 <span class="normal"><a href="#__codelineno-0-197">197</a></span>
@@ -2190,11 +2193,12 @@
 </span><span id="__span-0-239"><a id="__codelineno-0-239" name="__codelineno-0-239"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
 </span><span id="__span-0-240"><a id="__codelineno-0-240" name="__codelineno-0-240"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
   <div class="doc doc-children">
+
 
 
 
@@ -2216,9 +2220,9 @@
 
   <div class="doc doc-contents ">
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-196">196</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-196">196</a></span>
 <span class="normal"><a href="#__codelineno-0-197">197</a></span>
 <span class="normal"><a href="#__codelineno-0-198">198</a></span>
 <span class="normal"><a href="#__codelineno-0-199">199</a></span>
@@ -2266,10 +2270,11 @@
 </span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">voted</span> <span class="o">=</span> <span class="n">voted</span>
 </span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">http_client</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">page_number</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -2283,9 +2288,9 @@
 
   <div class="doc doc-contents ">
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-221">221</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-221">221</a></span>
 <span class="normal"><a href="#__codelineno-0-222">222</a></span>
 <span class="normal"><a href="#__codelineno-0-223">223</a></span>
 <span class="normal"><a href="#__codelineno-0-224">224</a></span>
@@ -2325,7 +2330,7 @@
 </span><span id="__span-0-239"><a id="__codelineno-0-239" name="__codelineno-0-239"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
 </span><span id="__span-0-240"><a id="__codelineno-0-240" name="__codelineno-0-240"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -2344,23 +2349,22 @@
 
 
 <h2 id="sankaku.paginators.paginators.UserPaginator" class="doc doc-heading">
-        <code>sankaku.paginators.paginators.UserPaginator</code>
+          <code>sankaku.paginators.paginators.UserPaginator</code>
 
 
 </h2>
 
 
   <div class="doc doc-contents first">
-      <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-internal" title="sankaku.paginators.paginators.Paginator" href="#sankaku.paginators.paginators.Paginator">Paginator</a>[<span title="sankaku.models">mdl</span>.<a class="autorefs autorefs-internal" title="sankaku.models.User" href="../../models/users/#sankaku.models.users.User">User</a>]</code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="sankaku.paginators.paginators.Paginator" href="#sankaku.paginators.paginators.Paginator">Paginator</a>[<span title="sankaku.models">mdl</span>.<a class="autorefs autorefs-internal" title="sankaku.models.User" href="../../models/users/#sankaku.models.users.User">User</a>]</code></p>
 
   
       <p>Paginator used for iteration through user pages.</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-243">243</a></span>
+            <details class="quote">
+              <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-243">243</a></span>
 <span class="normal"><a href="#__codelineno-0-244">244</a></span>
 <span class="normal"><a href="#__codelineno-0-245">245</a></span>
 <span class="normal"><a href="#__codelineno-0-246">246</a></span>
@@ -2406,11 +2410,12 @@
 </span><span id="__span-0-264"><a id="__codelineno-0-264" name="__codelineno-0-264"></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="__span-0-265"><a id="__codelineno-0-265" name="__codelineno-0-265"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
   <div class="doc doc-children">
+
 
 
 
@@ -2432,9 +2437,9 @@
 
   <div class="doc doc-contents ">
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-245">245</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-245">245</a></span>
 <span class="normal"><a href="#__codelineno-0-246">246</a></span>
 <span class="normal"><a href="#__codelineno-0-247">247</a></span>
 <span class="normal"><a href="#__codelineno-0-248">248</a></span>
@@ -2462,10 +2467,11 @@
 </span><span id="__span-0-257"><a id="__codelineno-0-257" name="__codelineno-0-257"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">level</span>
 </span><span id="__span-0-258"><a id="__codelineno-0-258" name="__codelineno-0-258"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">http_client</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">page_number</span><span class="p">,</span> <span class="n">limit</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
@@ -2479,9 +2485,9 @@
 
   <div class="doc doc-contents ">
 
-      <details class="quote">
-        <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-260">260</a></span>
+          <details class="quote">
+            <summary>Source code in <code>sankaku/paginators/paginators.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-260">260</a></span>
 <span class="normal"><a href="#__codelineno-0-261">261</a></span>
 <span class="normal"><a href="#__codelineno-0-262">262</a></span>
 <span class="normal"><a href="#__codelineno-0-263">263</a></span>
@@ -2493,7 +2499,7 @@
 </span><span id="__span-0-264"><a id="__codelineno-0-264" name="__codelineno-0-264"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="__span-0-265"><a id="__codelineno-0-265" name="__codelineno-0-265"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 </span></code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -2542,10 +2548,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "content.code.copy", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "content.code.copy", "search.suggest", "search.highlight"], "search": "../../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.c2be25ad.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>
