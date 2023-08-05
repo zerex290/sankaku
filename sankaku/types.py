@@ -64,7 +64,7 @@ class TagType(Enum):
 
 class FileType(Enum):
     IMAGE = "image"  # jpeg, png, webp formats
-    GIF = "animated_gif"  # gif format
+    GIF = "gif"  # gif format
     VIDEO = "video"  # mp4, webm formats
 
 
