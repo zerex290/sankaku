@@ -46,8 +46,8 @@ class User(BaseUser):
     # The following fields can be missing in server JSON response
     last_logged_in_at: Optional[datetime] = None
     favorite_count: Optional[int] = None
-    post_favorite_count: Optional[int]
-    pool_favorite_count: Optional[int]
+    post_favorite_count: Optional[int] = None
+    pool_favorite_count: Optional[int] = None
     vote_count: Optional[int] = None
     post_vote_count: Optional[int] = None
     pool_vote_count: Optional[int] = None
