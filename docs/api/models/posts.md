@@ -4,6 +4,19 @@
     options:
       show_source: false
       members:
+        - tags
+        - aspect_ratio
+        - rating
+        - negative_prompt
+        - natural_input
+        - denoising_strength
+
+---
+
+::: sankaku.models.posts.AIGenerationDirectives
+    options:
+      show_source: false
+      members:
         - width
         - height
         - prompt
@@ -30,7 +43,6 @@
         - height
         - file_size
         - extension
-        - generation_directives
         - md5
         - tags
         - file_type
@@ -88,6 +100,7 @@
         - redirect_to_signup
         - sequence
         - video_duration
+        - generation_directives
 
 ---
 
@@ -97,3 +110,4 @@
       members:
         - updated_at
         - post_associated_id
+        - generation_directives

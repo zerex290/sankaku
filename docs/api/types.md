@@ -61,6 +61,7 @@
         - ARTIST
         - COPYRIGHT
         - CHARACTER
+        - GENERAL
         - MEDIUM
         - META
         - GENRE
