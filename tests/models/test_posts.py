@@ -58,7 +58,15 @@ from sankaku import types
                 "is_status_locked": False,
                 "redirect_to_signup": False,
                 "sequence": None,
-                "generation_directives": None,
+                "generation_directives": {
+                    "tags": [],
+                    "aspect_ratio": {},
+                    "rating": {"type": "G", "value": "s"},
+                    "negative_prompt": "badTag1",
+                    "natural_input": "tag1 tag2",
+                    "denoising_strength": 32,
+
+                },
                 "tags": [],
                 "video_duration": None
             },
@@ -106,7 +114,15 @@ from sankaku import types
                 is_status_locked=False,
                 redirect_to_signup=False,
                 sequence=None,
-                generation_directives=None,
+                generation_directives=dict(
+                    tags=[],
+                    aspect_ratio={},
+                    rating={"value": "G", "default": "s"},
+                    negative_prompt="badTag1",
+                    natural_input="tag1 tag2",
+                    denoising_strength=32,
+
+                ),
                 tags=[],
                 video_duration=None,
             )

@@ -16,6 +16,40 @@ __all__ = ["Comment", "Post", "AIPost"]
 
 
 class GenerationDirectives(SankakuResponseModel):
+    # Model fields were tested on 100 pages.
+
+    tags: list[dict]
+    # Possible JSON object properties:
+    #   - id: int
+    #   - name: str
+    #   - type: int
+    #   - count: int
+    #   - rating: str
+    #   - name_en: str
+    #   - name_ja: str
+    #   - tagName: str
+    #   - pool_count: int
+    #   - post_count: int
+    #   - series_count: int
+    #   tag_translations: list[Any]  # IDK list items types
+
+    aspect_ratio: Optional[dict] = None
+    # Possible JSON object properties:
+    #   - type: str
+    #   - width: int
+    #   - height: int
+
+    rating: Optional[dict] = None
+    # Possible JSON object properties:
+    #   - value: str
+    #   - default: str
+
+    negative_prompt: Optional[str] = None
+    natural_input: Optional[str] = None
+    denoising_strength: Optional[int] = None
+
+
+class AIGenerationDirectives(SankakuResponseModel):
     """Model that describes additional fields for AI-generated posts."""
     width: int
     height: int
@@ -42,7 +76,6 @@ class BasePost(SankakuResponseModel):
     height: int
     file_size: int
     extension: Optional[str] = Field(alias="file_type")
-    generation_directives: Optional[GenerationDirectives]
     md5: str
     tags: List[PostTag]
 
@@ -115,6 +148,7 @@ class Post(BasePost):
     redirect_to_signup: bool
     sequence: Optional[int]
     video_duration: Optional[float]
+    generation_directives: Optional[GenerationDirectives]
 
 
 class AIPost(BasePost):
@@ -126,6 +160,7 @@ class AIPost(BasePost):
     """
     updated_at: Optional[datetime]
     post_associated_id: Optional[int]
+    generation_directives: Optional[AIGenerationDirectives]
 
     # Validators
     _normalize_datetime = (
