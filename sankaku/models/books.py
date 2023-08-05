@@ -33,7 +33,7 @@ class PageBook(SankakuResponseModel):
     description_ja: Optional[str]
     created_at: datetime
     updated_at: datetime  # Not sure that update dt isn't optional
-    author: Author
+    author: Optional[Author]
     is_public: bool
     is_active: bool
     is_flagged: bool

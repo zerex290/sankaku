@@ -146,7 +146,10 @@ class Post(BasePost):
     is_note_locked: bool
     is_status_locked: bool
     redirect_to_signup: bool
-    sequence: Optional[int]
+
+    # Sequence can be missing when Post model used inside PageBook model
+    sequence: Optional[int] = None
+
     video_duration: Optional[float]
     generation_directives: Optional[GenerationDirectives]
 
