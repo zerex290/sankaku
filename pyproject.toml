@@ -1,3 +1,87 @@
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.pyright]
+include = ["."]
+exclude = [
+    ".ruff_cache",
+    ".mypy_cache",
+    "**/__pycache__/",
+    ".eggs",
+    ".git",
+    "build",
+    "dist",
+    "venv",
+    "virtualenv",
+    ".env",
+    ".venv",
+]
+typeCheckingMode = "basic"
+reportMissingTypeStubs = false
+reportInvalidStringEscapeSequence = "error"
+reportDuplicateImport = "warning"
+reportUnnecessaryTypeIgnoreComment = "warning"
+reportShadowedImports = "warning"
+
+[tool.ruff]
+line-length = 79
+# Paths to directories to consider as first-party imports
+src = ["."]
+# Exclude directories from linting
+exclude = [
+    ".ruff_cache",
+    ".mypy_cache",
+    "**/__pycache__/",
+    ".eggs",
+    ".git",
+    "build",
+    "dist",
+    "venv",
+    "virtualenv",
+    ".env",
+    ".venv",
+]
+# Rule configuration: https://beta.ruff.rs/docs/rules/
+select = [
+    "F",       # Pyflakes
+    "N",       #  pep8-naming
+    "A",       # flake8-builtins
+    "Q",       # flake8-quotes
+    "PL",      # Pylint
+    "T20",     # flake8-print
+    "ARG",     # flake8-unused-arguments
+    "D101",    # pydocstyle[undocumented-public-class]
+    "D102",    # pydocstyle[undocumented-public-method]
+    "D103",    # pydocstyle[undocumented-public-function]
+    "D200",    # pydocstyle[fits-on-one-line]
+    "RUF013",  # Ruff[implicit-optional]
+    "RUF100",  # Ruff[unused-noqa]
+    "E", "W",  # pycodestyle
+]
+ignore = [
+    "PLR0913",  # pylint[max-args]
+    "PLR0915",  # pylint[max-statements]
+]
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.pep8-naming]
+classmethod-decorators = ["pydantic.validator"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"  # Auto mode for usage with pytest-asyncio
+
+[tool.yapf]
+based_on_style = "pep8"
+arithmetic_precedence_indication = true
+blank_lines_between_top_level_imports_and_variables = 2
+blank_line_before_nested_class_or_def = true
+dedent_closing_brackets = true
+space_between_ending_comma_and_closing_bracket = false
+split_all_comma_separated_values = true
+split_before_arithmetic_operator = true
+split_before_dot = true
+split_before_first_argument = true
+split_complex_comprehension = true
