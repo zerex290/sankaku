@@ -1,0 +1,6 @@
+pytest~=7.3.1
+pytest-asyncio~=0.21.0
+pytest-cov~=4.0.0
+yapf~=0.40.1
+ruff~=0.0.282
+pyright~=1.1.320
