@@ -142,6 +142,5 @@ from sankaku import types
     ]
 )
 def test_book_model(data, expected):
-    assert Book(**data) == expected
-    # Pydantic converts Model to dict before comparing,
-    # So there is no need in calling model '.dict()' method.
+    assert Book(**data).model_dump() == expected
+

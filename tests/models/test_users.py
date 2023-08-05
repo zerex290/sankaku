@@ -26,9 +26,7 @@ from sankaku import types
     ]
 )
 def test_author_model(data, expected):
-    assert Author(**data) == expected
-    # Pydantic converts Model to dict before comparing,
-    # So there is no need in calling model '.dict()' method.
+    assert Author(**data).model_dump() == expected
 
 
 @pytest.mark.parametrize(
@@ -174,9 +172,7 @@ def test_author_model(data, expected):
     ]
 )
 def test_user_model(data, expected):
-    assert User(**data) == expected
-    # Pydantic converts Model to dict before comparing,
-    # So there is no need in calling model '.dict()' method.
+    assert User(**data).model_dump() == expected
 
 
 @pytest.mark.parametrize(
@@ -292,6 +288,5 @@ def test_user_model(data, expected):
     ]
 )
 def test_extended_user_model(data, expected):
-    assert ExtendedUser(**data).dict() == expected
-    # Pydantic converts Model to dict before comparing,
-    # So there is no need in calling model '.dict()' method.
+    assert ExtendedUser(**data).model_dump() == expected
+

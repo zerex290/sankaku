@@ -84,9 +84,7 @@ from sankaku import types
     ]
 )
 def test_post_tag_model(data, expected):
-    assert PostTag(**data) == expected
-    # Pydantic converts Model to dict before comparing,
-    # So there is no need in calling model '.dict()' method.
+    assert PostTag(**data).model_dump() == expected
 
 
 @pytest.mark.parametrize(
@@ -283,9 +281,7 @@ def test_post_tag_model(data, expected):
     ]
 )
 def test_page_tag_model(data, expected):
-    assert PageTag(**data) == expected
-    # Pydantic converts Model to dict before comparing,
-    # So there is no need in calling model '.dict()' method.
+    assert PageTag(**data).model_dump() == expected
 
 
 @pytest.mark.parametrize(
@@ -391,6 +387,5 @@ def test_page_tag_model(data, expected):
     ]
 )
 def test_wiki_tag_model(data, expected):
-    assert WikiTag(**data) == expected
-    # Pydantic converts Model to dict before comparing,
-    # So there is no need in calling model '.dict()' method.
+    assert WikiTag(**data).model_dump() == expected
+

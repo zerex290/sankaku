@@ -61,7 +61,7 @@ from sankaku import types
                 "generation_directives": {
                     "tags": [],
                     "aspect_ratio": {},
-                    "rating": {"type": "G", "value": "s"},
+                    "rating": {"value": "G", "default": "s"},
                     "negative_prompt": "badTag1",
                     "natural_input": "tag1 tag2",
                     "denoising_strength": 32,
@@ -130,9 +130,7 @@ from sankaku import types
     ]
 )
 def test_post_model(data, expected):
-    assert Post(**data) == expected
-    # Pydantic converts Model to dict before comparing,
-    # So there is no need in calling model '.dict()' method.
+    assert Post(**data).model_dump() == expected
 
 
 @pytest.mark.parametrize(
@@ -187,9 +185,7 @@ def test_post_model(data, expected):
     ]
 )
 def test_comment_model(data, expected):
-    assert Comment(**data) == expected
-    # Pydantic converts Model to dict before comparing,
-    # So there is no need in calling model '.dict()' method.
+    assert Comment(**data).model_dump() == expected
 
 
 @pytest.mark.parametrize(
@@ -271,6 +267,5 @@ def test_comment_model(data, expected):
     ]
 )
 def test_ai_post_model(data, expected):
-    assert AIPost(**data) == expected
-    # Pydantic converts Model to dict before comparing,
-    # So there is no need in calling model '.dict()' method.
+    assert AIPost(**data).model_dump() == expected
+
