@@ -24,6 +24,7 @@ class Author(BaseUser):
 
 class User(BaseUser):
     """User profile model for any user that has an account on website."""
+    # TODO: Check response model fields more carefully.
 
     # The following fields are always present
     level: int

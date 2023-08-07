@@ -17,6 +17,7 @@ __all__ = ["Comment", "Post", "AIPost"]
 
 class GenerationDirectives(SankakuResponseModel):
     # Model fields were tested on 100 pages.
+    # TODO: Check fields of nested objects.
 
     tags: list[dict]
     # Possible JSON object properties:
@@ -51,6 +52,7 @@ class GenerationDirectives(SankakuResponseModel):
 
 class AIGenerationDirectives(SankakuResponseModel):
     """Model that describes additional fields for AI-generated posts."""
+    # TODO: Check response model fields more carefully.
     width: int
     height: int
     prompt: str
@@ -104,6 +106,7 @@ class BasePost(SankakuResponseModel):
 
 class Comment(SankakuResponseModel):
     """Model that describes comments related to posts if they are exist."""
+    # TODO: Check response model fields more carefully.
     id: int
     created_at: datetime
     post_id: int
@@ -121,6 +124,7 @@ class Comment(SankakuResponseModel):
 
 class Post(BasePost):
     """Model that describes posts."""
+    # TODO: Check response model fields more carefully.
     sample_url: Optional[str]
     sample_width: int
     sample_height: int
@@ -161,6 +165,7 @@ class AIPost(BasePost):
     but premium account is needed to check it properly. So this model is
     actual for non-premium accounts.
     """
+    # TODO: Check response model fields more carefully.
     updated_at: Optional[datetime]
     post_associated_id: Optional[int]
     generation_directives: Optional[AIGenerationDirectives]

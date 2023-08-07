@@ -25,6 +25,7 @@ class BookState(SankakuResponseModel):
 
 class PageBook(SankakuResponseModel):
     """Model that describes books on book pages."""
+    # TODO: Check response model fields more carefully.
     id: int
     name_en: Optional[str]
     name_ja: Optional[str]
@@ -75,6 +76,7 @@ class PageBook(SankakuResponseModel):
 
 class Book(PageBook):
     """Model that describes specific book."""
+    # TODO: Check response model fields more carefully.
     child_pools: Optional[List[PageBook]]
     flagged_by_user: bool
     prem_post_count: int

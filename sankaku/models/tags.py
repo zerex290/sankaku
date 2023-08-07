@@ -35,12 +35,14 @@ class TagMixin(SankakuResponseModel):
 
 class PostTag(BaseTag, TagMixin):
     """Model that describes tags related to posts."""
+    # TODO: Check response model fields more carefully.
     locale: Optional[str]
     version: Optional[int]
 
 
 class NestedTag(BaseTag):
     """Model that describes tags with specific relation to certain tag on tag page."""
+    # TODO: Check response model fields more carefully.
     post_count: int = Field(alias="postCount")
     cached_related: Optional[List[int]] = Field(alias="cachedRelated")
     cached_related_expires_on: datetime = Field(alias="cachedRelatedExpiresOn")
@@ -102,6 +104,7 @@ class WikiTagTranslations(BaseTranslations):
 
 class PageTag(PostTag):
     """Model that describes tags on tag page."""
+    # TODO: Check response model fields more carefully.
     translations: List[PageTagTranslations]
     related_tags: List[NestedTag]
     child_tags: List[NestedTag]
@@ -110,6 +113,7 @@ class PageTag(PostTag):
 
 class Wiki(SankakuResponseModel):
     """Model that describes wiki information for specific tag."""
+    # TODO: Check response model fields more carefully.
     id: int
     title: str
     body: str
@@ -128,6 +132,7 @@ class Wiki(SankakuResponseModel):
 
 class WikiTag(BaseTag, TagMixin):
     """Model that describes tag on wiki page."""
+    # TODO: Check response model fields more carefully.
     related_tags: List[PostTag]
     child_tags: List[PostTag]
     parent_tags: List[PostTag]
