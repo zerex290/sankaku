@@ -12,7 +12,7 @@ from .abc import ABCHttpClient
 
 
 try:
-    from aiohttp_socks import ProxyConnector as SocksProxyConnector  # type: ignore[import]
+    from aiohttp_socks import ProxyConnector as SocksProxyConnector
 except (ImportError, ModuleNotFoundError):
     SocksProxyConnector = None
 
@@ -20,7 +20,7 @@ except (ImportError, ModuleNotFoundError):
 __all__ = ["HttpClient"]
 
 
-def _get_socks_connector() -> Optional[SocksProxyConnector]:
+def _get_socks_connector() -> Optional[SocksProxyConnector]:  # type: ignore
     if SocksProxyConnector is None:
         return None
 
@@ -43,7 +43,7 @@ class HttpClient(ABCHttpClient):
         else:
             # use trust env option, aiohttp will read HTTP_PROXY and HTTPS_PROXY from env
             kwargs = {"trust_env": True}
-        self._client_session: ClientSession = ClientSession(**kwargs)
+        self._client_session: ClientSession = ClientSession(**kwargs)  # type: ignore
 
         retry_options = ExponentialRetry(attempts=BASE_RETRIES)
         self.session: RetryClient = RetryClient(
@@ -75,6 +75,7 @@ class HttpClient(ABCHttpClient):
 
         client_response = ClientResponse(
             response.status,
+            response.ok,
             await response.json(encoding="utf-8"),
         )
         response.close()

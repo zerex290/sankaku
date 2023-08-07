@@ -9,9 +9,6 @@ __all__ = ["ClientResponse"]
 class ClientResponse:
     """Dataclass that preserves information from aiohttp ClientResponse."""
     status: int
+    ok: bool
     json: Any
 
-    @property
-    def ok(self) -> bool:
-        """Check if response status code is less than 400."""
-        return self.status < 400
