@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from sankaku import types
 from sankaku.utils import convert_ts_to_datetime
@@ -67,7 +67,7 @@ class AIGenerationDirectives(SankakuResponseModel):
 
 class BasePost(SankakuResponseModel):
     """Model that contains minimum amount of information that all posts have."""
-    id: int
+    id: int  # noqa: A003
     created_at: datetime
     rating: types.Rating
     status: str
@@ -93,21 +93,21 @@ class BasePost(SankakuResponseModel):
         else:
             return None
 
-    # Validators
-    _normalize_datetime = (
-        validator("created_at", pre=True, allow_reuse=True)
-        (convert_ts_to_datetime)
-    )
+    @field_validator("created_at", mode="before")
+    @classmethod
+    def normalize_datetime(cls, v) -> Optional[datetime]:
+        return convert_ts_to_datetime(v)
 
-    @validator("extension", pre=True)
-    def get_extension(cls, v) -> Optional[str]:  # noqa
+    @field_validator("extension", mode="before")
+    @classmethod
+    def get_extension(cls, v) -> Optional[str]:
         return v.split("/")[-1] if v else None
 
 
 class Comment(SankakuResponseModel):
     """Model that describes comments related to posts if they are exist."""
     # TODO: Check response model fields more carefully.
-    id: int
+    id: int  # noqa: A003
     created_at: datetime
     post_id: int
     author: Author
@@ -170,8 +170,8 @@ class AIPost(BasePost):
     post_associated_id: Optional[int]
     generation_directives: Optional[AIGenerationDirectives]
 
-    # Validators
-    _normalize_datetime = (
-        validator("created_at", "updated_at", pre=True, allow_reuse=True)
-        (convert_ts_to_datetime)
-    )
+    @field_validator("created_at", "updated_at", mode="before")
+    @classmethod
+    def normalize_datetime(cls, v) -> Optional[datetime]:  # noqa: D102
+        return convert_ts_to_datetime(v)
+

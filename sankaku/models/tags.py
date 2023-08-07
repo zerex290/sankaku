@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from sankaku import types
 from sankaku.utils import convert_ts_to_datetime
@@ -14,11 +14,11 @@ __all__ = ["PostTag", "PageTag", "Wiki", "WikiTag"]
 
 class BaseTag(SankakuResponseModel):
     """Model that contains minimum amount of information that all tags have."""
-    id: int
+    id: int  # noqa: A003
     name: str
     name_en: str
     name_ja: Optional[str]
-    type: types.TagType
+    type: types.TagType  # noqa: A003
     post_count: int
     pool_count: int
     series_count: int
@@ -46,7 +46,7 @@ class NestedTag(BaseTag):
     post_count: int = Field(alias="postCount")
     cached_related: Optional[List[int]] = Field(alias="cachedRelated")
     cached_related_expires_on: datetime = Field(alias="cachedRelatedExpiresOn")
-    type: types.TagType = Field(alias="tagType")
+    type: types.TagType = Field(alias="tagType")  # noqa: A003
     name_en: str = Field(alias="nameEn")
     name_ja: Optional[str] = Field(alias="nameJa")
     popularity_all: Optional[float] = Field(alias="scTagPopularityAll")
@@ -70,8 +70,9 @@ class NestedTag(BaseTag):
     parent: int
     version: Optional[int]
 
-    @validator("cached_related", "parent_tags", "child_tags", pre=True)
-    def flatten(cls, v) -> Optional[List[int]]:  # noqa
+    @field_validator("cached_related", "parent_tags", "child_tags", mode="before")
+    @classmethod
+    def flatten(cls, v) -> Optional[List[int]]:
         """Flatten nested lists into one."""
         if not v:
             return None
@@ -97,9 +98,7 @@ class WikiTagTranslations(BaseTranslations):
     """Model that describes wiki tag translations."""
     status: int
     opacity: float
-
-    # The following fields can be missing in server JSON response
-    id: Optional[int] = None
+    id: Optional[int] = None  # noqa: A003
 
 
 class PageTag(PostTag):
@@ -114,7 +113,7 @@ class PageTag(PostTag):
 class Wiki(SankakuResponseModel):
     """Model that describes wiki information for specific tag."""
     # TODO: Check response model fields more carefully.
-    id: int
+    id: int  # noqa: A003
     title: str
     body: str
     created_at: datetime
@@ -123,11 +122,10 @@ class Wiki(SankakuResponseModel):
     is_locked: bool
     version: int
 
-    # Validators
-    _normalize_datetime = (
-        validator("created_at", "updated_at", pre=True, allow_reuse=True)
-        (convert_ts_to_datetime)
-    )
+    @field_validator("created_at", "updated_at", mode="before")
+    @classmethod
+    def normalize_datetime(cls, v) -> Optional[datetime]:  # noqa: D102
+        return convert_ts_to_datetime(v)
 
 
 class WikiTag(BaseTag, TagMixin):

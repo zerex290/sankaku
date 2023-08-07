@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator
 
 from sankaku import types
 from .base import SankakuResponseModel
@@ -12,7 +12,7 @@ __all__ = ["Author", "User", "ExtendedUser"]
 
 class BaseUser(SankakuResponseModel):
     """User profile with a minimum amount of information."""
-    id: int
+    id: int  # noqa: A003
     name: str
     avatar: str
     avatar_rating: types.Rating
@@ -58,7 +58,7 @@ class User(BaseUser):
     # The following fields was removed from server JSON response
     # TODO: Remove in future versions
     show_popup_version: Optional[int] = None  # Still present in ExtendedUser
-    credits: Optional[int] = None  # Still present in ExtendedUser
+    credits: Optional[int] = None  # Still present in ExtendedUser  # noqa A003
     credits_subs: Optional[int] = None  # Still present in ExtendedUser
     is_ai_beta: Optional[bool] = None
 
@@ -79,7 +79,8 @@ class ExtendedUser(User):
     blacklisted: List[str]
     mfa_method: int
 
-    @validator("blacklisted_tags", pre=True)
-    def flatten_blacklisted_tags(cls, v) -> List[str]:  # noqa
+    @field_validator("blacklisted_tags", mode="before")
+    @classmethod
+    def flatten_blacklisted_tags(cls, v) -> List[str]:
         """Flatten nested lists into one."""
         return [tag[0] for tag in v]

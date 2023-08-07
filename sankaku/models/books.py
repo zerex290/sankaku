@@ -26,7 +26,7 @@ class BookState(SankakuResponseModel):
 class PageBook(SankakuResponseModel):
     """Model that describes books on book pages."""
     # TODO: Check response model fields more carefully.
-    id: int
+    id: int  # noqa: A003
     name_en: Optional[str]
     name_ja: Optional[str]
     description: str
