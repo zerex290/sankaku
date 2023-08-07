@@ -90,6 +90,7 @@ from sankaku import types
                 width=5242,
                 height=3525,
                 file_size=8608194,
+                file_type=types.FileType.IMAGE,
                 extension="jpeg",
                 created_at=datetime(2020, 10, 30, 21, 33, 10).astimezone(),
                 has_children=True,
@@ -248,6 +249,7 @@ def test_comment_model(data, expected):
                 width=512,
                 height=512,
                 file_size=331855,
+                file_type=types.FileType.IMAGE,
                 extension="png",
                 post_associated_id=None,
                 generation_directives=dict(

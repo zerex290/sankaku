@@ -77,21 +77,15 @@ class BasePost(SankakuResponseModel):
     width: int
     height: int
     file_size: int
+    file_type: Optional[types.FileType]
     extension: Optional[str] = Field(alias="file_type")
     md5: str
     tags: List[PostTag]
 
-    @property
-    def file_type(self) -> Optional[types.FileType]:
-        """Get type of the file."""
-        if self.extension in ('png', 'jpeg', 'webp'):
-            return types.FileType.IMAGE
-        elif self.extension in ('webm', 'mp4'):
-            return types.FileType.VIDEO
-        elif self.extension in ('gif',):
-            return types.FileType.GIF
-        else:
-            return None
+    @field_validator("file_type", mode="before")
+    @classmethod
+    def get_file_type_and_extension(cls, v) -> Optional[types.FileType]:
+        return types.FileType(v.split("/")[0]) if v else None
 
     @field_validator("created_at", mode="before")
     @classmethod
@@ -174,4 +168,3 @@ class AIPost(BasePost):
     @classmethod
     def normalize_datetime(cls, v) -> Optional[datetime]:  # noqa: D102
         return convert_ts_to_datetime(v)
-
