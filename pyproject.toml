@@ -25,7 +25,6 @@ reportUnnecessaryTypeIgnoreComment = "warning"
 reportShadowedImports = "warning"
 
 [tool.ruff]
-line-length = 79
 # Paths to directories to consider as first-party imports
 src = ["."]
 # Exclude directories from linting
