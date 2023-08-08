@@ -50,7 +50,6 @@ select = [
     "PL",      # Pylint
     "T20",     # flake8-print
     "ARG",     # flake8-unused-arguments
-    "D101",    # pydocstyle[undocumented-public-class]
     "D102",    # pydocstyle[undocumented-public-method]
     "D103",    # pydocstyle[undocumented-public-function]
     "D200",    # pydocstyle[fits-on-one-line]

@@ -8,9 +8,9 @@ __all__ = ["ABCHttpClient", "ABCClient"]
 
 
 class ABCHttpClient(ABC):
-    """Abstract client for handling http requests."""
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
+        """Abstract client for handling http requests."""
         pass
 
     async def __aenter__(self):
@@ -33,9 +33,9 @@ class ABCHttpClient(ABC):
 
 
 class ABCClient(ABC):
-    """Abstract Sankaku client."""
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
+        """Abstract Sankaku client."""
         pass
 
     @abstractmethod

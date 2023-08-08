@@ -32,8 +32,8 @@ def _get_socks_connector() -> Optional[SocksProxyConnector]:  # type: ignore
 
 
 class HttpClient(ABCHttpClient):
-    """HTTP client for API requests that instances use a single session."""
     def __init__(self) -> None:
+        """HTTP client for API requests that instances use a single session."""
         self.headers: Dict[str, str] = const.HEADERS.copy()
 
         socks_connector = _get_socks_connector()

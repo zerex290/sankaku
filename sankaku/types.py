@@ -16,13 +16,13 @@ __all__ = [
 ]
 
 
-class Rating(str, Enum):  # noqa: D101
+class Rating(str, Enum):
     SAFE = "s"
     QUESTIONABLE = "q"
     EXPLICIT = "e"
 
 
-class PostOrder(Enum):  # noqa: D101
+class PostOrder(Enum):
     POPULARITY = "popularity"
     DATE = "date"
     QUALITY = "quality"
@@ -31,7 +31,7 @@ class PostOrder(Enum):  # noqa: D101
     RECENTLY_VOTED = "recently_voted"
 
 
-class SortParameter(Enum):  # noqa: D101
+class SortParameter(Enum):
     NAME = "name"
     TRANSLATIONS = "name_ja"
     TYPE = "type"
@@ -40,17 +40,17 @@ class SortParameter(Enum):  # noqa: D101
     POST_COUNT = "count"
 
 
-class SortDirection(Enum):  # noqa: D101
+class SortDirection(Enum):
     ASC = "asc"
     DESC = "desc"
 
 
-class TagOrder(Enum):  # noqa: D101
+class TagOrder(Enum):
     POPULARITY = "popularity"
     QUALITY = "quality"
 
 
-class TagType(Enum):  # noqa: D101
+class TagType(Enum):
     ARTIST = 1
     COPYRIGHT = 3
     CHARACTER = 4
@@ -62,13 +62,13 @@ class TagType(Enum):  # noqa: D101
     STUDIO = 2
 
 
-class FileType(Enum):  # noqa: D101
+class FileType(Enum):
     IMAGE = "image"  # jpeg, png, webp formats
     GIF = "gif"  # gif format
     VIDEO = "video"  # mp4, webm formats
 
 
-class FileSize(Enum):  # noqa: D101
+class FileSize(Enum):
     LARGE = "large_filesize"
     HUGE = "extremely_large_filesize"
     LONG = "long_image"
@@ -79,7 +79,7 @@ class FileSize(Enum):  # noqa: D101
     A_RATIO_1_1 = "1:1_aspect_ratio"
 
 
-class UserOrder(Enum):  # noqa: D101
+class UserOrder(Enum):
     POSTS = "post_upload_count"
     FAVORITES = "favorite_count"
     NAME = "name"
@@ -88,7 +88,7 @@ class UserOrder(Enum):  # noqa: D101
     LAST_SEEN = "active"
 
 
-class UserLevel(Enum):  # noqa: D101
+class UserLevel(Enum):
     ADMIN = 50
     SYSTEM_USER = 45
     MODERATOR = 40
@@ -100,7 +100,7 @@ class UserLevel(Enum):  # noqa: D101
     UNACTIVATED = 0
 
 
-class BookOrder(Enum):  # noqa: D101
+class BookOrder(Enum):
     POPULARITY = "popularity"
     DATE = "date"
     QUALITY = "quality"

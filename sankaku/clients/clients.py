@@ -23,8 +23,8 @@ __all__ = [
 
 
 class BaseClient(ABCClient):
-    """Base client used for login."""
     def __init__(self) -> None:
+        """Base client used for login."""
         self._profile: Optional[mdl.ExtendedUser] = None
         self._http_client: HttpClient = HttpClient()
         self._access_token: Optional[str] = None  # TODO: ability to update access token

@@ -11,12 +11,12 @@ __all__ = ["ValueRange", "Timestamp"]
 
 
 @dataclass(frozen=True)
-class ValueRange:  # noqa: D101
+class ValueRange:
     min: int  # noqa: A003
     max: int  # noqa: A003
 
 
-class Timestamp(TypedDict):  # noqa: D101
+class Timestamp(TypedDict):
     json_class: str
     s: Optional[int]
     n: int

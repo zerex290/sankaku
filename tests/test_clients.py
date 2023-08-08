@@ -6,7 +6,7 @@ from sankaku import errors, models as mdl, types
 from sankaku.clients import SankakuClient
 
 
-class TestBaseClient:  # noqa: D101
+class TestBaseClient:
     @pytest.mark.parametrize(
         ["data", "expected"],
         [
@@ -28,7 +28,7 @@ class TestBaseClient:  # noqa: D101
         assert isinstance(lclient.profile, mdl.ExtendedUser)
 
 
-class TestPostClient:  # noqa: D101
+class TestPostClient:
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
         assert isinstance(await nlclient.browse_posts(1).__anext__(), mdl.Post)
@@ -180,7 +180,7 @@ class TestPostClient:  # noqa: D101
             await lclient.create_post()
 
 
-class TestAIClient:  # noqa: D101
+class TestAIClient:
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
         assert isinstance(await nlclient.browse_ai_posts(1).__anext__(), mdl.AIPost)
@@ -199,7 +199,7 @@ class TestAIClient:  # noqa: D101
             await lclient.create_ai_post()
 
 
-class TestTagClient:  # noqa: D101
+class TestTagClient:
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
         assert isinstance(await nlclient.browse_tags(1).__anext__(), mdl.PageTag)
@@ -259,7 +259,7 @@ class TestTagClient:  # noqa: D101
             await lclient.get_tag(-10_000)
 
 
-class TestBookClient:  # noqa: D101
+class TestBookClient:
     async def test_browse_default(self, nlclient: SankakuClient):  # noqa: D102
         assert isinstance(await nlclient.browse_books(1).__anext__(), mdl.PageBook)
 
@@ -354,7 +354,7 @@ class TestBookClient:  # noqa: D101
             await lclient.get_book(-10_000)
 
 
-class TestUserClient:  # noqa: D101
+class TestUserClient:
     async def test_browse_users(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
 

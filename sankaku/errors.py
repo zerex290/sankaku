@@ -14,10 +14,10 @@ __all__ = [
 
 
 class SankakuError(Exception):
-    """Base error class for raising exceptions without any special params."""
     msg: str = ""
 
     def __init__(self, msg: Optional[str] = None) -> None:
+        """Base error class for raising exceptions without any special params."""
         self.msg = msg or self.msg
 
     def __repr__(self) -> str:
@@ -27,30 +27,30 @@ class SankakuError(Exception):
         return str(self.msg)
 
 
-class RateLimitError(SankakuError):  # noqa: D101
+class RateLimitError(SankakuError):
     msg = "Can't set both rps and rpm at once."
 
 
-class LoginRequirementError(SankakuError):  # noqa: D101
+class LoginRequirementError(SankakuError):
     msg = "You must be logged-in."
 
 
-class VideoDurationError(SankakuError):  # noqa: D101
+class VideoDurationError(SankakuError):
     msg = "Argument is available only with video files."
 
 
-class PaginatorLastPage(SankakuError):  # noqa: D101, N818
+class PaginatorLastPage(SankakuError):  # noqa: N818
     msg = "Last available page reached."
 
 
 class SankakuServerError(SankakuError):
-    """Error class for parametrized exceptions."""
     def __init__(
         self,
         status: Optional[int],
         msg: Optional[str] = None,
         **kwargs
     ) -> None:
+        """Error class for parametrized exceptions."""
         self.status = status
         self.kwargs = kwargs
 
@@ -65,9 +65,9 @@ class SankakuServerError(SankakuError):
         return str(self.msg)
 
 
-class PageNotFoundError(SankakuServerError):  # noqa: D101
+class PageNotFoundError(SankakuServerError):
     msg = "Failed to fetch page with requested params"
 
 
-class AuthorizationError(SankakuServerError):  # noqa: D101
+class AuthorizationError(SankakuServerError):
     msg = "Authorization failed"
