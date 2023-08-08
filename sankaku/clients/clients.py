@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from typing import Optional, Union, List, AsyncIterator
+from typing import Optional, Union, List, Tuple, AsyncIterator
 
 from typing_extensions import Literal, Annotated
 
@@ -107,28 +107,34 @@ class BaseClient(ABCClient):
 class PostClient(BaseClient):
     """Client for post browsing."""
     async def browse_posts(
-            self,
-            order: Optional[types.PostOrder] = None,
-            date: Optional[List[datetime]] = None,
-            rating: Optional[types.Rating] = None,
-            threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-            hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
-            file_size: Optional[types.FileSize] = None,
-            file_type: Optional[types.FileType] = None,
-            video_duration: Optional[List[int]] = None,
-            recommended_for: Optional[str] = None,
-            favorited_by: Optional[str] = None,
-            tags: Optional[List[str]] = None,
-            added_by: Optional[List[str]] = None,
-            voted: Optional[str] = None,
-            *,
-            page_number: Optional[int] = None,
-            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
-
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        order: Optional[types.PostOrder] = None,
+        date: Optional[List[datetime]] = None,
+        rating: Optional[types.Rating] = None,
+        threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+        hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
+        file_size: Optional[types.FileSize] = None,
+        file_type: Optional[types.FileType] = None,
+        video_duration: Optional[List[int]] = None,
+        recommended_for: Optional[str] = None,
+        favorited_by: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        added_by: Optional[List[str]] = None,
+        voted: Optional[str] = None
     ) -> AsyncIterator[mdl.Post]:
-        """Get posts from post pages.
+        """Get get a certain range of posts with specific characteristics.
+        Range of posts can be specified in the same way as when using built-in
+        `range()`.
 
         Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
             order: Post order rule
             date: Date or range of dates
             rating: Post rating
@@ -142,53 +148,157 @@ class PostClient(BaseClient):
             tags: Tags available for search
             added_by: Posts uploaded by specified users
             voted: Posts voted by specified user
-            page_number: Page number from which to start iteration
-            limit: Maximum amount of posts per page
         """
-        async for page in PostPaginator(
-                self._http_client, const.POST_URL, **from_locals(locals())
+        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        async for page in PostPaginator(  # noqa: F405
+            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            http_client=self._http_client,
+            order=order,
+            date=date,
+            rating=rating,
+            threshold=threshold,
+            hide_posts_in_books=hide_posts_in_books,
+            file_size=file_size,
+            file_type=file_type,
+            video_duration=video_duration,
+            recommended_for=recommended_for,
+            favorited_by=favorited_by,
+            tags=tags,
+            added_by=added_by,
+            voted=voted
         ):
-            for post in page.items:
+            for post in page.items[_start:_stop:_step]:
                 yield post
 
-    async def get_favorited_posts(self) -> AsyncIterator[mdl.Post]:
-        """Shorthand way to get favorited posts of currently logged-in user."""
+    async def get_favorited_posts(
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /
+    ) -> AsyncIterator[mdl.Post]:
+        """Shorthand way to get a certain range of favorited posts of
+        currently logged-in user.
+        Range of posts can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+        """
         if self._profile is None:
             raise errors.LoginRequirementError
 
-        async for post in self.browse_posts(favorited_by=self._profile.name):
+        async for post in self.browse_posts(
+            _start, _stop, _step,
+            favorited_by=self._profile.name
+        ):
             yield post
 
-    async def get_top_posts(self) -> AsyncIterator[mdl.Post]:
-        """Shorthand way to get top posts."""
-        async for post in self.browse_posts(order=types.PostOrder.QUALITY):
+    async def get_top_posts(
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /
+    ) -> AsyncIterator[mdl.Post]:
+        """Shorthand way to get a certain range of top posts.
+        Range of posts can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+        """
+        async for post in self.browse_posts(
+            _start, _stop, _step,
+            order=types.PostOrder.QUALITY
+        ):
             yield post
 
-    async def get_popular_posts(self) -> AsyncIterator[mdl.Post]:
-        """Shorthand way to get popular posts."""
-        async for post in self.browse_posts(order=types.PostOrder.POPULARITY):
+    async def get_popular_posts(
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /
+    ) -> AsyncIterator[mdl.Post]:
+        """Shorthand way to get a certain range of popular posts.
+        Range of posts can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+        """
+        async for post in self.browse_posts(
+            _start, _stop, _step,
+            order=types.PostOrder.POPULARITY
+        ):
             yield post
 
-    async def get_recommended_posts(self) -> AsyncIterator[mdl.Post]:
-        """Shorthand way to get recommended posts for the currently logged-in user."""
+    async def get_recommended_posts(
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /
+    ) -> AsyncIterator[mdl.Post]:
+        """Shorthand way to get a certain range of recommended posts for
+        currently logged-in user.
+        Range of posts can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+        """
         if self._profile is None:
             raise errors.LoginRequirementError
 
-        async for post in self.browse_posts(recommended_for=self._profile.name):
+        async for post in self.browse_posts(
+            _start, _stop, _step,
+            recommended_for=self._profile.name
+        ):
             yield post
 
-    async def get_similar_posts(self, post_id: int) -> AsyncIterator[mdl.Post]:
-        """Get posts similar (recommended) for specific post by its ID."""
+    async def get_similar_posts(
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        post_id: int
+    ) -> AsyncIterator[mdl.Post]:
+        """Get a certain range of posts similar (recommended) for specific post.
+        Range of posts can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+            post_id: ID of the post of interest
+        """
         tag = f"recommended_for_post:{post_id}"
-        async for post in self.browse_posts(tags=[tag]):
+        async for post in self.browse_posts(
+            _start, _stop, _step,
+            tags=[tag]
+        ):
             yield post
 
     async def get_post_comments(self, post_id: int) -> AsyncIterator[mdl.Comment]:
-        """Get comments of the specific post by its ID."""
-        async for page in Paginator(
-                self._http_client,
-                const.COMMENT_URL.format(post_id=post_id),
-                mdl.Comment
+        """Get all comments of the specific post by its ID."""
+        async for page in Paginator(  # noqa: F405
+            const.BASE_RANGE_STOP,
+            http_client=self._http_client,
+            url=const.COMMENT_URL.format(post_id=post_id),
+            model=mdl.Comment
         ):
             for comment in page.items:
                 yield comment
@@ -209,22 +319,29 @@ class PostClient(BaseClient):
 class AIClient(BaseClient):
     """Client for working with Sankaku built-in AI."""
     async def browse_ai_posts(
-            self,
-            *,
-            page_number: Optional[int] = None,
-            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /
     ) -> AsyncIterator[mdl.AIPost]:
-        """Get AI created posts from AI dedicated post pages.
+        """Get a certain range of AI created posts from AI dedicated post pages.
+        Range of posts can be specified in the same way as when using built-in
+        `range()`.
 
         Args:
-            page_number: Page number from which to start iteration
-            limit: Maximum amount of posts per page
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
         """
-        async for page in Paginator(
-                self._http_client, const.AI_POST_URL,
-                mdl.AIPost, **from_locals(locals())
+        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        async for page in Paginator(  # noqa: F405
+            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            http_client=self._http_client,
+            url=const.AI_POST_URL,
+            model=mdl.AIPost
         ):
-            for post in page.items:
+            for post in page.items[_start:_stop:_step]:
                 yield post
 
     async def get_ai_post(self, post_id: int) -> mdl.AIPost:
@@ -243,34 +360,46 @@ class AIClient(BaseClient):
 class TagClient(BaseClient):
     """Client for tag browsing."""
     async def browse_tags(
-            self,
-            tag_type: Optional[types.TagType] = None,  # TODO: ability to specify multiple tags
-            order: Optional[types.TagOrder] = None,
-            rating: Optional[types.Rating] = None,
-            max_post_count: Optional[int] = None,
-            sort_parameter: Optional[types.SortParameter] = None,
-            sort_direction: Optional[types.SortDirection] = None,
-            *,
-            page_number: Optional[int] = None,
-            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
-
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        tag_type: Optional[types.TagType] = None,  # TODO: ability to specify multiple tags
+        order: Optional[types.TagOrder] = None,
+        rating: Optional[types.Rating] = None,
+        max_post_count: Optional[int] = None,
+        sort_parameter: Optional[types.SortParameter] = None,
+        sort_direction: Optional[types.SortDirection] = None
     ) -> AsyncIterator[mdl.PageTag]:
-        """Get tags from tag pages.
+        """Get a certain range of tags from tag pages.
+        Range of tags can be specified in the same way as when using built-in
+        `range()`.
 
         Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
             tag_type: Tag type filter
             order: Tag order rule
             rating: Tag rating
             max_post_count: Upper threshold for number of posts with tags found
             sort_parameter: Tag sorting parameter
             sort_direction: Tag sorting direction
-            page_number: Page number from which to start iteration
-            limit: Maximum amount of tags per page
         """
-        async for page in TagPaginator(
-                self._http_client, const.TAG_URL, **from_locals(locals())
+        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        async for page in TagPaginator(  # noqa: F405
+            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            http_client=self._http_client,
+            tag_type=tag_type,
+            order=order,
+            rating=rating,
+            max_post_count=max_post_count,
+            sort_parameter=sort_parameter,
+            sort_direction=sort_direction
         ):
-            for tag in page.items:
+            for tag in page.items[_start:_stop:_step]:
                 yield tag
 
     async def get_tag(self, name_or_id: Union[str, int]) -> mdl.WikiTag:
@@ -290,20 +419,27 @@ class BookClient(BaseClient):
     """Client for book (pool) browsing."""
     async def browse_books(
             self,
-            order: Optional[types.BookOrder] = None,
-            rating: Optional[types.Rating] = None,
-            recommended_for: Optional[str] = None,
-            favorited_by: Optional[str] = None,
-            tags: Optional[List[str]] = None,
-            added_by: Optional[List[str]] = None,
-            voted: Optional[str] = None,
-            *,
-            page_number: Optional[int] = None,
-            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        order: Optional[types.BookOrder] = None,
+        rating: Optional[types.Rating] = None,
+        recommended_for: Optional[str] = None,
+        favorited_by: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        added_by: Optional[List[str]] = None,
+        voted: Optional[str] = None,
     ) -> AsyncIterator[mdl.PageBook]:
-        """Get books from book (pool) pages.
+        """Get a certain range of books (pools) from book (pool) pages.
+        Range of books can be specified in the same way as when using built-in
+        `range()`.
 
         Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
             order: Book order rule
             rating: Books rating
             recommended_for: Books recommended for specified user
@@ -311,45 +447,126 @@ class BookClient(BaseClient):
             tags: Tags available for search
             added_by: Books uploaded by specified users
             voted: Books voted by specified user
-            page_number: Page number from which to start iteration
-            limit: Maximum amount of books per page
         """
-        async for page in BookPaginator(
-                self._http_client, const.BOOK_URL, **from_locals(locals())
+        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        async for page in BookPaginator(  # noqa: F405
+            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            http_client=self._http_client,
+            order=order,
+            rating=rating,
+            recommended_for=recommended_for,
+            favorited_by=favorited_by,
+            tags=tags,
+            added_by=added_by,
+            voted=voted
         ):
-            for book in page.items:
+            for book in page.items[_start:_stop:_step]:
                 yield book
 
-    async def get_favorited_books(self) -> AsyncIterator[mdl.PageBook]:
-        """Shorthand way to get favorited books for the currently logged-in user."""
+    async def get_favorited_books(
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /
+    ) -> AsyncIterator[mdl.PageBook]:
+        """Shorthand way to get a certain range of favorited books for
+        currently logged-in user.
+        Range of books can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+        """
         if self._profile is None:
             raise errors.LoginRequirementError
 
-        async for book in self.browse_books(favorited_by=self._profile.name):
-            yield book
-
-    async def get_recommended_books(self) -> AsyncIterator[mdl.PageBook]:
-        """Shorthand way to get recommended books for the currently logged-in user."""
-        if self._profile is None:
-            raise errors.LoginRequirementError
-
-        async for book in self.browse_books(recommended_for=self._profile.name):
-            yield book
-
-    async def get_recently_read_books(self) -> AsyncIterator[mdl.PageBook]:
-        """Get recently read/opened books of the currently logged-in user."""
-        if self._profile is None:
-            raise errors.LoginRequirementError
-
-        async for book in self.browse_books(tags=[f"read:@{self._profile.id}@"]):
-            yield book
-
-    async def get_related_books(self, post_id: int) -> AsyncIterator[mdl.PageBook]:
-        """Get books related to specific post by its ID."""
-        async for page in BookPaginator(
-                self._http_client, const.RELATED_BOOK_URL.format(post_id=post_id)
+        async for book in self.browse_books(
+            _start, _stop, _step,
+            favorited_by=self._profile.name
         ):
-            for book in page.items:
+            yield book
+
+    async def get_recommended_books(
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /
+    ) -> AsyncIterator[mdl.PageBook]:
+        """Shorthand way to get a certain range of recommended books for
+        currently logged-in user.
+        Range of books can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+        """
+        if self._profile is None:
+            raise errors.LoginRequirementError
+
+        async for book in self.browse_books(
+            _start, _stop, _step,
+            recommended_for=self._profile.name
+        ):
+            yield book
+
+    async def get_recently_read_books(
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /
+    ) -> AsyncIterator[mdl.PageBook]:
+        """Get a certain range of recently read/opened books of currently
+        logged-in user.
+        Range of books can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+        """
+        if self._profile is None:
+            raise errors.LoginRequirementError
+
+        async for book in self.browse_books(
+            _start, _stop, _step,
+            tags=[f"read:@{self._profile.id}@"]
+        ):
+            yield book
+
+    async def get_related_books(
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        post_id: int
+    ) -> AsyncIterator[mdl.PageBook]:
+        """Get a certain range of books related to specific post.
+        Range of books can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+            post_id: ID of the post of interest
+        """
+        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        async for page in BookPaginator(  # noqa: F405
+            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            http_client=self._http_client,
+            url=const.RELATED_BOOK_URL.format(post_id=post_id)
+        ):
+            for book in page.items[_start:_stop:_step]:
                 yield book
 
     async def get_book(self, book_id: int) -> mdl.Book:
@@ -365,25 +582,34 @@ class BookClient(BaseClient):
 class UserClient(BaseClient):
     """Client for browsing users."""
     async def browse_users(
-            self,
-            order: Optional[types.UserOrder] = None,
-            level: Optional[types.UserLevel] = None,
-            *,
-            page_number: Optional[int] = None,
-            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        order: Optional[types.UserOrder] = None,
+        level: Optional[types.UserLevel] = None,
     ) -> AsyncIterator[mdl.User]:
-        """Get user profiles from user pages.
+        """Get a certain range of user profiles from user pages.
+        Range of user profiles can be specified in the same way as when using
+        built-in `range()`.
 
         Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
             order: User order rule
             level: User level type
-            page_number: Page number from which to start iteration
-            limit: Maximum amount of users per page
         """
-        async for page in UserPaginator(
-                self._http_client, const.USER_URL, **from_locals(locals())
+        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        async for page in UserPaginator(  # noqa: F405
+            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            http_client=self._http_client,
+            order=order,
+            level=level
         ):
-            for user in page.items:
+            for user in page.items[_start:_stop:_step]:
                 yield user
 
     async def get_user(self, name_or_id: Union[str, int]) -> mdl.User:
@@ -397,3 +623,41 @@ class UserClient(BaseClient):
             raise errors.PageNotFoundError(response.status, name_or_id=name_or_id)
 
         return mdl.User(**response.json)
+
+
+def _compute_post_range(
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None
+) -> Tuple[int, int, int]:
+    if _stop is None and _step is None:
+        _post_start = const.BASE_RANGE_START
+        _post_stop = _start
+        _post_step = const.BASE_RANGE_STEP
+    elif _stop is not None and _step is None:
+        _post_start = _start
+        _post_stop = _stop
+        _post_step = const.BASE_RANGE_STEP
+    else:
+        _post_start = _start
+        _post_stop = _stop
+        _post_step = _step
+    return _post_start, _post_stop, _post_step  # type: ignore
+
+
+def _compute_page_range(
+        _item_start: int,
+        _item_stop: int,
+        *,
+        limit: Annotated[int, ValueRange(1, 100)]
+) -> Tuple[int, int, int]:
+    _page_start = _item_start // limit
+    _page_stop = _item_stop // limit
+
+    # Ensure that at least one iteration will be performed if both posts are
+    # placed on the same page.
+    if _page_stop == _page_start:
+        _page_stop += 1
+
+    _page_step = const.BASE_RANGE_STEP
+    return _page_start, _page_stop, _page_step

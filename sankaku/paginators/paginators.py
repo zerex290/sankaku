@@ -24,26 +24,47 @@ _T = TypeVar("_T")
 class Paginator(ABCPaginator[_T]):
     """Basic paginator for iteration without any special parameters."""
     def __init__(
-            self,
-            http_client: HttpClient,
-            url: str,
-            model: Type[_T],
-            page_number: Optional[int] = None,
-            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-            params: Optional[Dict[str, str]] = None
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        http_client: HttpClient,
+        url: str,
+        model: Type[_T],
+        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT
     ) -> None:
+        # TODO: Ability to set reverse range;
+        # TODO: Raise error if self._start less than or equal 0.
+        if _stop is None and _step is None:
+            self._start = const.BASE_RANGE_START
+            self._stop = _start
+            self._step = const.BASE_RANGE_STEP
+        elif _stop is not None and _step is None:
+            self._start = _start
+            self._stop = _stop
+            self._step = const.BASE_RANGE_STEP
+        else:  # Case when `_stop is not None and _step is not None`.
+            self._start = _start
+            self._stop = _stop
+            self._step = _step
+        self._current_page = self._start
+
         self.http_client = http_client
         self.url = url
         self.model = model
-        self.page_number = page_number or const.BASE_PAGE_NUMBER
-        self.limit = limit or const.BASE_PAGE_LIMIT
-        self.params: Dict[str, str] = params or {}
+        self.limit = limit
 
+        self.params: Dict[str, str] = {}
         self.complete_params()
 
     @ratelimit(rps=const.BASE_RPS)
     async def next_page(self) -> mdl.Page[_T]:
         """Get paginator next page."""
+        if self._current_page >= self._stop:  # type: ignore
+            raise errors.PaginatorLastPage
+
         response = await self.http_client.get(self.url, params=self.params)
         json_ = response.json
         if "code" in json_ and json_["code"] in const.PAGE_ALLOWED_ERRORS:
@@ -55,47 +76,51 @@ class Paginator(ABCPaginator[_T]):
         elif "data" in json_:
             response.json = json_["data"]
 
-        self.page_number += 1
-        self.params["page"] = str(self.page_number)
+        self._current_page += self._step  # type: ignore
+        self.params["page"] = str(self._current_page + 1)
         return self._construct_page(response.json)
 
     def complete_params(self) -> None:
         """Complete params passed to paginator for further use."""
         self.params["lang"] = "en"
-        if self.page_number is not None:
-            self.params["page"] = str(self.page_number)
-        if self.limit is not None:
-            self.params["limit"] = str(self.limit)
+        self.params["page"] = str(self._current_page + 1)
+        self.params["limit"] = str(self.limit)
 
     def _construct_page(self, data: List[dict]) -> mdl.Page[_T]:
         """Construct and return page model."""
         items = [self.model(**d) for d in data]
-        return mdl.Page[_T](number=self.page_number - 1, items=items)
+        return mdl.Page[_T](
+            number=self._current_page - self._step,  # type: ignore
+            items=items
+        )
 
 
 class PostPaginator(Paginator[mdl.Post]):
     """Paginator used for iteration through post pages."""
     def __init__(
-            self,
-            http_client: HttpClient,
-            url: str,
-            model: Type[mdl.Post] = mdl.Post,
-            page_number: Optional[int] = None,
-            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-            params: Optional[Dict[str, str]] = None,
-            order: Optional[types.PostOrder] = None,
-            date: Optional[List[datetime]] = None,
-            rating: Optional[types.Rating] = None,
-            threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-            hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
-            file_size: Optional[types.FileSize] = None,
-            file_type: Optional[types.FileType] = None,
-            video_duration: Optional[List[int]] = None,
-            recommended_for: Optional[str] = None,
-            favorited_by: Optional[str] = None,
-            tags: Optional[List[str]] = None,
-            added_by: Optional[List[str]] = None,
-            voted: Optional[str] = None
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        http_client: HttpClient,
+        url: str = const.POST_URL,
+        model: Type[mdl.Post] = mdl.Post,
+        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT,
+        order: Optional[types.PostOrder] = None,
+        date: Optional[List[datetime]] = None,
+        rating: Optional[types.Rating] = None,
+        threshold: Optional[Annotated[int, ValueRange(1, 100)]] = None,
+        hide_posts_in_books: Optional[Literal["in-larger-tags", "always"]] = None,
+        file_size: Optional[types.FileSize] = None,
+        file_type: Optional[types.FileType] = None,
+        video_duration: Optional[List[int]] = None,
+        recommended_for: Optional[str] = None,
+        favorited_by: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        added_by: Optional[List[str]] = None,
+        voted: Optional[str] = None
     ) -> None:
         self.order = order
         self.date = date
@@ -110,7 +135,15 @@ class PostPaginator(Paginator[mdl.Post]):
         self.tags = tags
         self.added_by = added_by
         self.voted = voted
-        super().__init__(http_client, url, model, page_number, limit, params)
+        super().__init__(
+            _start,
+            _stop,
+            _step,
+            http_client=http_client,
+            url=url,
+            model=model,
+            limit=limit
+        )
 
     def complete_params(self) -> None:  # noqa: D102, PLR0912
         super().complete_params()
@@ -149,19 +182,22 @@ class PostPaginator(Paginator[mdl.Post]):
 class TagPaginator(Paginator[mdl.PageTag]):
     """Paginator used for iteration through tag pages."""
     def __init__(
-            self,
-            http_client: HttpClient,
-            url: str,
-            model: Type[mdl.PageTag] = mdl.PageTag,
-            page_number: Optional[int] = None,
-            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-            params: Optional[Dict[str, str]] = None,
-            tag_type: Optional[types.TagType] = None,
-            order: Optional[types.TagOrder] = None,
-            rating: Optional[types.Rating] = None,
-            max_post_count: Optional[int] = None,
-            sort_parameter: Optional[types.SortParameter] = None,
-            sort_direction: Optional[types.SortDirection] = None
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        http_client: HttpClient,
+        url: str = const.TAG_URL,
+        model: Type[mdl.PageTag] = mdl.PageTag,
+        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT,
+        tag_type: Optional[types.TagType] = None,
+        order: Optional[types.TagOrder] = None,
+        rating: Optional[types.Rating] = None,
+        max_post_count: Optional[int] = None,
+        sort_parameter: Optional[types.SortParameter] = None,
+        sort_direction: Optional[types.SortDirection] = None
     ) -> None:
         self.tag_type = tag_type
         self.order = order
@@ -169,7 +205,15 @@ class TagPaginator(Paginator[mdl.PageTag]):
         self.max_post_count = max_post_count
         self.sort_parameter = sort_parameter
         self.sort_direction = sort_direction or types.SortDirection.DESC
-        super().__init__(http_client, url, model, page_number, limit, params)
+        super().__init__(
+            _start,
+            _stop,
+            _step,
+            http_client=http_client,
+            url=url,
+            model=model,
+            limit=limit
+        )
 
     def complete_params(self) -> None:  # noqa: D102
         super().complete_params()
@@ -191,20 +235,23 @@ class TagPaginator(Paginator[mdl.PageTag]):
 class BookPaginator(Paginator[mdl.PageBook]):
     """Paginator used for iteration through book pages."""
     def __init__(
-            self,
-            http_client: HttpClient,
-            url: str,
-            model: Type[mdl.PageBook] = mdl.PageBook,
-            page_number: Optional[int] = None,
-            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-            params: Optional[Dict[str, str]] = None,
-            order: Optional[types.BookOrder] = None,
-            rating: Optional[types.Rating] = None,
-            recommended_for: Optional[str] = None,
-            favorited_by: Optional[str] = None,
-            tags: Optional[List[str]] = None,
-            added_by: Optional[List[str]] = None,
-            voted: Optional[str] = None
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        http_client: HttpClient,
+        url: str = const.BOOK_URL,
+        model: Type[mdl.PageBook] = mdl.PageBook,
+        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT,
+        order: Optional[types.BookOrder] = None,
+        rating: Optional[types.Rating] = None,
+        recommended_for: Optional[str] = None,
+        favorited_by: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        added_by: Optional[List[str]] = None,
+        voted: Optional[str] = None
     ) -> None:
         self.order = order
         self.rating = rating
@@ -213,7 +260,15 @@ class BookPaginator(Paginator[mdl.PageBook]):
         self.tags = tags
         self.added_by = added_by
         self.voted = voted
-        super().__init__(http_client, url, model, page_number, limit, params)
+        super().__init__(
+            _start,
+            _stop,
+            _step,
+            http_client=http_client,
+            url=url,
+            model=model,
+            limit=limit
+        )
 
     def complete_params(self) -> None:  # noqa: D102
         super().complete_params()
@@ -240,19 +295,30 @@ class BookPaginator(Paginator[mdl.PageBook]):
 class UserPaginator(Paginator[mdl.User]):
     """Paginator used for iteration through user pages."""
     def __init__(
-            self,
-            http_client: HttpClient,
-            url: str,
-            model: Type[mdl.User] = mdl.User,
-            page_number: Optional[int] = None,
-            limit: Optional[Annotated[int, ValueRange(1, 100)]] = None,
-            params: Optional[Dict[str, str]] = None,
-            order: Optional[types.UserOrder] = None,
-            level: Optional[types.UserLevel] = None
+        self,
+        _start: int,
+        _stop: Optional[int] = None,
+        _step: Optional[int] = None,
+        /,
+        *,
+        http_client: HttpClient,
+        url: str = const.USER_URL,
+        model: Type[mdl.User] = mdl.User,
+        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT,
+        order: Optional[types.UserOrder] = None,
+        level: Optional[types.UserLevel] = None
     ) -> None:
         self.order = order
         self.level = level
-        super().__init__(http_client, url, model, page_number, limit, params)
+        super().__init__(
+            _start,
+            _stop,
+            _step,
+            http_client=http_client,
+            url=url,
+            model=model,
+            limit=limit
+        )
 
     def complete_params(self) -> None:  # noqa: D102
         super().complete_params()
