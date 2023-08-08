@@ -3,7 +3,7 @@
 import asyncio
 from datetime import datetime
 from functools import wraps
-from typing import TypeVar, Optional, Any, Dict, Tuple, Callable, Awaitable
+from typing import TypeVar, Optional, Callable, Awaitable
 
 from typing_extensions import ParamSpec
 
@@ -11,7 +11,7 @@ from sankaku.errors import RateLimitError
 from sankaku.typedefs import Timestamp
 
 
-__all__ = ["ratelimit", "convert_ts_to_datetime", "from_locals"]
+__all__ = ["ratelimit", "convert_ts_to_datetime"]
 
 _T = TypeVar("_T")
 _P = ParamSpec("_P")
@@ -52,14 +52,3 @@ def convert_ts_to_datetime(ts: Timestamp) -> Optional[datetime]:
         return None
     return datetime.utcfromtimestamp(ts["s"]).astimezone()  # type: ignore
 
-
-def from_locals(
-        loc: Dict[str, Any], exclude: Tuple[str, ...] = ("self",)
-) -> Dict[str, Any]:
-    """Get arguments of calling function from its locals to pass them to paginator.
-
-    Args:
-        loc: locals of calling function
-        exclude: arguments to be excluded
-    """
-    return {k: v for k, v in loc.copy().items() if k not in exclude}
