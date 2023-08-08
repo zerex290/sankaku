@@ -367,7 +367,7 @@ class TagClient(BaseClient):
         _step: Optional[int] = None,
         /,
         *,
-        tag_type: Optional[types.TagType] = None,  # TODO: ability to specify multiple tags
+        tag_type: Optional[types.TagType] = None,
         order: Optional[types.TagOrder] = None,
         rating: Optional[types.Rating] = None,
         max_post_count: Optional[int] = None,
