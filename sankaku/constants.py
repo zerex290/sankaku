@@ -19,17 +19,21 @@ BASE_URL = "https://login.sankakucomplex.com"
 API_URL = "https://capi-v2.sankakucomplex.com"
 
 LOGIN_URL = f"{BASE_URL}/auth/token"
-POST_URL = f"{API_URL}/posts"
-AI_POST_URL = f"{API_URL}/ai_posts"
-TAG_URL = f"{API_URL}/tags"
-TAG_WIKI_URL = f"{API_URL}/tag-and-wiki"
-BOOK_URL = f"{API_URL}/pools"
-USER_URL = f"{API_URL}/users"
-PROFILE_URL = f"{USER_URL}/me"
+POSTS_URL = f"{API_URL}/posts"
+AI_POSTS_URL = f"{API_URL}/ai_posts"
+TAGS_URL = f"{API_URL}/tags"
+BOOKS_URL = f"{API_URL}/pools"
+USERS_URL = f"{API_URL}/users"
+PROFILE_URL = f"{USERS_URL}/me"
 
 # Not fully completed urls for usage with str.format()
-COMMENT_URL = f"{POST_URL}/{{post_id}}/comments"
-RELATED_BOOK_URL = f"{API_URL}/post/{{post_id}}/pools"
+COMMENTS_URL = f"{POSTS_URL}/{{post_id}}/comments"
+RELATED_BOOKS_URL = f"{API_URL}/post/{{post_id}}/pools"
+POST_URL = f"{POSTS_URL}/{{post_id}}"
+AI_POST_URL = f"{AI_POSTS_URL}/{{post_id}}"
+TAG_WIKI_URL = f"{API_URL}/tag-and-wiki{{ref}}/{{name_or_id}}"
+BOOK_URL = f"{BOOKS_URL}/{{book_id}}"
+USER_URL = f"{USERS_URL}{{ref}}/{{name_or_id}}"
 
 BASE_RPS = 3
 BASE_RPM = 180

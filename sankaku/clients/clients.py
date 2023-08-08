@@ -59,7 +59,7 @@ class BaseClient(ABCClient):
 
         headers = {"authorization": f"{const.DEFAULT_TOKEN_TYPE} {access_token}"}
         headers.update(self._http_client.headers)
-        response = await self._http_client.get(f"{const.PROFILE_URL}", headers=headers)
+        response = await self._http_client.get(const.PROFILE_URL, headers=headers)
 
         if not response.ok:
             raise errors.SankakuServerError(
@@ -285,10 +285,9 @@ class PostClient(BaseClient):
             _step: Step of the sequence
             post_id: ID of the post of interest
         """
-        tag = f"recommended_for_post:{post_id}"
         async for post in self.browse_posts(
             _start, _stop, _step,
-            tags=[tag]
+            tags=[f"recommended_for_post:{post_id}"]
         ):
             yield post
 
@@ -297,7 +296,7 @@ class PostClient(BaseClient):
         async for page in Paginator(  # noqa: F405
             const.BASE_RANGE_STOP,
             http_client=self._http_client,
-            url=const.COMMENT_URL.format(post_id=post_id),
+            url=const.COMMENTS_URL.format(post_id=post_id),
             model=mdl.Comment
         ):
             for comment in page.items:
@@ -305,7 +304,7 @@ class PostClient(BaseClient):
 
     async def get_post(self, post_id: int) -> mdl.Post:
         """Get specific post by its ID."""
-        response = await self._http_client.get(f"{const.POST_URL}/{post_id}")
+        response = await self._http_client.get(const.POST_URL.format(post_id=post_id))
 
         if not response.ok:
             raise errors.PageNotFoundError(response.status, post_id=post_id)
@@ -338,7 +337,7 @@ class AIClient(BaseClient):
         async for page in Paginator(  # noqa: F405
             *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
             http_client=self._http_client,
-            url=const.AI_POST_URL,
+            url=const.AI_POSTS_URL,
             model=mdl.AIPost
         ):
             for post in page.items[_start:_stop:_step]:
@@ -346,7 +345,9 @@ class AIClient(BaseClient):
 
     async def get_ai_post(self, post_id: int) -> mdl.AIPost:
         """Get specific AI post by its ID."""
-        response = await self._http_client.get(f"{const.AI_POST_URL}/{post_id}")
+        response = await self._http_client.get(
+            const.AI_POST_URL.format(post_id=post_id)
+        )
 
         if not response.ok:
             raise errors.PageNotFoundError(response.status, post_id=post_id)
@@ -404,10 +405,12 @@ class TagClient(BaseClient):
 
     async def get_tag(self, name_or_id: Union[str, int]) -> mdl.WikiTag:
         """Get specific tag by its name or ID."""
-        ref = "/name" if isinstance(name_or_id, str) else "/id"
-        url = f"{const.TAG_WIKI_URL}{ref}/{name_or_id}"
-
-        response = await self._http_client.get(url)
+        response = await self._http_client.get(
+            const.TAG_WIKI_URL.format(
+                ref="/name" if isinstance(name_or_id, str) else "/id",
+                name_or_id=name_or_id
+            )
+        )
 
         if not response.ok:
             raise errors.PageNotFoundError(response.status, name_or_id=name_or_id)
@@ -564,14 +567,14 @@ class BookClient(BaseClient):
         async for page in BookPaginator(  # noqa: F405
             *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
             http_client=self._http_client,
-            url=const.RELATED_BOOK_URL.format(post_id=post_id)
+            url=const.RELATED_BOOKS_URL.format(post_id=post_id)
         ):
             for book in page.items[_start:_stop:_step]:
                 yield book
 
     async def get_book(self, book_id: int) -> mdl.Book:
         """Get specific book by its ID."""
-        response = await self._http_client.get(f"{const.BOOK_URL}/{book_id}")
+        response = await self._http_client.get(const.BOOK_URL.format(book_id=book_id))
 
         if not response.ok:
             raise errors.PageNotFoundError(response.status, book_id=book_id)
@@ -614,10 +617,12 @@ class UserClient(BaseClient):
 
     async def get_user(self, name_or_id: Union[str, int]) -> mdl.User:
         """Get specific user by its name or ID."""
-        ref = "/name" if isinstance(name_or_id, str) else ""
-        url = f"{const.USER_URL}{ref}/{name_or_id}"
-
-        response = await self._http_client.get(url)
+        response = await self._http_client.get(
+            const.USER_URL.format(
+                ref="/name" if isinstance(name_or_id, str) else "",
+                name_or_id=name_or_id
+            )
+        )
 
         if not response.ok:
             raise errors.PageNotFoundError(response.status, name_or_id=name_or_id)
