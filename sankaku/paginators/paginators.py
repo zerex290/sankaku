@@ -22,7 +22,6 @@ _T = TypeVar("_T")
 
 
 class Paginator(ABCPaginator[_T]):
-    """Basic paginator for iteration without any special parameters."""
     def __init__(
         self,
         _start: int,
@@ -35,7 +34,19 @@ class Paginator(ABCPaginator[_T]):
         model: Type[_T],
         limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT
     ) -> None:
-        # TODO: Ability to set reverse range;
+        """Basic paginator for iteration in a certain range.
+        Range of pages can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+            http_client: Provider used for paginator to fetch pages from server
+            url: Target API url
+            model: Type of response model to be returned inside page items
+            limit: Limit of items per each fetched page
+        """
         # TODO: Raise error if self._start less than or equal 0.
         if _stop is None and _step is None:
             self._start = const.BASE_RANGE_START
@@ -96,7 +107,6 @@ class Paginator(ABCPaginator[_T]):
 
 
 class PostPaginator(Paginator[mdl.Post]):
-    """Paginator used for iteration through post pages."""
     def __init__(
         self,
         _start: int,
@@ -122,6 +132,32 @@ class PostPaginator(Paginator[mdl.Post]):
         added_by: Optional[List[str]] = None,
         voted: Optional[str] = None
     ) -> None:
+        """Paginator for iteration in a certain range of post pages.
+        Range of pages can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+            http_client: Provider used for paginator to fetch pages from server
+            url: Target API url
+            model: Type of response model to be returned inside page items
+            limit: Limit of items per each fetched page
+            order: Post order rule
+            date: Date or range of dates
+            rating: Post rating
+            threshold: Vote (quality) filter of posts
+            hide_posts_in_books: Whether show post from books or not
+            file_size: Size (aspect ratio) of mediafile
+            file_type: Type of mediafile in post
+            video_duration: Video duration in seconds or in range of seconds
+            recommended_for: Posts recommended for specified user
+            favorited_by: Posts favorited by specified user
+            tags: Tags available for search
+            added_by: Posts uploaded by specified users
+            voted: Posts voted by specified user
+        """
         self.order = order
         self.date = date
         self.rating = rating
@@ -145,7 +181,8 @@ class PostPaginator(Paginator[mdl.Post]):
             limit=limit
         )
 
-    def complete_params(self) -> None:  # noqa: D102, PLR0912
+    def complete_params(self) -> None:  # noqa: PLR0912
+        """Complete params passed to paginator for further use."""
         super().complete_params()
         if self.tags is None:
             self.tags = []
@@ -180,7 +217,6 @@ class PostPaginator(Paginator[mdl.Post]):
 
 
 class TagPaginator(Paginator[mdl.PageTag]):
-    """Paginator used for iteration through tag pages."""
     def __init__(
         self,
         _start: int,
@@ -199,6 +235,25 @@ class TagPaginator(Paginator[mdl.PageTag]):
         sort_parameter: Optional[types.SortParameter] = None,
         sort_direction: Optional[types.SortDirection] = None
     ) -> None:
+        """Paginator for iteration in a certain range of tag pages.
+        Range of pages can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+            http_client: Provider used for paginator to fetch pages from server
+            url: Target API url
+            model: Type of response model to be returned inside page items
+            limit: Limit of items per each fetched page
+            tag_type: Tag type filter
+            order: Tag order rule
+            rating: Tag rating
+            max_post_count: Upper threshold for number of posts with tags found
+            sort_parameter: Tag sorting parameter
+            sort_direction: Tag sorting direction
+        """
         self.tag_type = tag_type
         self.order = order
         self.rating = rating
@@ -215,7 +270,8 @@ class TagPaginator(Paginator[mdl.PageTag]):
             limit=limit
         )
 
-    def complete_params(self) -> None:  # noqa: D102
+    def complete_params(self) -> None:
+        """Complete params passed to paginator for further use."""
         super().complete_params()
         if self.tag_type is not None:
             self.params["types[]"] = str(self.tag_type.value)
@@ -233,7 +289,6 @@ class TagPaginator(Paginator[mdl.PageTag]):
 
 
 class BookPaginator(Paginator[mdl.PageBook]):
-    """Paginator used for iteration through book pages."""
     def __init__(
         self,
         _start: int,
@@ -253,6 +308,26 @@ class BookPaginator(Paginator[mdl.PageBook]):
         added_by: Optional[List[str]] = None,
         voted: Optional[str] = None
     ) -> None:
+        """Paginator for iteration in a certain range of book (pool) pages.
+        Range of pages can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+            http_client: Provider used for paginator to fetch pages from server
+            url: Target API url
+            model: Type of response model to be returned inside page items
+            limit: Limit of items per each fetched page
+            order: Book order rule
+            rating: Books rating
+            recommended_for: Books recommended for specified user
+            favorited_by: Books favorited by specified user
+            tags: Tags available for search
+            added_by: Books uploaded by specified users
+            voted: Books voted by specified user
+        """
         self.order = order
         self.rating = rating
         self.recommended_for = recommended_for
@@ -270,7 +345,8 @@ class BookPaginator(Paginator[mdl.PageBook]):
             limit=limit
         )
 
-    def complete_params(self) -> None:  # noqa: D102
+    def complete_params(self) -> None:
+        """Complete params passed to paginator for further use."""
         super().complete_params()
         if self.tags is None:
             self.tags = []
@@ -293,7 +369,6 @@ class BookPaginator(Paginator[mdl.PageBook]):
 
 
 class UserPaginator(Paginator[mdl.User]):
-    """Paginator used for iteration through user pages."""
     def __init__(
         self,
         _start: int,
@@ -308,6 +383,21 @@ class UserPaginator(Paginator[mdl.User]):
         order: Optional[types.UserOrder] = None,
         level: Optional[types.UserLevel] = None
     ) -> None:
+        """Paginator for iteration in a certain range of user profiles pages.
+        Range of pages can be specified in the same way as when using built-in
+        `range()`.
+
+        Args:
+            _start: Start of the sequence
+            _stop: End of the sequence (except this value itself)
+            _step: Step of the sequence
+            http_client: Provider used for paginator to fetch pages from server
+            url: Target API url
+            model: Type of response model to be returned inside page items
+            limit: Limit of items per each fetched page
+            order: User order rule
+            level: User level type
+        """
         self.order = order
         self.level = level
         super().__init__(
@@ -320,7 +410,8 @@ class UserPaginator(Paginator[mdl.User]):
             limit=limit
         )
 
-    def complete_params(self) -> None:  # noqa: D102
+    def complete_params(self) -> None:
+        """Complete params passed to paginator for further use."""
         super().complete_params()
         if self.order is not None:
             self.params["order"] = self.order.value

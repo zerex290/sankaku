@@ -10,9 +10,9 @@ _T = TypeVar("_T")
 
 
 class ABCPaginator(ABC, Generic[_T]):
-    """Abstract paginator class."""
     @abstractmethod
     def __init__(self, *args, **kwargs) -> None:
+        """Abstract paginator class."""
         pass
 
     def __aiter__(self) -> AsyncIterator[mdl.Page[_T]]:
