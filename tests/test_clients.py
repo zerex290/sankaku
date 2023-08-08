@@ -4,7 +4,6 @@ import pytest
 
 from sankaku import errors, models as mdl, types
 from sankaku.clients import SankakuClient
-from sankaku.utils import from_locals
 
 
 class TestBaseClient:  # noqa: D101
@@ -32,7 +31,7 @@ class TestBaseClient:  # noqa: D101
 class TestPostClient:  # noqa: D101
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
-        assert isinstance(await nlclient.browse_posts().__anext__(), mdl.Post)
+        assert isinstance(await nlclient.browse_posts(1).__anext__(), mdl.Post)
 
     @pytest.mark.parametrize(
         ["file_type", "video_duration", "expected"],
@@ -48,90 +47,117 @@ class TestPostClient:  # noqa: D101
         """Case when arguments are incompatible."""
         with pytest.raises(expected):
             await nlclient.browse_posts(
-                file_type=file_type, video_duration=video_duration
+                1,
+                file_type=file_type,
+                video_duration=video_duration
             ).__anext__()
-
-    @pytest.mark.parametrize(["page_number", "limit"], [(-1, 40), (1, -40)])
-    async def test_browse_with_incorrect_page_number_or_limit(
-        self, nlclient: SankakuClient,
-        page_number, limit
-    ):
-        with pytest.raises(errors.SankakuServerError):
-            async for _ in nlclient.browse_posts(
-                page_number=page_number, limit=limit
-            ):
-                break
 
     @pytest.mark.parametrize(
         [
-            "page_number", "limit", "hide_posts_in_books", "order",
-            "date", "rating", "threshold", "file_size", "file_type",
-            "video_duration", "recommended_for", "favorited_by", "tags",
+            "order", "date", "rating",
+            "threshold", "hide_posts_in_books",
+            "file_size", "file_type",
+            "video_duration", "recommended_for",
+            "favorited_by", "tags",
             "added_by", "voted"
 
         ],
         [
             (
-                1, 50, "always", types.PostOrder.POPULARITY,
-                None, None, None, None, None,
-                None, None, None, None,
+                types.PostOrder.POPULARITY, None, None,
+                None, "always",
+                None, None,
+                None, None,
+                None, None,
                 None, None
             ),
             (
-                1, 40, "in-larger-tags", types.PostOrder.QUALITY,
-                None, types.Rating.EXPLICIT, None, None, types.FileType.IMAGE,
-                None, "Nigredo", None, None,
+                types.PostOrder.QUALITY, None, types.Rating.EXPLICIT,
+                None, "in-larger-tags",
+                None, types.FileType.IMAGE,
+                None, "Nigredo",
+                None, None,
                 None, None
             ),
             (
-                1, 10, None, types.PostOrder.DATE,
-                [datetime(2018, 6, 16)], None, 4, None, types.FileType.VIDEO,
-                [1, 900], None, None, ["animated"],
+                types.PostOrder.DATE, [datetime(2018, 6, 16)], None,
+                4, None,
+                None, types.FileType.VIDEO,
+                [1, 900], None,
+                None, ["animated"],
                 ["anonymous"], "Nigredo"
             ),
             (
-                1, 10, None, types.PostOrder.DATE,
-                None, None, 4, types.FileSize.LARGE, None,
-                None, None, "Nigredo", ["female", "solo"],
+                types.PostOrder.DATE, None, None,
+                4, None,
+                types.FileSize.LARGE, None,
+                None, None,
+                "Nigredo", ["female", "solo"],
                 None, None
             )
         ]
     )
-    async def test_browse_with_random_args(
-        self, lclient: SankakuClient,
-        page_number, limit, hide_posts_in_books, order,
-        date, rating, threshold, file_size, file_type,
-        video_duration, recommended_for, favorited_by, tags,
-        added_by, voted
+    async def test_browse_with_random_args(  # noqa: D102
+        self,
+        lclient: SankakuClient,
+        order,
+        date,
+        rating,
+        threshold,
+        hide_posts_in_books,
+        file_size,
+        file_type,
+        video_duration,
+        recommended_for,
+        favorited_by,
+        tags,
+        added_by,
+        voted
     ):
         post = await lclient.browse_posts(
-            **from_locals(locals(), ("self", "lclient"))
+            1,
+            order=order,
+            date=date,
+            rating=rating,
+            threshold=threshold,
+            hide_posts_in_books=hide_posts_in_books,
+            file_size=file_size,
+            file_type=file_type,
+            video_duration=video_duration,
+            recommended_for=recommended_for,
+            favorited_by=favorited_by,
+            tags=tags,
+            added_by=added_by,
+            voted=voted
         ).__anext__()
         assert isinstance(post, mdl.Post)
 
     async def test_get_favorited_posts_unauthorized(self, nlclient: SankakuClient):  # noqa: D102, E501
         with pytest.raises(errors.LoginRequirementError):
-            await nlclient.get_favorited_posts().__anext__()
+            await nlclient.get_favorited_posts(1).__anext__()
 
-    async def test_get_favorited_posts_authorized(self, lclient: SankakuClient):
-        assert isinstance(await lclient.get_favorited_posts().__anext__(), mdl.Post)
+    async def test_get_favorited_posts_authorized(self, lclient: SankakuClient):  # noqa: D102, E501
+        assert isinstance(await lclient.get_favorited_posts(1).__anext__(), mdl.Post)
 
-    async def test_get_top_posts(self, nlclient: SankakuClient):
-        assert isinstance(await nlclient.get_top_posts().__anext__(), mdl.Post)
+    async def test_get_top_posts(self, nlclient: SankakuClient):  # noqa: D102
+        assert isinstance(await nlclient.get_top_posts(1).__anext__(), mdl.Post)
 
-    async def test_get_popular_posts(self, nlclient: SankakuClient):
-        assert isinstance(await nlclient.get_popular_posts().__anext__(), mdl.Post)
+    async def test_get_popular_posts(self, nlclient: SankakuClient):  # noqa: D102
+        assert isinstance(await nlclient.get_popular_posts(1).__anext__(), mdl.Post)
 
     async def test_get_recommended_posts_unauthorized(self, nlclient: SankakuClient):  # noqa: D102, E501
         with pytest.raises(errors.LoginRequirementError):
-            await nlclient.get_recommended_posts().__anext__()
+            await nlclient.get_recommended_posts(1).__anext__()
 
-    async def test_get_recommended_posts_authorized(self, lclient: SankakuClient):
-        assert isinstance(await lclient.get_recommended_posts().__anext__(), mdl.Post)
+    async def test_get_recommended_posts_authorized(self, lclient: SankakuClient):  # noqa: D102, E501
+        assert isinstance(await lclient.get_recommended_posts(1).__anext__(), mdl.Post)
 
     @pytest.mark.parametrize(["post_id"], [(32948875,)])
-    async def test_get_similar_posts(self, lclient: SankakuClient, post_id):
-        assert isinstance(await lclient.get_similar_posts(post_id).__anext__(), mdl.Post)
+    async def test_get_similar_posts(self, lclient: SankakuClient, post_id):  # noqa: D102, E501
+        assert isinstance(
+            await lclient.get_similar_posts(1, post_id=post_id).__anext__(),
+            mdl.Post
+        )
 
     @pytest.mark.parametrize(["post_id"], [(33108291,)])
     async def test_get_post_comments(self, lclient: SankakuClient, post_id):  # noqa: D102, E501
@@ -157,18 +183,7 @@ class TestPostClient:  # noqa: D101
 class TestAIClient:  # noqa: D101
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
-        assert isinstance(await nlclient.browse_ai_posts().__anext__(), mdl.AIPost)
-
-    @pytest.mark.parametrize(["page_number", "limit"], [(-1, 50), (1, -50)])
-    async def test_browse_with_incorrect_page_number_or_limit(
-        self, nlclient: SankakuClient,
-        page_number, limit
-    ):
-        with pytest.raises(errors.SankakuServerError):
-            async for _ in nlclient.browse_ai_posts(
-                page_number=page_number, limit=limit
-            ):
-                break
+        assert isinstance(await nlclient.browse_ai_posts(1).__anext__(), mdl.AIPost)
 
     @pytest.mark.parametrize(["post_id"], [(123,), (1721,)])
     async def test_get_ai_post(self, nlclient: SankakuClient, post_id):  # noqa: D102
@@ -187,51 +202,50 @@ class TestAIClient:  # noqa: D101
 class TestTagClient:  # noqa: D101
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
-        assert isinstance(await nlclient.browse_tags().__anext__(), mdl.PageTag)
-
-    @pytest.mark.parametrize(["page_number", "limit"], [(-1, 22), (1, -86)])
-    async def test_browse_with_incorrect_page_number_or_limit(
-        self, nlclient: SankakuClient,
-        page_number, limit
-    ):
-        with pytest.raises(errors.SankakuServerError):
-            async for _ in nlclient.browse_tags(
-                page_number=page_number, limit=limit
-            ):
-                break
+        assert isinstance(await nlclient.browse_tags(1).__anext__(), mdl.PageTag)
 
     @pytest.mark.parametrize(
         [
-            "page_number", "limit", "tag_type",
-            "order", "rating", "max_post_count",
+            "tag_type", "order",
+            "rating", "max_post_count",
             "sort_parameter", "sort_direction"
         ],
         [
             (
-                7, 20, types.TagType.CHARACTER,
-                None, types.Rating.SAFE, None,
+                types.TagType.CHARACTER, None,
+                types.Rating.SAFE, None,
                 None, types.SortDirection.DESC
             ),
             (
-                8, 60, types.TagType.COPYRIGHT,
-                types.TagOrder.POPULARITY, types.Rating.QUESTIONABLE, None,
+                types.TagType.COPYRIGHT, types.TagOrder.POPULARITY,
+                types.Rating.QUESTIONABLE, None,
                 None, types.SortDirection.ASC
             ),
             (
-                18, 10, None,
-                None, types.Rating.QUESTIONABLE, 2_537_220,
+                None, None,
+                types.Rating.QUESTIONABLE, 2_537_220,
                 types.SortParameter.NAME, types.SortDirection.ASC
             )
         ]
     )
-    async def test_browse_with_random_args(
-        self, lclient: SankakuClient,
-        page_number, limit, tag_type,
-        order, rating, max_post_count,
-        sort_parameter, sort_direction
+    async def test_browse_with_random_args(  # noqa: D102
+        self,
+        lclient: SankakuClient,
+        tag_type,
+        order,
+        rating,
+        max_post_count,
+        sort_parameter,
+        sort_direction
     ):
         tag = await lclient.browse_tags(
-            **from_locals(locals(), ("self", "lclient"))
+            1,
+            tag_type=tag_type,
+            order=order,
+            rating=rating,
+            max_post_count=max_post_count,
+            sort_parameter=sort_parameter,
+            sort_direction=sort_direction
         ).__anext__()
         assert isinstance(tag, mdl.PageTag)
 
@@ -245,80 +259,90 @@ class TestTagClient:  # noqa: D101
             await lclient.get_tag(-10_000)
 
 
-class TestBookClient:
-    async def test_browse_default(self, nlclient: SankakuClient):
-        assert isinstance(await nlclient.browse_books().__anext__(), mdl.PageBook)
-
-    @pytest.mark.parametrize(["page_number", "limit"], [(-3, 40), (1, -22)])
-    async def test_browse_with_incorrect_page_number_or_limit(
-            self, nlclient: SankakuClient,
-            page_number, limit
-    ):
-        with pytest.raises(errors.SankakuServerError):
-            async for _ in nlclient.browse_books(
-                page_number=page_number, limit=limit
-            ):
-                break
+class TestBookClient:  # noqa: D101
+    async def test_browse_default(self, nlclient: SankakuClient):  # noqa: D102
+        assert isinstance(await nlclient.browse_books(1).__anext__(), mdl.PageBook)
 
     @pytest.mark.parametrize(
         [
             "order", "rating", "recommended_for",
             "favorited_by", "tags", "added_by",
-            "voted", "page_number", "limit"
+            "voted"
         ],
         [
             (
                 types.BookOrder.RANDOM, types.Rating.EXPLICIT, "reichan",
-                None, None, None,
-                None, 1, 50
+                None, None, None, None
             ),
             (
                 types.BookOrder.POPULARITY, None, None,
-                "Nigredo", None, None,
-                "Nigredo", None, None
+                "Nigredo", None, None, "Nigredo"
             ),
             (
                 None, None, None,
-                None, ["genshin_impact"], ["yanququ"],
-                None, 1, 10
+                None, ["genshin_impact"], ["yanququ"], None
             )
         ]
     )
-    async def test_browse_with_random_args(
-            self, lclient: SankakuClient,
-            order, rating, recommended_for,
-            favorited_by, tags, added_by,
-            voted, page_number, limit
+    async def test_browse_with_random_args(  # noqa: D102
+        self,
+        lclient: SankakuClient,
+        order,
+        rating,
+        recommended_for,
+        favorited_by,
+        tags,
+        added_by,
+        voted
     ):
         book = await lclient.browse_books(
-            **from_locals(locals(), ("self", "lclient"))
+            1,
+            order=order,
+            rating=rating,
+            recommended_for=recommended_for,
+            favorited_by=favorited_by,
+            tags=tags,
+            added_by=added_by,
+            voted=voted
         ).__anext__()
         assert isinstance(book, mdl.PageBook)
 
     async def test_favorited_books_unauthorized(self, nlclient: SankakuClient):  # noqa: D102, E501
         with pytest.raises(errors.LoginRequirementError):
-            await nlclient.get_favorited_books().__anext__()
+            await nlclient.get_favorited_books(1).__anext__()
 
-    async def test_favorited_books_authorized(self, lclient: SankakuClient):
-        assert isinstance(await lclient.get_favorited_books().__anext__(), mdl.PageBook)
+    async def test_favorited_books_authorized(self, lclient: SankakuClient):  # noqa: D102, E501
+        assert isinstance(
+            await lclient.get_favorited_books(1).__anext__(),
+            mdl.PageBook
+        )
 
     async def test_recommended_books_unauthorized(self, nlclient: SankakuClient):  # noqa: D102, E501
         with pytest.raises(errors.LoginRequirementError):
-            await nlclient.get_recommended_books().__anext__()
+            await nlclient.get_recommended_books(1).__anext__()
 
-    async def test_recommended_books_authorized(self, lclient: SankakuClient):
-        assert isinstance(await lclient.get_recommended_books().__anext__(), mdl.PageBook)
+    async def test_recommended_books_authorized(self, lclient: SankakuClient):  # noqa: D102, E501
+        assert isinstance(
+            await lclient.get_recommended_books(1).__anext__(),
+            mdl.PageBook
+        )
 
     async def test_recently_read_books_unauthorized(self, nlclient: SankakuClient):  # noqa: D102, E501
         with pytest.raises(errors.LoginRequirementError):
-            await nlclient.get_recently_read_books().__anext__()
+            await nlclient.get_recently_read_books(1).__anext__()
 
-    async def test_recently_read_books_authorized(self, lclient: SankakuClient):
-        assert isinstance(await lclient.get_recently_read_books().__anext__(), mdl.PageBook)
+    async def test_recently_read_books_authorized(self, lclient: SankakuClient):  # noqa: D102, E501
+        assert isinstance(
+            await lclient.get_recently_read_books(1).__anext__(),
+            mdl.PageBook
+        )
 
     @pytest.mark.parametrize(["post_id"], [(27038477,)])
-    async def test_get_related_books(self, lclient: SankakuClient, post_id):
-        assert isinstance(await lclient.get_related_books(post_id).__anext__(), mdl.PageBook)
+    async def test_get_related_books(self, lclient: SankakuClient, post_id):  # noqa: D102, E501
+        assert isinstance(
+            await lclient.get_related_books(1, post_id=post_id).__anext__(),
+            mdl.PageBook
+        )
 
     @pytest.mark.parametrize(["book_id"], [(1000,)])
     async def test_get_book(self, nlclient: SankakuClient, book_id):  # noqa: D102
@@ -334,22 +358,11 @@ class TestUserClient:  # noqa: D101
     async def test_browse_users(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
 
-        assert isinstance(await nlclient.browse_users().__anext__(), mdl.User)
+        assert isinstance(await nlclient.browse_users(1).__anext__(), mdl.User)
         assert isinstance(
-            await nlclient.browse_users(level=types.UserLevel.MEMBER).__anext__(),
+            await nlclient.browse_users(1, level=types.UserLevel.MEMBER).__anext__(),
             mdl.User
         )
-
-    @pytest.mark.parametrize(["page_number", "limit"], [(-3, 22), (1, -69)])
-    async def test_browse_with_incorrect_page_number_or_limit(
-        self, nlclient: SankakuClient,
-        page_number, limit
-    ):
-        with pytest.raises(errors.SankakuServerError):
-            async for _ in nlclient.browse_users(
-                page_number=page_number, limit=limit
-            ):
-                break
 
     @pytest.mark.parametrize(["name_or_id"], [("anonymous",), (1423490,)])
     async def test_get_user(self, nlclient: SankakuClient, name_or_id):  # noqa: D102
