@@ -47,11 +47,11 @@ class Paginator(ABCPaginator[_T]):
         response = await self.http_client.get(self.url, params=self.params)
         json_ = response.json
         if "code" in json_ and json_["code"] in const.PAGE_ALLOWED_ERRORS:
-            raise errors.PaginatorLastPage(response.status, page=self.page_number)
+            raise errors.PaginatorLastPage
         elif "code" in json_:
             raise errors.SankakuServerError(response.status, **response.json)
         elif json_ == [] or (isinstance(json_, dict) and not json_["data"]):
-            raise errors.PaginatorLastPage(response.status, page=self.page_number)
+            raise errors.PaginatorLastPage
         elif "data" in json_:
             response.json = json_["data"]
 

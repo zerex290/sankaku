@@ -39,6 +39,10 @@ class VideoDurationError(SankakuError):  # noqa: D101
     msg = "Argument is available only with video files."
 
 
+class PaginatorLastPage(SankakuError):  # noqa: D101, N818
+    msg = "Last available page reached."
+
+
 class SankakuServerError(SankakuError):
     """Error class for parametrized exceptions."""
     def __init__(
@@ -61,12 +65,8 @@ class SankakuServerError(SankakuError):
         return str(self.msg)
 
 
-class PaginatorLastPage(SankakuServerError):
-    msg = "Last available page reached"
-
-
-class PageNotFoundError(SankakuServerError):
-    msg = f"Failed to fetch page with requested params"
+class PageNotFoundError(SankakuServerError):  # noqa: D101
+    msg = "Failed to fetch page with requested params"
 
 
 class AuthorizationError(SankakuServerError):  # noqa: D101
