@@ -7,7 +7,7 @@ from sankaku.clients import SankakuClient
 from sankaku.utils import from_locals
 
 
-class TestBaseClient:
+class TestBaseClient:  # noqa: D101
     @pytest.mark.parametrize(
         ["data", "expected"],
         [
@@ -16,18 +16,20 @@ class TestBaseClient:
             ({}, errors.SankakuError)
         ]
     )
-    async def test_login_with_invalid_data(
-            self, nlclient: SankakuClient,
-            data, expected
+    async def test_login_with_invalid_data(  # noqa: D102
+        self,
+        nlclient: SankakuClient,
+        data,
+        expected
     ):
         with pytest.raises(expected):
             await nlclient.login(**data)
 
-    async def test_login_with_valid_data(self, lclient: SankakuClient):
+    async def test_login_with_valid_data(self, lclient: SankakuClient):  # noqa: D102
         assert isinstance(lclient.profile, mdl.ExtendedUser)
 
 
-class TestPostClient:
+class TestPostClient:  # noqa: D101
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
         assert isinstance(await nlclient.browse_posts().__anext__(), mdl.Post)
@@ -37,8 +39,11 @@ class TestPostClient:
         [(types.FileType.IMAGE, [1, 60], errors.VideoDurationError)]
     )
     async def test_browse_with_incompatible_args(
-        self, nlclient: SankakuClient,
-        file_type, video_duration, expected
+        self,
+        nlclient: SankakuClient,
+        file_type,
+        video_duration,
+        expected
     ):
         """Case when arguments are incompatible."""
         with pytest.raises(expected):
@@ -104,7 +109,7 @@ class TestPostClient:
         ).__anext__()
         assert isinstance(post, mdl.Post)
 
-    async def test_get_favorited_posts_unauthorized(self, nlclient: SankakuClient):
+    async def test_get_favorited_posts_unauthorized(self, nlclient: SankakuClient):  # noqa: D102, E501
         with pytest.raises(errors.LoginRequirementError):
             await nlclient.get_favorited_posts().__anext__()
 
@@ -117,7 +122,7 @@ class TestPostClient:
     async def test_get_popular_posts(self, nlclient: SankakuClient):
         assert isinstance(await nlclient.get_popular_posts().__anext__(), mdl.Post)
 
-    async def test_get_recommended_posts_unauthorized(self, nlclient: SankakuClient):
+    async def test_get_recommended_posts_unauthorized(self, nlclient: SankakuClient):  # noqa: D102, E501
         with pytest.raises(errors.LoginRequirementError):
             await nlclient.get_recommended_posts().__anext__()
 
@@ -129,24 +134,27 @@ class TestPostClient:
         assert isinstance(await lclient.get_similar_posts(post_id).__anext__(), mdl.Post)
 
     @pytest.mark.parametrize(["post_id"], [(33108291,)])
-    async def test_get_post_comments(self, lclient: SankakuClient, post_id):
-        assert isinstance(await lclient.get_post_comments(post_id).__anext__(), mdl.Comment)
+    async def test_get_post_comments(self, lclient: SankakuClient, post_id):  # noqa: D102, E501
+        assert isinstance(
+            await lclient.get_post_comments(post_id).__anext__(),
+            mdl.Comment
+        )
 
     @pytest.mark.parametrize(["post_id"], [(32948875,), (33108291,)])
-    async def test_get_post(self, nlclient: SankakuClient, post_id):
+    async def test_get_post(self, nlclient: SankakuClient, post_id):  # noqa: D102
         post = await nlclient.get_post(post_id)
         assert isinstance(post, mdl.Post)
 
-    async def test_get_non_existent_post(self, lclient: SankakuClient):
+    async def test_get_non_existent_post(self, lclient: SankakuClient):  # noqa: D102
         with pytest.raises(errors.PageNotFoundError):
             await lclient.get_post(-10_000)
 
-    async def test_create_post(self, lclient: SankakuClient):
+    async def test_create_post(self, lclient: SankakuClient):  # noqa: D102
         with pytest.raises(NotImplementedError):
             await lclient.create_post()
 
 
-class TestAIClient:
+class TestAIClient:  # noqa: D101
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
         assert isinstance(await nlclient.browse_ai_posts().__anext__(), mdl.AIPost)
@@ -163,20 +171,20 @@ class TestAIClient:
                 break
 
     @pytest.mark.parametrize(["post_id"], [(123,), (1721,)])
-    async def test_get_ai_post(self, nlclient: SankakuClient, post_id):
+    async def test_get_ai_post(self, nlclient: SankakuClient, post_id):  # noqa: D102
         post = await nlclient.get_ai_post(post_id,)
         assert isinstance(post, mdl.AIPost)
 
-    async def test_get_non_existent_ai_post(self, lclient: SankakuClient):
+    async def test_get_non_existent_ai_post(self, lclient: SankakuClient):  # noqa: D102
         with pytest.raises(errors.PageNotFoundError):
             await lclient.get_ai_post(-10_000)
 
-    async def test_create_ai_post(self, lclient: SankakuClient):
+    async def test_create_ai_post(self, lclient: SankakuClient):  # noqa: D102
         with pytest.raises(NotImplementedError):
             await lclient.create_ai_post()
 
 
-class TestTagClient:
+class TestTagClient:  # noqa: D101
     async def test_browse_default(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
         assert isinstance(await nlclient.browse_tags().__anext__(), mdl.PageTag)
@@ -227,14 +235,12 @@ class TestTagClient:
         ).__anext__()
         assert isinstance(tag, mdl.PageTag)
 
-    @pytest.mark.parametrize(
-        ["name_or_id"], [("animated",), (100,)]
-    )
-    async def test_get_tag(self, lclient: SankakuClient, name_or_id):
+    @pytest.mark.parametrize(["name_or_id"], [("animated",), (100,)])
+    async def test_get_tag(self, lclient: SankakuClient, name_or_id):  # noqa: D102
         wiki_tag = await lclient.get_tag(name_or_id)
         assert isinstance(wiki_tag, mdl.WikiTag)
 
-    async def test_get_non_existent_tag(self, lclient: SankakuClient):
+    async def test_get_non_existent_tag(self, lclient: SankakuClient):  # noqa: D102
         with pytest.raises(errors.PageNotFoundError):
             await lclient.get_tag(-10_000)
 
@@ -289,21 +295,21 @@ class TestBookClient:
         ).__anext__()
         assert isinstance(book, mdl.PageBook)
 
-    async def test_favorited_books_unauthorized(self, nlclient: SankakuClient):
+    async def test_favorited_books_unauthorized(self, nlclient: SankakuClient):  # noqa: D102, E501
         with pytest.raises(errors.LoginRequirementError):
             await nlclient.get_favorited_books().__anext__()
 
     async def test_favorited_books_authorized(self, lclient: SankakuClient):
         assert isinstance(await lclient.get_favorited_books().__anext__(), mdl.PageBook)
 
-    async def test_recommended_books_unauthorized(self, nlclient: SankakuClient):
+    async def test_recommended_books_unauthorized(self, nlclient: SankakuClient):  # noqa: D102, E501
         with pytest.raises(errors.LoginRequirementError):
             await nlclient.get_recommended_books().__anext__()
 
     async def test_recommended_books_authorized(self, lclient: SankakuClient):
         assert isinstance(await lclient.get_recommended_books().__anext__(), mdl.PageBook)
 
-    async def test_recently_read_books_unauthorized(self, nlclient: SankakuClient):
+    async def test_recently_read_books_unauthorized(self, nlclient: SankakuClient):  # noqa: D102, E501
         with pytest.raises(errors.LoginRequirementError):
             await nlclient.get_recently_read_books().__anext__()
 
@@ -315,16 +321,16 @@ class TestBookClient:
         assert isinstance(await lclient.get_related_books(post_id).__anext__(), mdl.PageBook)
 
     @pytest.mark.parametrize(["book_id"], [(1000,)])
-    async def test_get_book(self, nlclient: SankakuClient, book_id):
+    async def test_get_book(self, nlclient: SankakuClient, book_id):  # noqa: D102
         book = await nlclient.get_book(book_id)
         assert isinstance(book, mdl.Book)
 
-    async def test_get_non_existent_book(self, lclient: SankakuClient):
+    async def test_get_non_existent_book(self, lclient: SankakuClient):  # noqa: D102
         with pytest.raises(errors.PageNotFoundError):
             await lclient.get_book(-10_000)
 
 
-class TestUserClient:
+class TestUserClient:  # noqa: D101
     async def test_browse_users(self, nlclient: SankakuClient):
         """Default behaviour when unauthorized user don't set any arguments."""
 
@@ -346,12 +352,14 @@ class TestUserClient:
                 break
 
     @pytest.mark.parametrize(["name_or_id"], [("anonymous",), (1423490,)])
-    async def test_get_user(self, nlclient: SankakuClient, name_or_id):
+    async def test_get_user(self, nlclient: SankakuClient, name_or_id):  # noqa: D102
         assert isinstance(await nlclient.get_user(name_or_id), mdl.User)
 
     @pytest.mark.parametrize(["name_or_id"], [("!@#sdcvjkj|",), (-1000,)])
-    async def test_get_user_with_wrong_name_or_id(
-            self, nlclient: SankakuClient, name_or_id
+    async def test_get_user_with_wrong_name_or_id(  # noqa: D102
+        self,
+        nlclient: SankakuClient,
+        name_or_id
     ):
         with pytest.raises(errors.PageNotFoundError):
             await nlclient.get_user(name_or_id)

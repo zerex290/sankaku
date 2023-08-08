@@ -5,10 +5,7 @@ from datetime import datetime
 from functools import wraps
 from typing import TypeVar, Optional, Any, Dict, Tuple, Callable, Awaitable
 
-try:
-    from typing import ParamSpec
-except (ModuleNotFoundError, ImportError):
-    from typing_extensions import ParamSpec  # type: ignore[assignment]
+from typing_extensions import ParamSpec
 
 from sankaku.errors import RateLimitError
 from sankaku.typedefs import Timestamp
@@ -36,13 +33,13 @@ def ratelimit(
     elif not any(locals().values()):
         raise TypeError("At least one argument must be specified.")
 
-    sleep_time: float = (1 / rps) if rps else (60 / rpm)  # type: ignore[operator]
+    sleep_time: float = (1 / rps) if rps else (60 / rpm)  # type: ignore
 
     def wrapper(func: Callable[_P, Awaitable[_T]]) -> Callable[_P, Awaitable[_T]]:
         @wraps(func)
         async def inner(*args: _P.args, **kwargs: _P.kwargs) -> _T:
             await asyncio.sleep(sleep_time)
-            return await func(*args, **kwargs)  # noqa
+            return await func(*args, **kwargs)
 
         return inner
 
@@ -53,7 +50,7 @@ def convert_ts_to_datetime(ts: Timestamp) -> Optional[datetime]:
     """Convert timestamp in datetime dict into datetime class."""
     if ts.get("s") is None:
         return None
-    return datetime.utcfromtimestamp(ts["s"]).astimezone()  # type: ignore[arg-type]
+    return datetime.utcfromtimestamp(ts["s"]).astimezone()  # type: ignore
 
 
 def from_locals(

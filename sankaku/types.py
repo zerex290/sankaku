@@ -16,13 +16,13 @@ __all__ = [
 ]
 
 
-class Rating(str, Enum):
+class Rating(str, Enum):  # noqa: D101
     SAFE = "s"
     QUESTIONABLE = "q"
     EXPLICIT = "e"
 
 
-class PostOrder(Enum):
+class PostOrder(Enum):  # noqa: D101
     POPULARITY = "popularity"
     DATE = "date"
     QUALITY = "quality"
@@ -31,7 +31,7 @@ class PostOrder(Enum):
     RECENTLY_VOTED = "recently_voted"
 
 
-class SortParameter(Enum):
+class SortParameter(Enum):  # noqa: D101
     NAME = "name"
     TRANSLATIONS = "name_ja"
     TYPE = "type"
@@ -40,17 +40,17 @@ class SortParameter(Enum):
     POST_COUNT = "count"
 
 
-class SortDirection(Enum):
+class SortDirection(Enum):  # noqa: D101
     ASC = "asc"
     DESC = "desc"
 
 
-class TagOrder(Enum):
+class TagOrder(Enum):  # noqa: D101
     POPULARITY = "popularity"
     QUALITY = "quality"
 
 
-class TagType(Enum):
+class TagType(Enum):  # noqa: D101
     ARTIST = 1
     COPYRIGHT = 3
     CHARACTER = 4
@@ -62,13 +62,13 @@ class TagType(Enum):
     STUDIO = 2
 
 
-class FileType(Enum):
+class FileType(Enum):  # noqa: D101
     IMAGE = "image"  # jpeg, png, webp formats
     GIF = "gif"  # gif format
     VIDEO = "video"  # mp4, webm formats
 
 
-class FileSize(Enum):
+class FileSize(Enum):  # noqa: D101
     LARGE = "large_filesize"
     HUGE = "extremely_large_filesize"
     LONG = "long_image"
@@ -79,7 +79,7 @@ class FileSize(Enum):
     A_RATIO_1_1 = "1:1_aspect_ratio"
 
 
-class UserOrder(Enum):
+class UserOrder(Enum):  # noqa: D101
     POSTS = "post_upload_count"
     FAVORITES = "favorite_count"
     NAME = "name"
@@ -88,7 +88,7 @@ class UserOrder(Enum):
     LAST_SEEN = "active"
 
 
-class UserLevel(Enum):
+class UserLevel(Enum):  # noqa: D101
     ADMIN = 50
     SYSTEM_USER = 45
     MODERATOR = 40
@@ -100,7 +100,7 @@ class UserLevel(Enum):
     UNACTIVATED = 0
 
 
-class BookOrder(Enum):
+class BookOrder(Enum):  # noqa: D101
     POPULARITY = "popularity"
     DATE = "date"
     QUALITY = "quality"

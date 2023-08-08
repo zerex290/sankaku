@@ -1,13 +1,13 @@
 import os
 import asyncio
 
-import pytest  # noqa
+import pytest
 
 from sankaku.clients import SankakuClient
 
 
 @pytest.fixture(scope="session")
-def event_loop():
+def event_loop():  # noqa: D103
     loop = asyncio.get_event_loop()
     yield loop
     loop.close()

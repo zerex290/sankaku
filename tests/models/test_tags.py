@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 
-import pytest  # noqa
+import pytest
 
-from sankaku.models import *
+from sankaku.models import PostTag, PageTag, WikiTag
 from sankaku import types
 
 
@@ -83,7 +83,7 @@ from sankaku import types
         )
     ]
 )
-def test_post_tag_model(data, expected):
+def test_post_tag_model(data, expected):  # noqa: D103
     assert PostTag(**data).model_dump() == expected
 
 
@@ -280,7 +280,7 @@ def test_post_tag_model(data, expected):
         )
     ]
 )
-def test_page_tag_model(data, expected):
+def test_page_tag_model(data, expected):  # noqa: D103
     assert PageTag(**data).model_dump() == expected
 
 
@@ -386,6 +386,6 @@ def test_page_tag_model(data, expected):
         )
     ]
 )
-def test_wiki_tag_model(data, expected):
+def test_wiki_tag_model(data, expected):  # noqa: D103
     assert WikiTag(**data).model_dump() == expected
 

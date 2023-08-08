@@ -1,6 +1,6 @@
 from datetime import datetime
 
-import pytest  # noqa
+import pytest
 
 from sankaku import utils, errors
 
@@ -9,7 +9,7 @@ from sankaku import utils, errors
     ["rps", "rpm", "expected"],
     [(200, 200, errors.RateLimitError), (None, None, TypeError)]
 )
-async def test_ratelimit_with_incompatible_args(rps, rpm, expected):
+async def test_ratelimit_with_incompatible_args(rps, rpm, expected):  # noqa: D103
     with pytest.raises(expected):
         @utils.ratelimit(rps=rps, rpm=rpm)
         async def idle_request():
@@ -19,7 +19,7 @@ async def test_ratelimit_with_incompatible_args(rps, rpm, expected):
 
 
 @pytest.mark.parametrize(["rps", "rpm"], [(3, None), (180, None)])
-async def test_ratelimit(rps, rpm):
+async def test_ratelimit(rps, rpm):  # noqa: D103
     @utils.ratelimit(rps=rps, rpm=rpm)
     async def idle_request():
         assert True
@@ -48,5 +48,5 @@ async def test_ratelimit(rps, rpm):
         ),
     ]
 )
-def test_convert_ts_to_datetime(ts, expected):
+def test_convert_ts_to_datetime(ts, expected):  # noqa: D103
     assert utils.convert_ts_to_datetime(ts) == expected

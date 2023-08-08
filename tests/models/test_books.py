@@ -1,8 +1,8 @@
 from datetime import datetime
 
-import pytest  # noqa
+import pytest
 
-from sankaku.models import *
+from sankaku.models import Book
 from sankaku import types
 
 
@@ -141,6 +141,6 @@ from sankaku import types
         )
     ]
 )
-def test_book_model(data, expected):
+def test_book_model(data, expected):  # noqa: D103
     assert Book(**data).model_dump() == expected
 

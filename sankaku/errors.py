@@ -27,25 +27,25 @@ class SankakuError(Exception):
         return str(self.msg)
 
 
-class RateLimitError(SankakuError):
+class RateLimitError(SankakuError):  # noqa: D101
     msg = "Can't set both rps and rpm at once."
 
 
-class LoginRequirementError(SankakuError):
+class LoginRequirementError(SankakuError):  # noqa: D101
     msg = "You must be logged-in."
 
 
-class VideoDurationError(SankakuError):
+class VideoDurationError(SankakuError):  # noqa: D101
     msg = "Argument is available only with video files."
 
 
 class SankakuServerError(SankakuError):
     """Error class for parametrized exceptions."""
     def __init__(
-            self,
-            status: Optional[int],
-            msg: Optional[str] = None,
-            **kwargs
+        self,
+        status: Optional[int],
+        msg: Optional[str] = None,
+        **kwargs
     ) -> None:
         self.status = status
         self.kwargs = kwargs
@@ -69,5 +69,5 @@ class PageNotFoundError(SankakuServerError):
     msg = f"Failed to fetch page with requested params"
 
 
-class AuthorizationError(SankakuServerError):
-    msg = f"Authorization failed"
+class AuthorizationError(SankakuServerError):  # noqa: D101
+    msg = "Authorization failed"

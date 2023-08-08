@@ -41,7 +41,7 @@ class HttpClient(ABCHttpClient):
             # use socks connector
             kwargs = {"connector": socks_connector}
         else:
-            # use trust env option, aiohttp will read HTTP_PROXY and HTTPS_PROXY from env
+            # aiohttp will read HTTP_PROXY and HTTPS_PROXY from env
             kwargs = {"trust_env": True}
         self._client_session: ClientSession = ClientSession(**kwargs)  # type: ignore
 

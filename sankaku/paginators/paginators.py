@@ -1,10 +1,7 @@
 from datetime import datetime
 from typing import Optional, TypeVar, List, Dict, Type
 
-try:
-    from typing import Literal, Annotated
-except (ModuleNotFoundError, ImportError):
-    from typing_extensions import Literal, Annotated  # type: ignore[assignment]
+from typing_extensions import Literal, Annotated
 
 from sankaku import models as mdl, constants as const, types, errors
 from sankaku.clients import HttpClient
@@ -45,7 +42,7 @@ class Paginator(ABCPaginator[_T]):
         self.complete_params()
 
     @ratelimit(rps=const.BASE_RPS)
-    async def next_page(self) -> mdl.Page[_T]:  # type: ignore[override]
+    async def next_page(self) -> mdl.Page[_T]:
         """Get paginator next page."""
         response = await self.http_client.get(self.url, params=self.params)
         json_ = response.json
@@ -115,7 +112,7 @@ class PostPaginator(Paginator[mdl.Post]):
         self.voted = voted
         super().__init__(http_client, url, model, page_number, limit, params)
 
-    def complete_params(self) -> None:
+    def complete_params(self) -> None:  # noqa: D102, PLR0912
         super().complete_params()
         if self.tags is None:
             self.tags = []
@@ -123,24 +120,24 @@ class PostPaginator(Paginator[mdl.Post]):
         for k, v in self.__dict__.items():
             if v is None:
                 continue
-            elif k in {"order", "rating", "file_type"} and v is not types.FileType.IMAGE:  # noqa
+            elif k in {"order", "rating", "file_type"} and v is not types.FileType.IMAGE:  #noqa: E501
                 self.tags.append(f"{k}:{v.value}")
             elif k in {"threshold", "recommended_for", "voted"}:
                 self.tags.append(f"{k}:{v}")
             elif k == "file_size":
-                self.tags.append(self.file_size.value)  # type: ignore[union-attr]
+                self.tags.append(self.file_size.value)  # type: ignore
             elif k == "date":
-                date = "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in self.date)  # type: ignore[union-attr]
+                date = "..".join(d.strftime("%Y-%m-%dT%H:%M") for d in self.date)  # type: ignore  # noqa: E501
                 self.tags.append(f"date:{date}")
             elif k == "video_duration" and self.file_type is not types.FileType.VIDEO:  # noqa
                 raise errors.VideoDurationError
             elif k == "video_duration":
-                duration = "..".join(str(sec) for sec in self.video_duration)  # type: ignore[union-attr]
+                duration = "..".join(str(sec) for sec in self.video_duration)  # type: ignore  # noqa: E501
                 self.tags.append(f"duration:{duration}")
             elif k == "favorited_by":
                 self.tags.append(f"fav:{self.favorited_by}")
             elif k == "added_by":
-                for user in self.added_by:  # type: ignore[union-attr]
+                for user in self.added_by:  # type: ignore
                     self.tags.append(f"user:{user}")
 
         if self.hide_posts_in_books is not None:
@@ -174,7 +171,7 @@ class TagPaginator(Paginator[mdl.PageTag]):
         self.sort_direction = sort_direction or types.SortDirection.DESC
         super().__init__(http_client, url, model, page_number, limit, params)
 
-    def complete_params(self) -> None:
+    def complete_params(self) -> None:  # noqa: D102
         super().complete_params()
         if self.tag_type is not None:
             self.params["types[]"] = str(self.tag_type.value)
@@ -218,7 +215,7 @@ class BookPaginator(Paginator[mdl.PageBook]):
         self.voted = voted
         super().__init__(http_client, url, model, page_number, limit, params)
 
-    def complete_params(self) -> None:
+    def complete_params(self) -> None:  # noqa: D102
         super().complete_params()
         if self.tags is None:
             self.tags = []
@@ -257,7 +254,7 @@ class UserPaginator(Paginator[mdl.User]):
         self.level = level
         super().__init__(http_client, url, model, page_number, limit, params)
 
-    def complete_params(self) -> None:
+    def complete_params(self) -> None:  # noqa: D102
         super().complete_params()
         if self.order is not None:
             self.params["order"] = self.order.value

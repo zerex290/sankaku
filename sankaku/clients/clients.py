@@ -2,16 +2,12 @@ import json
 from datetime import datetime
 from typing import Optional, Union, List, AsyncIterator
 
-try:
-    from typing import Literal, Annotated
-except (ModuleNotFoundError, ImportError):
-    from typing_extensions import Literal, Annotated  # type: ignore[assignment]
+from typing_extensions import Literal, Annotated
 
 from loguru import logger
 
 from sankaku import models as mdl, constants as const, types, errors
-from sankaku.paginators import *
-from sankaku.utils import from_locals
+from sankaku.paginators import *  # noqa: F403
 from sankaku.typedefs import ValueRange
 from .abc import ABCClient
 from .http_client import HttpClient
@@ -73,11 +69,11 @@ class BaseClient(ABCClient):
         return mdl.ExtendedUser(**response.json["user"])
 
     async def login(
-            self,
-            *,
-            access_token: Optional[str] = None,
-            login: Optional[str] = None,
-            password: Optional[str] = None
+        self,
+        *,
+        access_token: Optional[str] = None,
+        login: Optional[str] = None,
+        password: Optional[str] = None
     ) -> None:
         """Login into sankakucomplex.com via access token or credentials.
         In case when all arguments are specified, preference will be given
@@ -89,9 +85,9 @@ class BaseClient(ABCClient):
             password: User password
         """
         if login and password:
-            await self._login_via_credentials(login, password)  # type: ignore[arg-type]
+            await self._login_via_credentials(login, password)
         elif access_token and not login and not password:
-            await self._login_via_access_token(access_token)  # type: ignore[arg-type]
+            await self._login_via_access_token(access_token)
         else:
             raise errors.SankakuError(
                 "The given data is not enough "
@@ -101,7 +97,7 @@ class BaseClient(ABCClient):
         self._http_client.headers.update(
             authorization=f"{self._token_type} {self._access_token}"
         )
-        logger.info(f"Successfully logged in as {self._profile.name}.")  # type: ignore[union-attr]
+        logger.info(f"Successfully logged in as {self._profile.name}.")  # type: ignore
 
     @property
     def profile(self) -> Optional[mdl.ExtendedUser]:
@@ -206,7 +202,7 @@ class PostClient(BaseClient):
 
         return mdl.Post(**response.json)
 
-    async def create_post(self):  # TODO: TBA
+    async def create_post(self):  # TODO: TBA  # noqa: D102
         raise NotImplementedError
 
 
@@ -240,7 +236,7 @@ class AIClient(BaseClient):
 
         return mdl.AIPost(**response.json)
 
-    async def create_ai_post(self):  # TODO: TBA
+    async def create_ai_post(self):  # TODO: TBA  # noqa: D102
         raise NotImplementedError
 
 

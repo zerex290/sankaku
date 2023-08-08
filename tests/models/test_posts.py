@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 
-import pytest  # noqa
+import pytest
 
-from sankaku.models import *
+from sankaku.models import Post, Comment, AIPost
 from sankaku import types
 
 
@@ -130,7 +130,7 @@ from sankaku import types
         )
     ]
 )
-def test_post_model(data, expected):
+def test_post_model(data, expected):  # noqa: D103
     assert Post(**data).model_dump() == expected
 
 
@@ -185,7 +185,7 @@ def test_post_model(data, expected):
         )
     ]
 )
-def test_comment_model(data, expected):
+def test_comment_model(data, expected):  # noqa: D103
     assert Comment(**data).model_dump() == expected
 
 
@@ -268,6 +268,6 @@ def test_comment_model(data, expected):
         )
     ]
 )
-def test_ai_post_model(data, expected):
+def test_ai_post_model(data, expected):  # noqa: D103
     assert AIPost(**data).model_dump() == expected
 

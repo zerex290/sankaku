@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 
-import pytest  # noqa
+import pytest
 
-from sankaku.models import *
+from sankaku.models import Author, User, ExtendedUser
 from sankaku import types
 
 
@@ -25,7 +25,7 @@ from sankaku import types
         )
     ]
 )
-def test_author_model(data, expected):
+def test_author_model(data, expected):  # noqa: D103
     assert Author(**data).model_dump() == expected
 
 
@@ -171,7 +171,7 @@ def test_author_model(data, expected):
         )
     ]
 )
-def test_user_model(data, expected):
+def test_user_model(data, expected):  # noqa: D103
     assert User(**data).model_dump() == expected
 
 
@@ -287,6 +287,6 @@ def test_user_model(data, expected):
         )
     ]
 )
-def test_extended_user_model(data, expected):
+def test_extended_user_model(data, expected):  # noqa: D103
     assert ExtendedUser(**data).model_dump() == expected
 
