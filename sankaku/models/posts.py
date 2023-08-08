@@ -19,7 +19,7 @@ class GenerationDirectives(SankakuResponseModel):
     # Model fields were tested on 100 pages.
     # TODO: Check fields of nested objects.
 
-    tags: list[dict]
+    tags: List[dict]
     # Possible JSON object properties:
     #   - id: int
     #   - name: str
