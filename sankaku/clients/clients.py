@@ -675,7 +675,7 @@ def _process_page_range(
     limit: Annotated[int, ValueRange(1, 100)]
 ) -> Tuple[int, int, int]:
     _page_start = _item_start // limit
-    _page_stop = (_item_stop // limit) + 1
+    _page_stop = _item_stop // limit + (1 if _item_stop % limit else 0)
     _page_step = const.BASE_RANGE_STEP
     return _page_start, _page_stop, _page_step
 
