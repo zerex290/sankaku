@@ -25,7 +25,6 @@ class BookState(SankakuResponseModel):
 
 class PageBook(SankakuResponseModel):
     """Model that describes books on book pages."""
-    # TODO: Check response model fields more carefully.
     id: int  # noqa: A003
     name_en: Optional[str]
     name_ja: Optional[str]
@@ -33,7 +32,7 @@ class PageBook(SankakuResponseModel):
     description_en: Optional[str]
     description_ja: Optional[str]
     created_at: datetime
-    updated_at: datetime  # Not sure that update dt isn't optional
+    updated_at: datetime
     author: Optional[Author]
     is_public: bool
     is_active: bool
@@ -56,7 +55,7 @@ class PageBook(SankakuResponseModel):
     genre_tags: List[PostTag]
     is_favorited: bool
     user_vote: Optional[int]
-    posts: List[Post]
+    posts: List[Optional[Post]]
     file_url: Optional[str]
     sample_url: Optional[str]
     preview_url: Optional[str]
@@ -76,7 +75,6 @@ class PageBook(SankakuResponseModel):
 
 class Book(PageBook):
     """Model that describes specific book."""
-    # TODO: Check response model fields more carefully.
     child_pools: Optional[List[PageBook]]
     flagged_by_user: bool
     prem_post_count: int

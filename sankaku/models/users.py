@@ -24,9 +24,6 @@ class Author(BaseUser):
 
 class User(BaseUser):
     """User profile model for any user that has an account on website."""
-    # TODO: Check response model fields more carefully.
-
-    # The following fields are always present
     level: int
     upload_limit: int
     created_at: datetime
@@ -55,13 +52,6 @@ class User(BaseUser):
     recommended_posts_for_user: Optional[int] = None
     subscriptions: List[str] = []
 
-    # The following fields was removed from server JSON response
-    # TODO: Remove in future versions
-    show_popup_version: Optional[int] = None  # Still present in ExtendedUser
-    credits: Optional[int] = None  # Still present in ExtendedUser  # noqa A003
-    credits_subs: Optional[int] = None  # Still present in ExtendedUser
-    is_ai_beta: Optional[bool] = None
-
 
 class ExtendedUser(User):
     """Profile of the currently logged-in user."""
@@ -78,6 +68,9 @@ class ExtendedUser(User):
     blacklisted_tags: List[str]
     blacklisted: List[str]
     mfa_method: int
+    show_popup_version: Optional[int]
+    credits: Optional[int]  # noqa A003
+    credits_subs: Optional[int]
 
     @field_validator("blacklisted_tags", mode="before")
     @classmethod

@@ -8,43 +8,28 @@ from pydantic import Field, field_validator
 from sankaku import types
 from sankaku.utils import convert_ts_to_datetime
 from .base import SankakuResponseModel
-from .tags import PostTag
+from .tags import PostTag, GenerationDirectivesTag
 from .users import Author
 
 
 __all__ = ["Comment", "Post", "AIPost"]
 
 
+class GenerationDirectivesAspectRatio(SankakuResponseModel):
+    type: str  # noqa: A003
+    width: int
+    height: int
+
+
+class GenerationDirectivesRating(SankakuResponseModel):
+    value: str
+    default: str
+
+
 class GenerationDirectives(SankakuResponseModel):
-    # Model fields were tested on 100 pages.
-    # TODO: Check fields of nested objects.
-
-    tags: List[dict]
-    # Possible JSON object properties:
-    #   - id: int
-    #   - name: str
-    #   - type: int
-    #   - count: int
-    #   - rating: str
-    #   - name_en: str
-    #   - name_ja: str
-    #   - tagName: str
-    #   - pool_count: int
-    #   - post_count: int
-    #   - series_count: int
-    #   tag_translations: list[Any]  # IDK list items types
-
-    aspect_ratio: Optional[dict] = None
-    # Possible JSON object properties:
-    #   - type: str
-    #   - width: int
-    #   - height: int
-
-    rating: Optional[dict] = None
-    # Possible JSON object properties:
-    #   - value: str
-    #   - default: str
-
+    tags: List[GenerationDirectivesTag]
+    aspect_ratio: Optional[GenerationDirectivesAspectRatio] = None
+    rating: Optional[GenerationDirectivesRating] = None
     negative_prompt: Optional[str] = None
     natural_input: Optional[str] = None
     denoising_strength: Optional[int] = None
@@ -52,7 +37,6 @@ class GenerationDirectives(SankakuResponseModel):
 
 class AIGenerationDirectives(SankakuResponseModel):
     """Model that describes additional fields for AI-generated posts."""
-    # TODO: Check response model fields more carefully.
     width: int
     height: int
     prompt: str
@@ -62,7 +46,7 @@ class AIGenerationDirectives(SankakuResponseModel):
     negative_prompt: str
 
     # The following fields can be missing in server JSON response
-    version: Optional[str] = None  # https://imgur.com/a/aMJ7fR2
+    version: Optional[str] = None
 
 
 class BasePost(SankakuResponseModel):
@@ -77,14 +61,14 @@ class BasePost(SankakuResponseModel):
     width: int
     height: int
     file_size: int
-    file_type: Optional[types.FileType]
-    extension: Optional[str] = Field(alias="file_type")
+    file_type: Optional[types.FileType] = None
+    extension: Optional[str] = Field(alias="file_type", default=None)
     md5: str
     tags: List[PostTag]
 
     @field_validator("file_type", mode="before")
     @classmethod
-    def get_file_type_and_extension(cls, v) -> Optional[types.FileType]:
+    def get_file_type(cls, v) -> Optional[types.FileType]:
         return types.FileType(v.split("/")[0]) if v else None
 
     @field_validator("created_at", mode="before")
@@ -100,7 +84,6 @@ class BasePost(SankakuResponseModel):
 
 class Comment(SankakuResponseModel):
     """Model that describes comments related to posts if they are exist."""
-    # TODO: Check response model fields more carefully.
     id: int  # noqa: A003
     created_at: datetime
     post_id: int
@@ -118,7 +101,6 @@ class Comment(SankakuResponseModel):
 
 class Post(BasePost):
     """Model that describes posts."""
-    # TODO: Check response model fields more carefully.
     sample_url: Optional[str]
     sample_width: int
     sample_height: int
@@ -159,7 +141,6 @@ class AIPost(BasePost):
     but premium account is needed to check it properly. So this model is
     actual for non-premium accounts.
     """
-    # TODO: Check response model fields more carefully.
     updated_at: Optional[datetime]
     post_associated_id: Optional[int]
     generation_directives: Optional[AIGenerationDirectives]
