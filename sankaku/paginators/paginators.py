@@ -32,7 +32,7 @@ class Paginator(ABCPaginator[_T]):
         http_client: HttpClient,
         url: str,
         model: Type[_T],
-        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT
+        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_LIMIT
     ) -> None:
         """Basic paginator for iteration in a certain range.
         Range of pages can be specified in the same way as when using built-in
@@ -117,7 +117,7 @@ class PostPaginator(Paginator[mdl.Post]):
         http_client: HttpClient,
         url: str = const.POSTS_URL,
         model: Type[mdl.Post] = mdl.Post,
-        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT,
+        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_LIMIT,
         order: Optional[types.PostOrder] = None,
         date: Optional[List[datetime]] = None,
         rating: Optional[types.Rating] = None,
@@ -227,7 +227,7 @@ class TagPaginator(Paginator[mdl.PageTag]):
         http_client: HttpClient,
         url: str = const.TAGS_URL,
         model: Type[mdl.PageTag] = mdl.PageTag,
-        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT,
+        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_LIMIT,
         tag_type: Optional[types.TagType] = None,
         order: Optional[types.TagOrder] = None,
         rating: Optional[types.Rating] = None,
@@ -299,7 +299,7 @@ class BookPaginator(Paginator[mdl.PageBook]):
         http_client: HttpClient,
         url: str = const.BOOKS_URL,
         model: Type[mdl.PageBook] = mdl.PageBook,
-        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT,
+        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_LIMIT,
         order: Optional[types.BookOrder] = None,
         rating: Optional[types.Rating] = None,
         recommended_for: Optional[str] = None,
@@ -379,7 +379,7 @@ class UserPaginator(Paginator[mdl.User]):
         http_client: HttpClient,
         url: str = const.USERS_URL,
         model: Type[mdl.User] = mdl.User,
-        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_PAGE_LIMIT,
+        limit: Annotated[int, ValueRange(1, 100)] = const.BASE_LIMIT,
         order: Optional[types.UserOrder] = None,
         level: Optional[types.UserLevel] = None
     ) -> None:
