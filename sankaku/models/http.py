@@ -11,4 +11,3 @@ class ClientResponse:
     status: int
     ok: bool
     json: Any
-

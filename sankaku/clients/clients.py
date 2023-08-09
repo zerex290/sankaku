@@ -719,4 +719,3 @@ def _compute_slices(
     # head (slices.pop(0)), which will cause internal array shifting and memory
     # reallocations at every iteration.
     return list(reversed(slices))
-

@@ -51,4 +51,3 @@ def convert_ts_to_datetime(ts: Timestamp) -> Optional[datetime]:
     if ts.get("s") is None:
         return None
     return datetime.utcfromtimestamp(ts["s"]).astimezone()  # type: ignore
-
