@@ -79,6 +79,7 @@ blank_line_before_nested_class_or_def = true
 dedent_closing_brackets = true
 space_between_ending_comma_and_closing_bracket = false
 split_all_comma_separated_values = true
+split_all_top_level_comma_separated_values = true
 split_before_arithmetic_operator = true
 split_before_dot = true
 split_before_first_argument = true
