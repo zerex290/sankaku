@@ -149,9 +149,12 @@ class PostClient(BaseClient):
             added_by: Posts uploaded by specified users
             voted: Posts voted by specified user
         """
-        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        item_range = _process_item_range(_start, _stop, _step)
+        page_range = _process_page_range(*item_range[:2], limit=const.BASE_LIMIT)
+        slices = _compute_slices(item_range, page_range)
+
         async for page in PostPaginator(  # noqa: F405
-            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            *page_range,
             http_client=self._http_client,
             order=order,
             date=date,
@@ -167,7 +170,7 @@ class PostClient(BaseClient):
             added_by=added_by,
             voted=voted
         ):
-            for post in page.items[_start:_stop:_step]:
+            for post in page.items[slices.pop()]:
                 yield post
 
     async def get_favorited_posts(
@@ -333,14 +336,17 @@ class AIClient(BaseClient):
             _stop: End of the sequence (except this value itself)
             _step: Step of the sequence
         """
-        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        item_range = _process_item_range(_start, _stop, _step)
+        page_range = _process_page_range(*item_range[:2], limit=const.BASE_LIMIT)
+        slices = _compute_slices(item_range, page_range)
+
         async for page in Paginator(  # noqa: F405
-            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            *page_range,
             http_client=self._http_client,
             url=const.AI_POSTS_URL,
             model=mdl.AIPost
         ):
-            for post in page.items[_start:_stop:_step]:
+            for post in page.items[slices.pop()]:
                 yield post
 
     async def get_ai_post(self, post_id: int) -> mdl.AIPost:
@@ -389,9 +395,12 @@ class TagClient(BaseClient):
             sort_parameter: Tag sorting parameter
             sort_direction: Tag sorting direction
         """
-        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        item_range = _process_item_range(_start, _stop, _step)
+        page_range = _process_page_range(*item_range[:2], limit=const.BASE_LIMIT)
+        slices = _compute_slices(item_range, page_range)
+
         async for page in TagPaginator(  # noqa: F405
-            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            *page_range,
             http_client=self._http_client,
             tag_type=tag_type,
             order=order,
@@ -400,7 +409,7 @@ class TagClient(BaseClient):
             sort_parameter=sort_parameter,
             sort_direction=sort_direction
         ):
-            for tag in page.items[_start:_stop:_step]:
+            for tag in page.items[slices.pop()]:
                 yield tag
 
     async def get_tag(self, name_or_id: Union[str, int]) -> mdl.WikiTag:
@@ -451,9 +460,12 @@ class BookClient(BaseClient):
             added_by: Books uploaded by specified users
             voted: Books voted by specified user
         """
-        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        item_range = _process_item_range(_start, _stop, _step)
+        page_range = _process_page_range(*item_range[:2], limit=const.BASE_LIMIT)
+        slices = _compute_slices(item_range, page_range)
+
         async for page in BookPaginator(  # noqa: F405
-            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            *page_range,
             http_client=self._http_client,
             order=order,
             rating=rating,
@@ -463,7 +475,7 @@ class BookClient(BaseClient):
             added_by=added_by,
             voted=voted
         ):
-            for book in page.items[_start:_stop:_step]:
+            for book in page.items[slices.pop()]:
                 yield book
 
     async def get_favorited_books(
@@ -563,13 +575,16 @@ class BookClient(BaseClient):
             _step: Step of the sequence
             post_id: ID of the post of interest
         """
-        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        item_range = _process_item_range(_start, _stop, _step)
+        page_range = _process_page_range(*item_range[:2], limit=const.BASE_LIMIT)
+        slices = _compute_slices(item_range, page_range)
+
         async for page in BookPaginator(  # noqa: F405
-            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            *page_range,
             http_client=self._http_client,
             url=const.RELATED_BOOKS_URL.format(post_id=post_id)
         ):
-            for book in page.items[_start:_stop:_step]:
+            for book in page.items[slices.pop()]:
                 yield book
 
     async def get_book(self, book_id: int) -> mdl.Book:
@@ -605,14 +620,17 @@ class UserClient(BaseClient):
             order: User order rule
             level: User level type
         """
-        _start, _stop, _step = _compute_post_range(_start, _stop, _step)
+        item_range = _process_item_range(_start, _stop, _step)
+        page_range = _process_page_range(*item_range[:2], limit=const.BASE_LIMIT)
+        slices = _compute_slices(item_range, page_range)
+
         async for page in UserPaginator(  # noqa: F405
-            *_compute_page_range(_start, _stop, limit=const.BASE_PAGE_LIMIT),
+            *page_range,
             http_client=self._http_client,
             order=order,
             level=level
         ):
-            for user in page.items[_start:_stop:_step]:
+            for user in page.items[slices.pop()]:
                 yield user
 
     async def get_user(self, name_or_id: Union[str, int]) -> mdl.User:
@@ -630,10 +648,10 @@ class UserClient(BaseClient):
         return mdl.User(**response.json)
 
 
-def _compute_post_range(
-        _start: int,
-        _stop: Optional[int] = None,
-        _step: Optional[int] = None
+def _process_item_range(
+    _start: int,
+    _stop: Optional[int] = None,
+    _step: Optional[int] = None
 ) -> Tuple[int, int, int]:
     if _stop is None and _step is None:
         _post_start = const.BASE_RANGE_START
@@ -650,19 +668,55 @@ def _compute_post_range(
     return _post_start, _post_stop, _post_step  # type: ignore
 
 
-def _compute_page_range(
-        _item_start: int,
-        _item_stop: int,
-        *,
-        limit: Annotated[int, ValueRange(1, 100)]
+def _process_page_range(
+    _item_start: int,
+    _item_stop: int,
+    *,
+    limit: Annotated[int, ValueRange(1, 100)]
 ) -> Tuple[int, int, int]:
     _page_start = _item_start // limit
-    _page_stop = _item_stop // limit
-
-    # Ensure that at least one iteration will be performed if both posts are
-    # placed on the same page.
-    if _page_stop == _page_start:
-        _page_stop += 1
-
+    _page_stop = (_item_stop // limit) + 1
     _page_step = const.BASE_RANGE_STEP
     return _page_start, _page_stop, _page_step
+
+
+def _compute_slices(
+    _item_range: Tuple[int, int, int],
+    _page_range: Tuple[int, int, int]
+) -> List[slice]:
+    """Compute slices for further subscription of page items.
+
+    Usage:
+        ```
+        slices = _compute_slices(_item_range, _page_range)
+        for page in Paginator(...):
+            for item in page.items(slices.pop()):
+                ...
+        ```
+    """
+    # Flat view of item indexes
+    items = range(*_item_range)
+    pages = range(*_page_range)
+    # Reshaped view with grouping item indexes inside relevant page lists.
+    reshaped = [[] for _ in pages]
+    for i in items:
+        page_number = i // const.BASE_LIMIT
+        reshaped[pages.index(page_number)].append(i - page_number*const.BASE_LIMIT)
+
+    slices: List[slice] = []
+    template = range(const.BASE_LIMIT)
+    for page in reshaped:
+        slices.append(
+            slice(
+                template.index(page[0]),
+                template.index(page[-1]) + 1,
+                _item_range[-1]
+            )
+        )
+
+    # Reverse slices objects for for further usage of slices.pop() with
+    # default behaviour. Without reversing slices list it must be popped from
+    # head (slices.pop(0)), which will cause internal array shifting and memory
+    # reallocations at every iteration.
+    return list(reversed(slices))
+
