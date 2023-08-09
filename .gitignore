@@ -1,13 +1,15 @@
 # Virtual env
 virtualenv/
+venv*/
 
 # Cache
 *.pyc
-**.idea/
-**__pycache__/
+.idea/
+__pycache__/
 *.sh
-**/.mypy_cache/
-**/.pytest_cache/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
 *.log
 
 # Tests
@@ -23,8 +25,5 @@ build/
 
 .python-version
 .env
-**.env
-**.secrets
+.secrets
 .coverage
-/test_*.py
-/venv*
