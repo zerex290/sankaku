@@ -61,11 +61,7 @@ def test_author_model(data, expected):  # noqa: D103
                 "pool_update_count": 0,
                 "series_update_count": 0,
                 "tag_update_count": 0,
-                "artist_update_count": 0,
-                "show_popup_version": 1,
-                "credits": 0,
-                "credits_subs": 0,
-                "is_ai_beta": False
+                "artist_update_count": 0
             },
             dict(
                 last_logged_in_at=datetime(
@@ -99,11 +95,7 @@ def test_author_model(data, expected):  # noqa: D103
                 pool_update_count=0,
                 series_update_count=0,
                 tag_update_count=0,
-                artist_update_count=0,
-                show_popup_version=1,
-                credits=0,
-                credits_subs=0,
-                is_ai_beta=False
+                artist_update_count=0
             )
         ),
         (
@@ -126,11 +118,7 @@ def test_author_model(data, expected):  # noqa: D103
                 "pool_update_count": 0,
                 "series_update_count": 0,
                 "tag_update_count": 0,
-                "artist_update_count": 0,
-                "show_popup_version": 1,
-                "credits": 0,
-                "credits_subs": 0,
-                "is_ai_beta": False
+                "artist_update_count": 0
             },
             dict(
                 last_logged_in_at=None,
@@ -162,11 +150,7 @@ def test_author_model(data, expected):  # noqa: D103
                 pool_update_count=0,
                 series_update_count=0,
                 tag_update_count=0,
-                artist_update_count=0,
-                show_popup_version=1,
-                credits=0,
-                credits_subs=0,
-                is_ai_beta=False
+                artist_update_count=0
             )
         )
     ]
@@ -211,7 +195,6 @@ def test_user_model(data, expected):  # noqa: D103
                 "show_popup_version": 1,
                 "credits": 0,
                 "credits_subs": 0,
-                "is_ai_beta": False,
                 "email": "ABCDEFU@eksdee.xyz",
                 "hide_ads": False,
                 "subscription_level": 0,
@@ -268,7 +251,6 @@ def test_user_model(data, expected):  # noqa: D103
                 show_popup_version=1,
                 credits=0,
                 credits_subs=0,
-                is_ai_beta=False,
                 email="ABCDEFU@eksdee.xyz",
                 hide_ads=False,
                 subscription_level=0,
@@ -289,4 +271,3 @@ def test_user_model(data, expected):  # noqa: D103
 )
 def test_extended_user_model(data, expected):  # noqa: D103
     assert ExtendedUser(**data).model_dump() == expected
-

@@ -60,7 +60,11 @@ from sankaku import types
                 "sequence": None,
                 "generation_directives": {
                     "tags": [],
-                    "aspect_ratio": {},
+                    "aspect_ratio": {
+                        "type": "-",
+                        "width": 100,
+                        "height": 150
+                    },
                     "rating": {"value": "G", "default": "s"},
                     "negative_prompt": "badTag1",
                     "natural_input": "tag1 tag2",
@@ -117,7 +121,11 @@ from sankaku import types
                 sequence=None,
                 generation_directives=dict(
                     tags=[],
-                    aspect_ratio={},
+                    aspect_ratio=dict(
+                        type="-",
+                        width=100,
+                        height=150
+                    ),
                     rating={"value": "G", "default": "s"},
                     negative_prompt="badTag1",
                     natural_input="tag1 tag2",
