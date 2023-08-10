@@ -39,8 +39,11 @@ BASE_RPS = 3
 BASE_RPM = 180
 
 BASE_RANGE_START = 0
-BASE_RANGE_STOP = 100_000
 BASE_RANGE_STEP = 1
+
+# Number that big enough to be ensured that iteration will continue
+# to the last item in sequence.
+LAST_RANGE_ITEM = 100_000
 
 BASE_LIMIT = 40  # Limit of items per page
 

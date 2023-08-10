@@ -55,7 +55,6 @@ class TagType(Enum):
     COPYRIGHT = 3
     CHARACTER = 4
     GENERAL = 0
-
     MEDIUM = 8
     META = 9
     GENRE = 5

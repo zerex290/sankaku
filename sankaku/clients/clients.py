@@ -297,7 +297,7 @@ class PostClient(BaseClient):
     async def get_post_comments(self, post_id: int) -> AsyncIterator[mdl.Comment]:
         """Get all comments of the specific post by its ID."""
         async for page in Paginator(  # noqa: F405
-            const.BASE_RANGE_STOP,
+            const.LAST_RANGE_ITEM,
             http_client=self._http_client,
             url=const.COMMENTS_URL.format(post_id=post_id),
             model=mdl.Comment
