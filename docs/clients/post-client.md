@@ -17,17 +17,26 @@ async def main():
     client = PostClient()
 
     async for post in client.browse_posts(
-        types.PostOrder.QUALITY,
-        [datetime(2020, 1, 12), datetime(2022, 1, 12)],
+        100,
+        order=types.PostOrder.QUALITY,
+        date=[datetime(2020, 1, 12), datetime(2022, 1, 12)],
         tags=["animated"],
         file_type=types.FileType.VIDEO,
         rating=types.Rating.SAFE
     ):
         print(post.file_url)
-        # ... Continue browsing posts or break
 
 asyncio.run(main())
 ```
+
+In the example above we specified:
+
+- amount of posts that we want to fetch;
+- rule which will be used to sort posts before fetching;
+- date range of posts;
+- tags by which posts will be filtered;
+- type of posts (e.g. gif, images or video);
+- content rating of posts (safe, questionable or explicit (nsfw)).
 
 ## Getting specific post by its ID
 

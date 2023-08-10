@@ -1,5 +1,24 @@
 # Documentation for `posts.py`
 
+::: sankaku.models.posts.GenerationDirectivesAspectRatio
+    options:
+      show_source: false
+      members:
+        - type
+        - width
+        - height
+
+---
+
+::: sankaku.models.posts.GenerationDirectivesRating
+    options:
+      show_source: false
+      members:
+        - value
+        - default
+
+---
+
 ::: sankaku.models.posts.GenerationDirectives
     options:
       show_source: false
@@ -42,10 +61,10 @@
         - width
         - height
         - file_size
+        - file_type
         - extension
         - md5
         - tags
-        - file_type
 
 ---
 

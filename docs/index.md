@@ -4,16 +4,16 @@ It is an unofficial API wrapper for [Sankaku Complex](https://beta.sankakucomple
 with *type-hinting*, pydantic *data validation* and an optional *logging support*
 with loguru.
 
+<!-- markdownlint-disable-next-line -->
 ### Features
 
 - Type-hints
 - Deserialization of raw json data thanks to pydantic models
 - Enumerations for API request parameters to provide better user experience
-  > For instance, you can type `types.TagType.ARTIST` instead of `types[]=1`
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.8+
 - aiohttp
 - pydantic
 - loguru
@@ -22,24 +22,28 @@ with loguru.
 
 ## Installation
 
+### Installation with pip
+
 To install sankaku via pip write following line of code in your terminal:
 
 ```commandline
 pip install sankaku
 ```
 
+### Installation with Docker
+
 To install the sankaku via Docker, you can follow these steps:
 
-###### Step 1: Install Docker
+#### Step 1: Install Docker
 
 Ensure that Docker is installed on your machine. If Docker is not already
 installed, you can download and install it from the official
 [Docker website](https://www.docker.com/get-started).
 
-###### Step 2: Use docker to install sankaku
+#### Step 2: Use docker to install sankaku
 
 Open a command prompt. Navigate to the directory where you want
-to install Sankaku. Type the following command:
+to install sankaku. Type the following command:
 
 ```commandline
 git clone https://github.com/zerex290/sankaku.git
@@ -63,8 +67,16 @@ async def main():
     await client.login(access_token="token")
     # Or you can authorize by credentials:
     # await client.login(login="nickname or email", password="password")
-    async for book in client.get_recently_read_books():
-        ...
+
+    # Get the first 100 posts which have been added to favorites of the
+    # currently logged-in user:
+    async for post in client.get_favorited_posts(100):
+        print(post)
+
+    # Get every 3rd book from book pages, starting with 100th and ending with
+    # 400th book:
+    async for book in client.browse_books(100, 401, 3):  # range specified in
+        print(book)                                      # same way as with 'range()'
 
 asyncio.run(main())
 ```

@@ -16,6 +16,16 @@
 
 ---
 
+::: sankaku.models.tags.GenerationDirectivesTag
+    options:
+      show_source: false
+      members:
+        - count
+        - tag_name
+        - translations
+
+---
+
 ::: sankaku.models.tags.TagMixin
     options:
       show_source: false

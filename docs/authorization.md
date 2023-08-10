@@ -2,6 +2,7 @@
 
 Authorization on [Sankaku Complex](https://beta.sankakucomplex.com) can be
 performed in two ways:
+
 - via access token
 - via credentials (login and password)
 

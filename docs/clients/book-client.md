@@ -11,17 +11,24 @@ The following code shows how to browse pages with books:
 import asyncio
 from sankaku.clients import BookClient
 from sankaku import types
+from sankaku.constants import LAST_RANGE_ITEM
 
 async def main():
     client = BookClient()
     async for book in client.browse_books(
-        favorited_by="Nigredo", order=types.BookOrder.POPULARITY
+        LAST_RANGE_ITEM,
+        favorited_by="Nigredo",
+        order=types.BookOrder.POPULARITY
     ):
         print(book.name, book.description)
-        # ... Continue fetching books or break
 
 asyncio.run(main())
 ```
+
+In the example above we used method `browse_books()` to get all books favorited
+by one specific user ('Nigredo' in our case). Predefined constant `LAST_RANGE_ITEM`
+is just an integer number high enough to be ensured that we will reach end of
+iteration.
 
 ## Getting books related to specific post
 
@@ -31,12 +38,13 @@ If specific post id has some books as its parents, you can use
 ```python linenums="1"
 import asyncio
 from sankaku.clients import BookClient
+from sankaku.constants import LAST_RANGE_ITEM
 
 async def main():
     client = BookClient()
     post_id: int = ...
     related_books = []
-    async for book in client.get_related_books(post_id):
+    async for book in client.get_related_books(LAST_RANGE_ITEM, post_id=post_id):
         related_books.append(book)
 
 asyncio.run(main())

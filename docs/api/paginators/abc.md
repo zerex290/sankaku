@@ -4,3 +4,4 @@
     options:
       members:
         - next_page
+        - complete_params

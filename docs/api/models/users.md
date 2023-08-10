@@ -46,10 +46,6 @@
         - pool_vote_count
         - recommended_posts_for_user
         - subscriptions
-        - show_popup_version
-        - credits
-        - credits_subs
-        - is_ai_beta
 
 ---
 
@@ -69,3 +65,6 @@
         - blacklisted_tags
         - blacklisted
         - mfa_method
+        - show_popup_version
+        - credits
+        - credits_subs

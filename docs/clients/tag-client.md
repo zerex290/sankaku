@@ -15,12 +15,12 @@ from sankaku import types
 async def main():
     client = TagClient()
     async for tag in client.browse_tags(
+        30,  # Specify amount of tags to fetch from server
         order=types.TagOrder.QUALITY,
         sort_parameter=types.SortParameter.POST_COUNT,
         sort_direction=types.SortDirection.DESC
     ):
         print(tag.name, tag.rating, tag.type)
-        # ... Continue actions with tags or invoke break
 
 asyncio.run(main())
 ```

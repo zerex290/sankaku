@@ -28,11 +28,9 @@ async def main():
     client = AIClient()
     ai_posts = []
 
-    async for post in client.browse_ai_posts():
+    async for post in client.browse_ai_posts(90, 200):  # Specify range
         if post.rating is types.Rating.SAFE:  # Filter nsfw content
             ai_posts.append(post)
-        if len(ai_posts) >= 10:  # For instance, we need to fetch 10 posts
-            break
     
     print("\n".join(post.file_url for post in ai_posts if post.file_url))
 

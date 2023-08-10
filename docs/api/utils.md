@@ -6,6 +6,3 @@
 
 ::: sankaku.utils.convert_ts_to_datetime
 
----
-
-::: sankaku.utils.from_locals

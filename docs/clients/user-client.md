@@ -15,11 +15,11 @@ from sankaku import types
 async def main():
     client = UserClient()
     async for user in client.browse_users(
-        types.UserOrder.OLDEST,
-        types.UserLevel.CONTRIBUTOR
+        1000,
+        order=types.UserOrder.OLDEST,
+        level=types.UserLevel.CONTRIBUTOR
     ):
         print(user.created_at < datetime(2020, 12, 18).astimezone())
-        # ... Continue comparing or break
 
 asyncio.run(main())
 ```

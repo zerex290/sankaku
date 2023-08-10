@@ -19,14 +19,14 @@
 
 ---
 
+::: sankaku.errors.PaginatorLastPage
+
+---
+
 ::: sankaku.errors.SankakuServerError
     options:
       members:
         - __init__
-
----
-
-::: sankaku.errors.PaginatorLastPage
 
 ---
 
