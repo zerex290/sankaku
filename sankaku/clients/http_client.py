@@ -12,7 +12,7 @@ from .abc import ABCHttpClient
 
 
 try:
-    from aiohttp_socks import ProxyConnector as SocksProxyConnector
+    from aiohttp_socks import ProxyConnector as SocksProxyConnector  # type: ignore
 except (ImportError, ModuleNotFoundError):
     SocksProxyConnector = None
 
@@ -24,7 +24,7 @@ def _get_socks_connector() -> Optional[SocksProxyConnector]:  # type: ignore
     if SocksProxyConnector is None:
         return None
 
-    proxy = os.getenv("ALL_PROXY") or os.getenv("HTTPS_PROXY") or os.getenv("HTTP_PROXY")
+    proxy = os.getenv("ALL_PROXY") or os.getenv("HTTPS_PROXY") or os.getenv("HTTP_PROXY")  # noqa: E501
     if proxy is None or not proxy.startswith("socks"):
         return None
 
@@ -53,7 +53,7 @@ class HttpClient(ABCHttpClient):
         )
 
     def __del__(self) -> None:
-        if not self._client_session.closed and self._client_session.connector is not None:
+        if not self._client_session.closed and self._client_session.connector is not None:  # noqa: E501
             self._client_session.connector.close()
 
     async def close(self) -> None:
