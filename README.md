@@ -1,5 +1,3 @@
-<!-- markdownlint-disable-file -->
-
 <h1 align="center">
   <a href="https://github.com/zerex290/sankaku">
     <img src="https://raw.githubusercontent.com/zerex290/sankaku/main/docs/icon.png" alt="Sankaku Complex"
@@ -21,15 +19,11 @@ with loguru.
 - Deserialization of raw json data thanks to pydantic models
 - Enumerations for API request parameters to provide better user experience
 
----
+### Useful links
 
-Documentation: https://zerex290.github.io/sankaku
-
-API Reference: https://zerex290.github.io/sankaku/api
-
-Source code: https://github.com/zerex290/sankaku
-
----
+- [Documentation](https://zerex290.github.io/sankaku)
+- [API Reference](https://zerex290.github.io/sankaku/api)
+- [Source code](https://github.com/zerex290/sankaku)
 
 ## Requirements
 
@@ -103,3 +97,7 @@ async def main():
 
 asyncio.run(main())
 ```
+
+## Contributing
+
+Feel free to contribute to sankaku after reading [CONTRIBUTING](CONTRIBUTING.md) file.
