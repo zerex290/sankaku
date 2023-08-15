@@ -973,17 +973,26 @@ That applies to <code>browse_posts()</code> method too.</p>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7"></a>    <span class="n">client</span> <span class="o">=</span> <span class="n">PostClient</span><span class="p">()</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8"></a>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9"></a>    <span class="k">async</span> <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">browse_posts</span><span class="p">(</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a>        <span class="n">types</span><span class="o">.</span><span class="n">PostOrder</span><span class="o">.</span><span class="n">QUALITY</span><span class="p">,</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>        <span class="p">[</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)],</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a>        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;animated&quot;</span><span class="p">],</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a>        <span class="n">file_type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">FileType</span><span class="o">.</span><span class="n">VIDEO</span><span class="p">,</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a>        <span class="n">rating</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Rating</span><span class="o">.</span><span class="n">SAFE</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a>    <span class="p">):</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">file_url</span><span class="p">)</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a>        <span class="c1"># ... Continue browsing posts or break</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10"></a>        <span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11"></a>        <span class="n">order</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">PostOrder</span><span class="o">.</span><span class="n">QUALITY</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12"></a>        <span class="n">date</span><span class="o">=</span><span class="p">[</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)],</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13"></a>        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;animated&quot;</span><span class="p">],</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14"></a>        <span class="n">file_type</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">FileType</span><span class="o">.</span><span class="n">VIDEO</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15"></a>        <span class="n">rating</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">Rating</span><span class="o">.</span><span class="n">SAFE</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16"></a>    <span class="p">):</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">file_url</span><span class="p">)</span>
 </span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18"></a>
 </span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </span></code></pre></div></td></tr></table></div>
+<p>In the example above we specified:</p>
+<ul>
+<li>amount of posts that we want to fetch;</li>
+<li>rule which will be used to sort posts before fetching;</li>
+<li>date range of posts;</li>
+<li>tags by which posts will be filtered;</li>
+<li>type of posts (e.g. gif, images or video);</li>
+<li>content rating of posts (safe, questionable or explicit (nsfw)).</li>
+</ul>
 <h2 id="getting-specific-post-by-its-id">Getting specific post by its ID</h2>
 <p>You can get specific post by its ID like that:</p>
 <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1"> 1</a></span>
