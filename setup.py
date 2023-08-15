@@ -20,7 +20,7 @@ group_requirements = {
 
 setuptools.setup(
     name="sankaku",
-    version="1.0.4",
+    version="2.0.0",
     author="zerex290",
     author_email="zerex290@gmail.com",
     description="Asynchronous API wrapper for Sankaku Complex.",
@@ -32,7 +32,6 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=["tests", "tests.*"]),
     license="MIT",
     classifiers=[
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -40,9 +39,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.7",
-    install_requires=requirements,  # this will change after you change requirements
-
-    # you can install other requirements like `pip install sankaku[socks]`
+    python_requires=">=3.8",
+    install_requires=requirements,
     extras_require=group_requirements,
 )
