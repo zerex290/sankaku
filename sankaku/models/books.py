@@ -42,6 +42,7 @@ class PageBook(SankakuResponseModel):
     visible_post_count: int
     is_intact: bool
     rating: Optional[types.Rating]
+    reactions: List  # TODO: Search for books with non-empty reactions
     parent_id: Optional[int]
     has_children: Optional[bool]
     is_rating_locked: bool

@@ -13,6 +13,7 @@ from sankaku import types
             {
                 "id": 22144775,
                 "rating": "q",
+                "reactions": [],
                 "status": "active",
                 "author": {
                     "id": 2,
@@ -77,6 +78,7 @@ from sankaku import types
             dict(
                 id=22144775,
                 rating=types.Rating.QUESTIONABLE,
+                reactions=[],
                 status="active",
                 author=dict(
                     id=2,

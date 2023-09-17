@@ -27,7 +27,7 @@ class GenerationDirectivesRating(SankakuResponseModel):
 
 
 class GenerationDirectives(SankakuResponseModel):
-    tags: List[GenerationDirectivesTag]
+    tags: Optional[List[GenerationDirectivesTag]] = None
     aspect_ratio: Optional[GenerationDirectivesAspectRatio] = None
     rating: Optional[GenerationDirectivesRating] = None
     negative_prompt: Optional[str] = None
@@ -126,6 +126,7 @@ class Post(BasePost):
     is_note_locked: bool
     is_status_locked: bool
     redirect_to_signup: bool
+    reactions: List  # TODO: Search for posts with non-empty reactions
 
     # Sequence can be missing when Post model used inside PageBook model
     sequence: Optional[int] = None
