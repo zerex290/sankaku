@@ -35,6 +35,7 @@
         - visible_post_count
         - is_intact
         - rating
+        - reactions
         - parent_id
         - has_children
         - is_rating_locked

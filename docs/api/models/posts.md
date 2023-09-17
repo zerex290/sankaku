@@ -117,6 +117,7 @@
         - is_note_locked
         - is_status_locked
         - redirect_to_signup
+        - reactions
         - sequence
         - video_duration
         - generation_directives
