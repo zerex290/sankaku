@@ -654,18 +654,18 @@ def _process_item_range(
     _step: Optional[int] = None
 ) -> Tuple[int, int, int]:
     if _stop is None and _step is None:
-        _post_start = const.BASE_RANGE_START
-        _post_stop = _start
-        _post_step = const.BASE_RANGE_STEP
+        _item_start = const.BASE_RANGE_START
+        _item_stop = _start
+        _item_step = const.BASE_RANGE_STEP
     elif _stop is not None and _step is None:
-        _post_start = _start
-        _post_stop = _stop
-        _post_step = const.BASE_RANGE_STEP
+        _item_start = _start
+        _item_stop = _stop
+        _item_step = const.BASE_RANGE_STEP
     else:
-        _post_start = _start
-        _post_stop = _stop
-        _post_step = _step
-    return _post_start, _post_stop, _post_step  # type: ignore
+        _item_start = _start
+        _item_stop = _stop
+        _item_step = _step
+    return _item_start, _item_stop, _item_step  # type: ignore
 
 
 def _process_page_range(
