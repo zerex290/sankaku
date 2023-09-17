@@ -20,7 +20,7 @@ group_requirements = {
 
 setuptools.setup(
     name="sankaku",
-    version="2.0.0",
+    version="2.0.1",
     author="zerex290",
     author_email="zerex290@gmail.com",
     description="Asynchronous API wrapper for Sankaku Complex.",
