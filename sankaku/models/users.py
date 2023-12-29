@@ -71,6 +71,7 @@ class ExtendedUser(User):
     show_popup_version: Optional[int]
     credits: Optional[int]  # noqa A003
     credits_subs: Optional[int]
+    real_id: Optional[int]
 
     @field_validator("blacklisted_tags", mode="before")
     @classmethod
